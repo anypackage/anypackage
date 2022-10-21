@@ -34,7 +34,7 @@ Package providers are shipped in a PowerShell module. For more information on ho
 
 ### Creating a Provider
 
-To learn how to create a package provider refer to [about_Creating_Package_Providers.md](docs/en-US/about_Creating_Package_Providers.md).
+To learn how to create a package provider refer to [about_Creating_Package_Providers](docs/en-US/about_Creating_Package_Providers.md).
 
 ## Core Providers
 
