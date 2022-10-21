@@ -7,7 +7,7 @@ The role it played is still needed by the community.
 `UniversalPackageManager` (UPM) is a spiritual successor to `PackageManagement`.
 The project will make use of the lessons learned and use design principles from `PowerShellGet` v3.
 
-For more information on what `UniversalPackageManager` is and how to use it refer to [about_UniversalPackageManager](docs\en-US\about_UniversalPackageManager.md).
+For more information on what `UniversalPackageManager` is and how to use it refer to [about_UniversalPackageManager](docs/en-US/about_UniversalPackageManager.md).
 
 ## PowerShellGet
 
@@ -30,11 +30,11 @@ so I can be more productive.
 
 `UPM` uses a provider model.
 Each package management system creates a package provider which implements the `UPM` interface.
-Package providers are shipped in a PowerShell module. For more information on how to use a provider refer to [about_Package_Providers](docs\en-US\about_Package_Providers).
+Package providers are shipped in a PowerShell module. For more information on how to use a provider refer to [about_Package_Providers](docs/en-US/about_Package_Providers).
 
 ### Creating a Provider
 
-To learn how to create a package provider refer to [about_Creating_Package_Providers.md](docs\en-US\about_Creating_Package_Providers.md).
+To learn how to create a package provider refer to [about_Creating_Package_Providers.md](docs/en-US/about_Creating_Package_Providers.md).
 
 ## Core Providers
 
