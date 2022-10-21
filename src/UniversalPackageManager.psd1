@@ -9,6 +9,8 @@
     PowerShellVersion = '5.1'
     RequiredAssemblies = @('NuGet.Versioning.dll', 'System.Collections.Immutable.dll')
     FormatsToProcess = @('UniversalPackageManager.format.ps1xml')
+    FunctionsToExport = @()
+    AliasesToExport = @()
     CmdletsToExport = @('Find-Package', 'Get-Package', 'Get-PackageProvider', 'Get-PackageSource',
                         'Install-Package', 'Publish-Package', 'Register-PackageSource',
                         'Save-Package', 'Set-PackageSource', 'Uninstall-Package',
