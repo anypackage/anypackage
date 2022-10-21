@@ -41,8 +41,8 @@ To learn how to create a package provider refer to [about_Creating_Package_Provi
 `UPM` will implement the following providers to match the current scope of `PackageManagement`.
 The providers will not be shipped with `UPM` and will separate modules to better handle updating.
 
-- `PowerShellGet` v3
-- `MSI`
-- `MSU`
-- `Programs`
-- `NuGet`
+- [PowerShellGet v3](https://github.com/ThomasNieto/UniversalPackageManager.Provider.PowerShellGet)
+- MSI
+- MSU
+- Programs
+- NuGet
