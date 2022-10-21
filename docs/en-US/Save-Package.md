@@ -1,6 +1,6 @@
 ---
-external help file: UniversalPackageManager.dll-Help.xml
-Module Name: UniversalPackageManager
+external help file: AnyPackage.dll-Help.xml
+Module Name: AnyPackage
 online version:
 schema: 2.0.0
 ---
@@ -240,13 +240,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## Inputs
 
-### System.String, NuGet.Versioning.VersionRange, UniversalPackageManager.Provider.PackageInfo
+### System.String, NuGet.Versioning.VersionRange, AnyPackage.Provider.PackageInfo
 
 You can pipe a package name, version range, and package info to this cmdlet.
 
 ## Outputs
 
-### UniversalPackageManager.Provider.PackageInfo
+### AnyPackage.Provider.PackageInfo
 
 By default, this cmdlet doesn't return any objects. Use the `PassThru` parameter to a return objects that represent a package.
 

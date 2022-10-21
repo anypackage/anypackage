@@ -1,12 +1,12 @@
 ---
-Module Name: UniversalPackageManager
+Module Name: AnyPackage
 Module Guid: 19cd4cdd-6766-4e47-be1c-76c33cea7392
 Download Help Link: {{ Update Download Link }}
 Help Version: 0.1.0.0
 Locale: en-US
 ---
 
-# UniversalPackageManager Module
+# AnyPackage Module
 
 ## Description
 
@@ -72,6 +72,6 @@ Describes how to create a package provider.
 
 Describes what package providers are and how to use them.
 
-### [about_UniversalPackageManager](about_UniversalPackageManager.md)
+### [about_AnyPackage](about_AnyPackage.md)
 
-Describes `UniversalPackageManager` module and capabilities.
+Describes `AnyPackage` module and capabilities.

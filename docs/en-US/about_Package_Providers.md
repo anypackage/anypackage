@@ -4,16 +4,16 @@
 
 ## Short Description
 
-Describes what a `UniversalPackageManager` package provider is and how to use it.
+Describes what a `AnyPackage` package provider is and how to use it.
 
 ## Long Description
 
-A package provider is used to extend `UniversalPackageManager` module.
+A package provider is used to extend `AnyPackage` module.
 This article contains information with interacting with package providers.
 
 ## Importing a Package Provider
 
-Importing the `UniversalPackageManager` module will not automatically load package providers.
+Importing the `AnyPackage` module will not automatically load package providers.
 The user is responsible for which providers are available.
 To import a package provider run `Import-Module` with the module containing the provider.
 
@@ -80,7 +80,7 @@ If the user were run `Install-Package -Name Microsoft.PowerShell.Security` which
 The priority scale is from `0-255` with a default value of `100`.
 A lower number is higher priority.
 If multiple providers have the same priority value then the provider's `FullName` will be used.
-The provider `FullName` is the module and provider name in this format: `Module\Provider` for example, `PowerShellGet` provider would be `UniversalPackageManager.Provider.PowerShellGet\PowerShellGet`.
+The provider `FullName` is the module and provider name in this format: `Module\Provider` for example, `PowerShellGet` provider would be `AnyPackage.Provider.PowerShellGet\PowerShellGet`.
 
 To view a provider's priority use the `Get-PackageProvider` command.
 
@@ -109,4 +109,4 @@ PowerShellGet              50 Find, Get, Publish, Install, Save, Uninstall, Upda
 ## See Also
 
 * [about_Creating_Package_Providers](about_Creating_Package_Providers.md)
-* [about_UniversalPackageManager](about_UniversalPackageManager.md)
+* [about_AnyPackage](about_AnyPackage.md)

@@ -8,7 +8,7 @@ Describes how to create a package provider.
 
 ## Long Description
 
-A package provider is the way for module authors to extend the `UniversalPackageManager` module.
+A package provider is the way for module authors to extend the `AnyPackage` module.
 Providers can be created in PowerShell or C#.
 Package providers are implemented by defining a class that inherits from `PackageProvider` class and has the `PackageProvider` attribute.
 
@@ -38,7 +38,7 @@ class TestProvider : PackageProvider {
 
 ### Initializing
 
-`UniversalPackageManager` creates a new instance of the `PackageProvider` each time a cmdlet is called.
+`AnyPackage` creates a new instance of the `PackageProvider` each time a cmdlet is called.
 This makes the package provider stateless.
 If a package provider requires one-time initialization override the `Initialize` method.
 
@@ -105,7 +105,7 @@ class GetPackageDynamicParameters {
 
 ### Supporting Operations
 
-The package provider indicates support for each individual `UniversalPackageManager` cmdlet by adding a corresponding interface.
+The package provider indicates support for each individual `AnyPackage` cmdlet by adding a corresponding interface.
 For example, if the package provider supports `Get-Package` cmdlet then the `IGetPackage` interface would be implemented.
 
 | Cmdlet                       | Interface         |
@@ -123,7 +123,7 @@ For example, if the package provider supports `Get-Package` cmdlet then the `IGe
 | Unregister-PackageSource     | ISetSource        |
 
 If a `Package` method was successful `WritePackage` must be called with the package details.
-In the event a package is not found by the provider do not throw an exception as `UniversalPackageManager` will write an error.
+In the event a package is not found by the provider do not throw an exception as `AnyPackage` will write an error.
 
 The package interfaces follow the structure as follows.
 
@@ -135,7 +135,7 @@ class TestProvider : PackageProvider, IGetPackage {
 ```
 
 If a `Source` method was successful `WriteSource` must be called with the source details.
-In the event a source is not found by the provider do not throw an exception as `UniversalPackageManager` will write an error.
+In the event a source is not found by the provider do not throw an exception as `AnyPackage` will write an error.
 
 The package source interfaces follow the structure as follows.
 
@@ -161,7 +161,7 @@ class TestProvider : PackageProvider, ISetSource {
 
 ### Package Request
 
-The `[PackageRequest]` type contains information about the request and methods to interact with `UniversalPackageManager`.
+The `[PackageRequest]` type contains information about the request and methods to interact with `AnyPackage`.
 
 ```powershell
 class PackageRequest {
@@ -190,7 +190,7 @@ class PackageRequest {
 
 ### Source Request
 
-The `[SourceRequest]` type contains information about the request and methods to interact with `UniversalPackageManager`.
+The `[SourceRequest]` type contains information about the request and methods to interact with `AnyPackage`.
 
 ```powershell
 class SourceRequest {
@@ -209,7 +209,7 @@ class SourceRequest {
 
 ## Register a Package Provider
 
-To register a package provider with `UniversalPackageManager` the following method must be called from within your module.
+To register a package provider with `AnyPackage` the following method must be called from within your module.
 In this example the `[TestProvider]` is the type that implements the package provider.
 
 ```powershell
@@ -240,8 +240,8 @@ $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
 The following example is the minimum code required to define a package provider.
 
 ```powershell
-using module UniversalPackageManager
-using namespace UniversalPackageManager.Provider
+using module AnyPackage
+using namespace AnyPackage.Provider
 
 [PackageProvider('Test')]
 class TestProvider : PackageProvider {
@@ -262,4 +262,4 @@ The package provider should come with an about topic to describe the provider an
 ## See Also
 
 * [about_Package_Providers](about_Package_Providers.md)
-* [about_UniversalPackageManager](about_UniversalPackageManager.md)
+* [about_AnyPackage](about_AnyPackage.md)

@@ -1,6 +1,6 @@
 ---
-external help file: UniversalPackageManager.dll-Help.xml
-Module Name: UniversalPackageManager
+external help file: AnyPackage.dll-Help.xml
+Module Name: AnyPackage
 online version:
 schema: 2.0.0
 ---
@@ -82,7 +82,7 @@ You can pipe a package source to this cmdlet.
 
 ## Outputs
 
-### UniversalPackageManager.Provider.PackageSourceInfo
+### AnyPackage.Provider.PackageSourceInfo
 
 This cmdlet returns objects that represent a package source.
 
