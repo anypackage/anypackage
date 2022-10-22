@@ -41,7 +41,7 @@ To learn how to create a package provider refer to [about_Creating_Package_Provi
 `AnyPackage` will implement the following providers to match the current scope of `PackageManagement`.
 The providers will not be shipped with `AnyPackage` and will separate modules to better handle updating.
 
-- [PowerShellGet v3](https://github.com/ThomasNieto/AnyPackage.Provider.PowerShellGet)
+- [PowerShellGet v3](https://github.com/AnyPackage/AnyPackage.PowerShellGet)
 - MSI
 - MSU
 - Programs
