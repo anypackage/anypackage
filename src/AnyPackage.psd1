@@ -18,8 +18,8 @@
     PrivateData = @{
         PSData = @{
             Tags = @('Package', 'Manager', 'Windows', 'Linux', 'MacOS')
-            LicenseUri = 'https://github.com/ThomasNieto/AnyPackage/blob/master/LICENSE'
-            ProjectUri = 'https://github.com/ThomasNieto/AnyPackage'
+            LicenseUri = 'https://github.com/AnyPackage/AnyPackage/blob/main/LICENSE'
+            ProjectUri = 'https://github.com/AnyPackage/AnyPackage'
         }
     }
 }
