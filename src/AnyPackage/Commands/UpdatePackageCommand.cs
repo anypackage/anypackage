@@ -11,7 +11,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
-    [Cmdlet(VerbsData.Update, "Package", SupportsShouldProcess = true)]
+    [Cmdlet(VerbsData.Update, "Package",
+            SupportsShouldProcess = true,
+            HelpUri = "go.anypackage.dev/Update-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class UpdatePackageCommand : PackageCommandBase
     {

@@ -9,7 +9,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
-    [Cmdlet(VerbsCommon.Set, "PackageSource", SupportsShouldProcess = true)]
+    [Cmdlet(VerbsCommon.Set, "PackageSource",
+            SupportsShouldProcess = true,
+            HelpUri = "go.anypackage.dev/Set-PackageSource")]
     [OutputType(typeof(PackageSourceInfo))]
     public sealed class SetPackageSourceCommand : SourceCommandBase
     {

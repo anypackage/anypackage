@@ -9,7 +9,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
-    [Cmdlet(VerbsLifecycle.Unregister, "PackageSource", SupportsShouldProcess = true)]
+    [Cmdlet(VerbsLifecycle.Unregister, "PackageSource",
+            SupportsShouldProcess = true,
+            HelpUri = "go.anypackage.dev/Unregister-PackageSource")]
     [OutputType(typeof(PackageSourceInfo))]
     [Alias("Unregister-PackageRepository")]
     public sealed class UnregisterPackageSourceCommand : SourceCommandBase

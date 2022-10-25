@@ -11,7 +11,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
-    [Cmdlet(VerbsLifecycle.Uninstall, "Package", SupportsShouldProcess = true)]
+    [Cmdlet(VerbsLifecycle.Uninstall, "Package",
+            SupportsShouldProcess = true,
+            HelpUri = "go.anypackage.dev/Uninstall-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class UninstallPackageCommand : PackageCommandBase
     {
