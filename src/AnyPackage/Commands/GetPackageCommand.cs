@@ -10,7 +10,7 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
-    [Cmdlet(VerbsCommon.Get, "Package", HelpUri = "go.anypackage.dev/Get-Package")]
+    [Cmdlet(VerbsCommon.Get, "Package", HelpUri = "https://go.anypackage.dev/Get-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class GetPackageCommand : PackageCommandBase
     {

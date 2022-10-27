@@ -11,7 +11,7 @@ using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Commands
 {
-    [Cmdlet(VerbsCommon.Get, "PackageProvider", HelpUri = "go.anypackage.dev/Get-PackageProvider")]
+    [Cmdlet(VerbsCommon.Get, "PackageProvider", HelpUri = "https://go.anypackage.dev/Get-PackageProvider")]
     [OutputType(typeof(PackageProviderInfo))]
     public sealed class GetPackageProviderCommand : PSCmdlet
     {

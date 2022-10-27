@@ -12,7 +12,7 @@ namespace AnyPackage.Commands
 {
     [Cmdlet(VerbsData.Publish, "Package",
             SupportsShouldProcess = true,
-            HelpUri = "go.anypackage.dev/Publish-Package")]
+            HelpUri = "https://go.anypackage.dev/Publish-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class PublishPackageCommand : PackageCommandBase
     {

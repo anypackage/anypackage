@@ -13,7 +13,7 @@ namespace AnyPackage.Commands
     [Cmdlet(VerbsLifecycle.Register, "PackageSource",
             SupportsShouldProcess = true,
             ConfirmImpact = ConfirmImpact.Low,
-            HelpUri = "go.anypackage.dev/Register-PackageSource")]
+            HelpUri = "https://go.anypackage.dev/Register-PackageSource")]
     [OutputType(typeof(PackageSourceInfo))]
     public sealed class RegisterPackageSourceCommand : SourceCommandBase
     {

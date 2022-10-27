@@ -13,7 +13,7 @@ namespace AnyPackage.Commands
 {
     [Cmdlet(VerbsData.Update, "Package",
             SupportsShouldProcess = true,
-            HelpUri = "go.anypackage.dev/Update-Package")]
+            HelpUri = "https://go.anypackage.dev/Update-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class UpdatePackageCommand : PackageCommandBase
     {

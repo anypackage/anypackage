@@ -14,7 +14,7 @@ namespace AnyPackage.Commands
     [Cmdlet(VerbsLifecycle.Install, "Package",
             SupportsShouldProcess = true,
             DefaultParameterSetName = Constants.NameParameterSet,
-            HelpUri = "go.anypackage.dev/Install-Package")]
+            HelpUri = "https://go.anypackage.dev/Install-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class InstallPackageCommand : PackageCommandBase
     {

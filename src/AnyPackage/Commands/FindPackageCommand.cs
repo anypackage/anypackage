@@ -10,7 +10,7 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
-    [Cmdlet(VerbsCommon.Find, "Package", HelpUri = "go.anypackage.dev/Find-Package")]
+    [Cmdlet(VerbsCommon.Find, "Package", HelpUri = "https://go.anypackage.dev/Find-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class FindPackageCommand : PackageCommandBase
     {

@@ -14,7 +14,7 @@ namespace AnyPackage.Commands
     [Cmdlet(VerbsData.Save, "Package",
             SupportsShouldProcess = true,
             ConfirmImpact = ConfirmImpact.Low,
-            HelpUri = "go.anypackage.dev/Save-Package")]
+            HelpUri = "https://go.anypackage.dev/Save-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class SavePackageCommand : PackageCommandBase
     {

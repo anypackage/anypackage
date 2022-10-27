@@ -11,7 +11,7 @@ namespace AnyPackage.Commands
 {
     [Cmdlet(VerbsCommon.Set, "PackageSource",
             SupportsShouldProcess = true,
-            HelpUri = "go.anypackage.dev/Set-PackageSource")]
+            HelpUri = "https://go.anypackage.dev/Set-PackageSource")]
     [OutputType(typeof(PackageSourceInfo))]
     public sealed class SetPackageSourceCommand : SourceCommandBase
     {
