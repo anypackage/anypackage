@@ -13,7 +13,6 @@ namespace AnyPackage.Commands
             SupportsShouldProcess = true,
             HelpUri = "https://go.anypackage.dev/Unregister-PackageSource")]
     [OutputType(typeof(PackageSourceInfo))]
-    [Alias("Unregister-PackageRepository")]
     public sealed class UnregisterPackageSourceCommand : SourceCommandBase
     {
         private const PackageProviderOperations SetSource = PackageProviderOperations.SetSource;
