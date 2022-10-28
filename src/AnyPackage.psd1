@@ -22,4 +22,5 @@
             ProjectUri = 'https://github.com/AnyPackage/AnyPackage'
         }
     }
+    HelpInfoUri = 'https://go.anypackage.dev/help'
 }
