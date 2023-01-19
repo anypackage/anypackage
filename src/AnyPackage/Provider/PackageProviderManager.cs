@@ -153,10 +153,9 @@ namespace AnyPackage.Provider
         private static void InitializeProvider(PackageProviderInfo provider)
         {
             var instance = provider.CreateInstance();
-            provider.Id = instance.Id;
             instance.Initialize();
 
-            Providers = Providers.Add(provider.Id, provider);
+            Providers = Providers.Add(instance.Id, instance.ProviderInfo);
         }
 
         private static void CleanProvider(PackageProviderInfo provider)
