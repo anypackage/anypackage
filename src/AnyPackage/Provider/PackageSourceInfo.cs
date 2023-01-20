@@ -4,8 +4,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 
 namespace AnyPackage.Provider
 {
@@ -69,18 +67,6 @@ namespace AnyPackage.Provider
         public override string ToString()
         {
             return Name;
-        }
-
-        private ImmutableDictionary<string, object> ToDictionary(Hashtable ht)
-        {
-            var dictionary = new Dictionary<string, object>();
-            
-            foreach (var key in ht.Keys)
-            {
-                dictionary[key.ToString()] = ht[key];
-            }
-
-            return dictionary.ToImmutableDictionary();
         }
     }
 }
