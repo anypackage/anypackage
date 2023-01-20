@@ -50,10 +50,16 @@ namespace AnyPackage.Commands.Internal
         protected override void BeginProcessing()
         {
             var providers = GetProviders(Operation);
+            var noProvider = true;
 
             foreach (var provider in providers)
             {
                 Instances[provider.Id] = provider.CreateInstance();
+                noProvider = false;
+            }
+
+            if (noProvider) {
+                throw new InvalidOperationException("No package provider available.");
             }
         }
 
