@@ -23,8 +23,7 @@ namespace AnyPackage.Commands
         /// </summary>
         [Parameter(Mandatory = true,
             Position = 0,
-            ValueFromPipeline = true,
-            ValueFromPipelineByPropertyName = true)]
+            ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
         public string Path { get; set; } = string.Empty;
 
@@ -32,8 +31,7 @@ namespace AnyPackage.Commands
         /// Gets or sets the provider.
         /// </summary>
         [Parameter(Mandatory = true,
-            Position = 1,
-            ValueFromPipelineByPropertyName = true)]
+            Position = 1)]
         [ValidateNotNullOrEmpty]
         [ValidateProvider(Publish)]
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
@@ -42,7 +40,7 @@ namespace AnyPackage.Commands
         /// <summary>
         /// Gets or sets the source.
         /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Parameter()]
         [ValidateNotNullOrEmpty]
         [Alias("Repository")]
         public string Source { get; set; } = string.Empty;

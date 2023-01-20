@@ -13,6 +13,7 @@ namespace AnyPackage.Commands
 {
     [Cmdlet(VerbsLifecycle.Uninstall, "Package",
             SupportsShouldProcess = true,
+            DefaultParameterSetName = Constants.NameParameterSet,
             HelpUri = "https://go.anypackage.dev/Uninstall-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class UninstallPackageCommand : PackageCommandBase
@@ -25,8 +26,7 @@ namespace AnyPackage.Commands
         [Parameter(Mandatory = true,
             ParameterSetName = Constants.NameParameterSet,
             Position = 0,
-            ValueFromPipeline = true,
-            ValueFromPipelineByPropertyName = true)]
+            ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
         public string[] Name { get; set; } = Array.Empty<string>();
 
@@ -37,8 +37,7 @@ namespace AnyPackage.Commands
         /// Accepts NuGet version range syntax.
         /// </remarks>
         [Parameter(ParameterSetName = Constants.NameParameterSet,
-            Position = 1,
-            ValueFromPipelineByPropertyName = true)]
+            Position = 1)]
         [VersionRangeTransformation]
         public VersionRange Version { get; set; } = VersionRange.AllStable;
 

@@ -13,6 +13,7 @@ namespace AnyPackage.Commands
 {
     [Cmdlet(VerbsData.Update, "Package",
             SupportsShouldProcess = true,
+            DefaultParameterSetName = Constants.NameParameterSet,
             HelpUri = "https://go.anypackage.dev/Update-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class UpdatePackageCommand : PackageCommandBase
@@ -24,8 +25,7 @@ namespace AnyPackage.Commands
         /// </summary>
         [Parameter(ParameterSetName = Constants.NameParameterSet,
             Position = 0,
-            ValueFromPipeline = true,
-            ValueFromPipelineByPropertyName = true)]
+            ValueFromPipeline = true)]
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
         public string[] Name { get; set; } = new string[] { "*" };
@@ -37,16 +37,14 @@ namespace AnyPackage.Commands
         /// Accepts NuGet version range syntax.
         /// </remarks>
         [Parameter(ParameterSetName = Constants.NameParameterSet,
-            Position = 1,
-            ValueFromPipelineByPropertyName = true)]
+            Position = 1)]
         [VersionRangeTransformation]
         public VersionRange Version { get; set; } = VersionRange.AllStable;
 
         /// <summary>
         /// Gets or sets the source.
         /// </summary>
-        [Parameter(ParameterSetName = Constants.NameParameterSet,
-            ValueFromPipelineByPropertyName = true)]
+        [Parameter(ParameterSetName = Constants.NameParameterSet)]
         [ValidateNotNullOrEmpty]
         [Alias("Repository")]
         public string Source { get; set; } = string.Empty;
