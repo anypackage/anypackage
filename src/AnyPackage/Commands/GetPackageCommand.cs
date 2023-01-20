@@ -32,9 +32,7 @@ namespace AnyPackage.Commands
         /// <remarks>
         /// Accepts NuGet version range syntax.
         /// </remarks>
-        [Parameter(Position = 1,
-            ValueFromPipeline = true,
-            ValueFromPipelineByPropertyName = true)]
+        [Parameter(Position = 1)]
         [VersionRangeTransformation]
         public VersionRange Version { get; set; } = VersionRange.All;
 
