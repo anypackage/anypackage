@@ -13,6 +13,7 @@ namespace AnyPackage.Commands
     [Cmdlet(VerbsLifecycle.Register, "PackageSource",
             SupportsShouldProcess = true,
             ConfirmImpact = ConfirmImpact.Low,
+            DefaultParameterSetName = Constants.NameParameterSet,
             HelpUri = "https://go.anypackage.dev/Register-PackageSource")]
     [OutputType(typeof(PackageSourceInfo))]
     public sealed class RegisterPackageSourceCommand : SourceCommandBase
@@ -24,6 +25,7 @@ namespace AnyPackage.Commands
         /// </summary>
         [Parameter(Mandatory = true,
             Position = 0,
+            ParameterSetName = Constants.NameParameterSet,
             ValueFromPipeline = true,
             ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
@@ -35,6 +37,7 @@ namespace AnyPackage.Commands
         /// <value></value>
         [Parameter(Mandatory = true,
             Position = 1,
+            ParameterSetName = Constants.NameParameterSet,
             ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
         public string Location { get; set; } = string.Empty;
