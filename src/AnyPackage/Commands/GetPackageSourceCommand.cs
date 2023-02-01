@@ -21,6 +21,7 @@ namespace AnyPackage.Commands
         [Parameter(Position = 0,
             ValueFromPipeline = true,
             ValueFromPipelineByPropertyName = true)]
+        [SupportsWildcards]
         [ValidateNotNullOrEmpty]
         public string[] Name { get; set; } = new string[] { "*" };
 
