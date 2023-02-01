@@ -20,8 +20,7 @@ namespace AnyPackage.Commands
             {
                 return inputData;
             }
-            else if (inputData is string ||
-                     inputData is double)
+            else
             {
                 var input = inputData.ToString();
 
@@ -46,10 +45,6 @@ namespace AnyPackage.Commands
                 {
                     throw new ArgumentTransformationMetadataException($"'{inputData}' is not a valid version range.", ex);
                 }
-            }
-            else
-            {
-                throw new ArgumentTransformationMetadataException($"Unable to convert type '{inputData.GetType()}' into a version range.");
             }
         }
     }
