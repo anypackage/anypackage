@@ -70,12 +70,12 @@ namespace AnyPackage.Provider
                 return false;
             }
             
-            if (Version is not null)
+            if (Version is null)
             {
-                return Version.Satisfies(version);
+                return true;
             }
 
-            return false;
+            return Version.Satisfies(version);
         }
 
         public bool IsMatch(string name, NuGetVersion version)
