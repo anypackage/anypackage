@@ -2,8 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>10</LangVersion>
+    <Version>0.1.2</Version>
+    <Authors>ThomasNieto</Authors>
+    <Copyright>© 2023 Thomas Nieto. All rights reserved.</Copyright>
+    <Description>A PowerShell universal package manager.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://anypackage.dev</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AnyPackage/AnyPackage.git</RepositoryUrl> 
+    <RepositoryType>git</RepositoryType> 
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
