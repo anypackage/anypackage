@@ -104,7 +104,7 @@ namespace AnyPackage.Provider
                 return true;
             }
 
-            var query = string.Format("You are installing packages from an untrusted source. If you trust this source, change its Trusted value by running the Set-PackageSource cmdlet. Are you sure you want to install the PSresource from '{0}'?", source);
+            var query = string.Format("You are installing packages from an untrusted source. If you trust this source, change its Trusted value by running the Set-PackageSource cmdlet. Are you sure you want to install the package from '{0}'?", source);
 
             var trusted = Cmdlet.ShouldContinue(
                 query: query,
