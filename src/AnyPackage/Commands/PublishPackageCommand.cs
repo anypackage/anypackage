@@ -25,6 +25,7 @@ namespace AnyPackage.Commands
             Position = 0,
             ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
+        [ValidateNoWildcards]
         public string Path { get; set; } = string.Empty;
 
         /// <summary>
