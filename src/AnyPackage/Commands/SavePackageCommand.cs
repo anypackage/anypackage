@@ -29,6 +29,7 @@ namespace AnyPackage.Commands
             Position = 0,
             ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
+        [ValidateNoWildcards]
         public string[] Name { get; set; } = Array.Empty<string>();
 
         /// <summary>

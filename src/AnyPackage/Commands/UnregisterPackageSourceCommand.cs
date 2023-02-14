@@ -25,6 +25,7 @@ namespace AnyPackage.Commands
             ValueFromPipeline = true,
             ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
+        [ValidateNoWildcards]
         public string[] Name { get; set; } = Array.Empty<string>();
 
         /// <summary>
