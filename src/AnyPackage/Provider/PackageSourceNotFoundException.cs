@@ -30,10 +30,7 @@ namespace AnyPackage.Provider
             }
         }
 
-        public PackageSourceNotFoundException() : base(DefaultMessage)
-        {
-
-        }
+        public PackageSourceNotFoundException() : base(DefaultMessage) { }
 
         public PackageSourceNotFoundException(string? sourceName) : base(DefaultMessage)
         {
@@ -45,10 +42,7 @@ namespace AnyPackage.Provider
             SourceName = sourceName;
         }
 
-        public PackageSourceNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-
-        }
+        public PackageSourceNotFoundException(string? message, Exception? innerException) : base(message, innerException) { }
 
         protected PackageSourceNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
