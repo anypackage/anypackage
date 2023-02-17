@@ -10,24 +10,12 @@ namespace AnyPackage.Provider
     [Serializable]
     public class PackageProviderException : Exception
     {
-        public PackageProviderException()
-        {
+        public PackageProviderException() { }
 
-        }
+        public PackageProviderException(string? message) : base(message) { }
 
-        public PackageProviderException(string? message) : base(message)
-        {
+        public PackageProviderException(string? message, Exception? innerException) : base(message, innerException) { }
 
-        }
-
-        public PackageProviderException(string? message, Exception? innerException) : base(message, innerException)
-        {
-
-        }
-
-        protected PackageProviderException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-
-        }
+        protected PackageProviderException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }    
 }

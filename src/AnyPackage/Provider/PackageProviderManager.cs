@@ -84,7 +84,6 @@ namespace AnyPackage.Provider
             CleanProvider(Providers[id]);
         }
 
-
         /// <summary>
         /// Unregister a package provider.
         /// </summary>

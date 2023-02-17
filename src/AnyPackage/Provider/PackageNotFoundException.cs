@@ -30,10 +30,7 @@ namespace AnyPackage.Provider
             }
         }
 
-        public PackageNotFoundException() : base(DefaultMessage)
-        {
-
-        }
+        public PackageNotFoundException() : base(DefaultMessage) { }
 
         public PackageNotFoundException(string? packageName) : base(DefaultMessage)
         {
@@ -45,10 +42,7 @@ namespace AnyPackage.Provider
             Package = packageName;
         }
 
-        public PackageNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-
-        }
+        public PackageNotFoundException(string? message, Exception? innerException) : base(message, innerException) { }
 
         protected PackageNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
