@@ -48,6 +48,7 @@ namespace AnyPackage.Provider
             {
                 throw new ArgumentNullException(nameof(versionRange));
             }
+
             VersionRange = versionRange;
         }
 
