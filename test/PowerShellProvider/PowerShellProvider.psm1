@@ -40,7 +40,10 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetSource {
 }
 
 class PowerShellProviderInfo : PackageProviderInfo {
-    [List[object]] $InstalledPackage
+    # Installed packages
+    [List[object]] $Packages
+
+    # Registered sources
     [List[object]] $Sources
 
     PowerShellProviderInfo([PackageProviderInfo] $providerInfo) : base($providerInfo) {
