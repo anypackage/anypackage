@@ -5,7 +5,7 @@ using namespace System.Collections.Generic
 
 [PackageProvider('PowerShell')]
 class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
-    IInstallPackage, IPublishPackage, IGetSource {
+    IInstallPackage, IPublishPackage, IGetSource, ISetSource {
     PowerShellProvider() : base('89d76409-f1b0-46cb-a881-b012be54aef5') { }
 
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
@@ -88,6 +88,27 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
         $this.ProviderInfo.Sources |
         Where-Object Name -like $sourceRequest.Name |
         Write-Source -SourceRequest $sourceRequest
+    }
+
+    [void] RegisterSource([SourceRequest] $sourceRequest) {
+        $source = [PSCustomObject]@{
+            Name = $sourceRequest.Name
+            Location = $sourceRequest.Location
+            Trusted = $sourceRequest.Trusted
+        }
+
+        $this.ProviderInfo.Sources += $source
+
+        $source |
+        Write-Source -SourceRequest $sourceRequest
+    }
+
+    [void] SetSource([SourceRequest] $sourceRequest) {
+        
+    }
+
+    [void] UnregisterSource([SourceRequest] $sourceRequest) {
+        
     }
 }
 
