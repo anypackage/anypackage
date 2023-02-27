@@ -4,7 +4,7 @@ using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
 
 [PackageProvider('PowerShell')]
-class PowerShellProvider : PackageProvider, IFindPackage, IGetSource {
+class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage, IGetSource {
     PowerShellProvider() : base('89d76409-f1b0-46cb-a881-b012be54aef5') { }
 
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
@@ -32,6 +32,12 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetSource {
         }
     }
 
+    [void] GetPackage([PackageRequest] $request) {
+        $this.ProviderInfo.Packages |
+        Where-Object { $request.IsMatch($_.Name, $_.version) } |
+        Write-Package -Request $request
+    }
+
     [void] GetSource([SourceRequest] $sourceRequest) {
         $this.ProviderInfo.Sources |
         Where-Object Name -like $sourceRequest.Name |
@@ -41,13 +47,13 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetSource {
 
 class PowerShellProviderInfo : PackageProviderInfo {
     # Installed packages
-    [List[object]] $Packages
+    [List[object]] $Packages = [List[object]]::new()
 
     # Registered sources
-    [List[object]] $Sources
+    [List[object]] $Sources = [List[object]]::new()
 
     PowerShellProviderInfo([PackageProviderInfo] $providerInfo) : base($providerInfo) {
-        $this.Sources = @([PSCustomObject]@{
+        $this.Sources += @([PSCustomObject]@{
             Name = 'Default'
             Location = (Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath "../packages"))
             Trusted = $true
