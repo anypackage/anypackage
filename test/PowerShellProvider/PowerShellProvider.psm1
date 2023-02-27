@@ -55,7 +55,7 @@ class PowerShellProviderInfo : PackageProviderInfo {
     PowerShellProviderInfo([PackageProviderInfo] $providerInfo) : base($providerInfo) {
         $this.Sources += @([PSCustomObject]@{
             Name = 'Default'
-            Location = (Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath "../packages"))
+            Location = (Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath "../packages")).Path
             Trusted = $true
         })
     }
