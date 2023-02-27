@@ -73,6 +73,14 @@ Describe Install-Package {
         }
     }
 
+    Context 'with -Prerelease parameter' {
+        It 'should install prerelease version' {
+            Install-Package -Name Apple -Prerelease -PassThru |
+            Where-Object { $_.Version.IsPrerelease } |
+            Should -Not -BeNullOrEmpty
+        }
+    }
+
     Context 'with pipeline' {
         It 'should install <_> package from Find-Package' -TestCases 'Apple', @('Apple', 'Banana') {
             $results = Find-Package -Name $_ |
