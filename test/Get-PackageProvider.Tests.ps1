@@ -72,4 +72,12 @@ Describe Get-PackageProvider {
             Should -Be $Priority
         }
     }
+
+    Context 'with pipeline input' {
+        It 'should return <_> provider' -ForEach 'PowerShell', 'P*' {
+            $_ |
+            Get-PackageProvider |
+            Should -Not -BeNullOrEmpty
+        }
+    }
 }
