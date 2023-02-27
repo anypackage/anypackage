@@ -1,10 +1,5 @@
 #requires -modules AnyPackage
 
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments',
-    '',
-    Justification = 'Does not work with Pester scopes.')]
-param()
-
 Describe Publish-Package {
     BeforeAll {
         Import-Module (Join-Path -Path $PSScriptRoot -ChildPath PowerShellProvider)
