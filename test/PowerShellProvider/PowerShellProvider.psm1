@@ -4,7 +4,8 @@ using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
 
 [PackageProvider('PowerShell')]
-class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage, IInstallPackage, IGetSource {
+class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
+    IInstallPackage, IPublishPackage, IGetSource {
     PowerShellProvider() : base('89d76409-f1b0-46cb-a881-b012be54aef5') { }
 
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
@@ -59,6 +60,28 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage, IInstallP
             $this.ProviderInfo.Packages += $_
             $_ | Write-Package -Request $request -Source $_.Source
         }
+    }
+
+    [void] PublishPackage([PackageRequest] $request) {
+        if (-not (Test-Path -Path $request.Path)) { return }
+
+        $package = Get-Content -Path $request.Path |
+        ConvertFrom-Json
+
+        if ($request.Source) {
+            $sourceName = $request.Source
+        }
+        else {
+            $sourceName = 'Default'
+        }
+
+        $source = $this.ProviderInfo.Sources |
+        Where-Object { $_.Name -eq $sourceName }
+
+        Copy-Item -Path $request.Path -Destination $source.Location -ErrorAction Stop
+
+        $package |
+        Write-Package -Request $request -Source $source
     }
 
     [void] GetSource([SourceRequest] $sourceRequest) {
