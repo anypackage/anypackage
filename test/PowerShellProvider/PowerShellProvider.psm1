@@ -1,4 +1,4 @@
-using module AnyPackage
+﻿using module AnyPackage
 
 using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
@@ -19,7 +19,7 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetSource {
         else {
             $sources = $this.ProviderInfo.Sources
         }
-        
+
         foreach ($source in $sources) {
             $path = Join-Path -Path $source.Location -ChildPath *.json
             Get-ChildItem -Path $path |
@@ -103,7 +103,7 @@ function Write-Package {
         if ($Source) {
             $Source = $Request.NewSourceInfo($Source.Name, $Source.Location, $Source.Trusted)
         }
-        
+
         $Request.WritePackage($InputObject.Name,
                               $InputObject.Version,
                               $InputObject.Description,
