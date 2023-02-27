@@ -4,7 +4,7 @@ using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
 
 [PackageProvider('PowerShell')]
-class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage, IGetSource {
+class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage, IInstallPackage, IGetSource {
     PowerShellProvider() : base('89d76409-f1b0-46cb-a881-b012be54aef5') { }
 
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
@@ -38,6 +38,29 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage, IGetSourc
         Write-Package -Request $request
     }
 
+    [void] InstallPackage([PackageRequest] $request) {
+        $params = @{
+            Name = $request.Name
+            Prerelease = $request.Prerelease
+            ErrorAction = 'Ignore'
+        }
+
+        if ($request.Version) {
+            $params['Version'] = $request.Version
+        }
+
+        if ($request.Source) {
+            $params['Source'] = $request.Source
+        }
+        
+        Find-Package @params |
+        Get-Latest |
+        ForEach-Object {
+            $this.ProviderInfo.Packages += $_
+            $_ | Write-Package -Request $request -Source $_.Source
+        }
+    }
+
     [void] GetSource([SourceRequest] $sourceRequest) {
         $this.ProviderInfo.Sources |
         Where-Object Name -like $sourceRequest.Name |
@@ -65,6 +88,34 @@ class PowerShellProviderInfo : PackageProviderInfo {
 
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
     [PackageProviderManager]::UnregisterProvider([PowerShellProvider])
+}
+
+function Get-Latest {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory,
+            ValueFromPipeline)]
+        [object]
+        $Package
+    )
+
+    begin {
+        $packages = [List[object]]::new()
+    }
+
+    process {
+        $packages.Add($Package)
+    }
+
+    end {
+        $packages |
+        Group-Object -Property Name |
+        ForEach-Object {
+            $_.Group |
+            Sort-Object -Property Version -Descending |
+            Select-Object -First 1
+        }
+    }
 }
 
 function Write-Source {
