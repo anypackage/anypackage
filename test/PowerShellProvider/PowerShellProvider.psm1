@@ -131,7 +131,21 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
     }
 
     [void] SetSource([SourceRequest] $sourceRequest) {
+        $source = $this.ProviderInfo.Sources |
+        Where-Object { $_.Name -eq $sourceRequest.Name }
 
+        if (-not $source) { return }
+
+        if ($sourceRequest.Location) {
+            $source.Location = $sourceRequest.Location
+        }
+
+        if ($null -ne $sourceRequest.Trusted) {
+            $source.Trusted = $sourceRequest.Trusted
+        }
+
+        $source |
+        Write-Source -SourceRequest $sourceRequest
     }
 
     [void] UnregisterSource([SourceRequest] $sourceRequest) {
