@@ -5,7 +5,7 @@ using namespace System.Collections.Generic
 
 [PackageProvider('PowerShell')]
 class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
-    IInstallPackage, IPublishPackage, IGetSource, ISetSource {
+    IInstallPackage, IPublishPackage, ISavePackage, IGetSource, ISetSource {
     PowerShellProvider() : base('89d76409-f1b0-46cb-a881-b012be54aef5') { }
 
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
@@ -82,6 +82,31 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
 
         $package |
         Write-Package -Request $request -Source $source
+    }
+
+    [void] SavePackage([PackageRequest] $request) {
+        $params = @{
+            Name = $request.Name
+            Prerelease = $request.Prerelease
+            ErrorAction = 'Ignore'
+        }
+
+        if ($request.Version) {
+            $params['Version'] = $request.Version
+        }
+
+        if ($request.Source) {
+            $params['Source'] = $request.Source
+        }
+        
+        Find-Package @params |
+        Get-Latest |
+        ForEach-Object {
+            $path = Join-Path -Path $_.Source.Location -ChildPath "$($_.Name)-$($_.Version).json"
+            Copy-Item -Path $path -Destination $request.Path
+
+            $_ | Write-Package -Request $request -Source $_.Source
+        }
     }
 
     [void] GetSource([SourceRequest] $sourceRequest) {
