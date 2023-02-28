@@ -43,6 +43,7 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
         $params = @{
             Name = $request.Name
             Prerelease = $request.Prerelease
+            Provider = 'PowerShell'
             ErrorAction = 'Ignore'
         }
 
@@ -88,6 +89,7 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
         $params = @{
             Name = $request.Name
             Prerelease = $request.Prerelease
+            Provider = 'PowerShell'
             ErrorAction = 'Ignore'
         }
 
