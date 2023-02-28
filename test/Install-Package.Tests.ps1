@@ -82,7 +82,7 @@ Describe Install-Package {
     }
 
     Context 'with pipeline' {
-        It 'should install <_> package from Find-Package' -TestCases 'Apple', @('Apple', 'Banana') {
+        It 'should install <_> package from Find-Package' -ForEach 'Apple', @('Apple', 'Banana') {
             $results = Find-Package -Name $_ |
             Group-Object -Property Name |
             ForEach-Object { $_.Group | Sort-Object -Property Version -Descending | Select-Object -First 1 } |
@@ -91,7 +91,7 @@ Describe Install-Package {
             $results | Should -HaveCount @($_).Length
         }
 
-        It 'should install <_> package from string' -TestCases 'Apple', @('Apple', 'Banana') {
+        It 'should install <_> package from string' -ForEach 'Apple', @('Apple', 'Banana') {
             $results = $_ |
             Install-Package -PassThru
 
