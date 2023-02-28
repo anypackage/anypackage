@@ -1,4 +1,4 @@
-#requires -modules AnyPackage
+﻿#requires -modules AnyPackage
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments',
     '',
@@ -11,7 +11,7 @@ Describe Get-Package {
 
         $provider = Get-PackageProvider
         $paths = Get-ChildItem -Path $provider.Sources[0].Location
-        
+
         foreach ($path in $paths) {
             $provider.Packages += Get-Content -Path $path |
             ConvertFrom-Json

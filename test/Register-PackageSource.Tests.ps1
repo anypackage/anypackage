@@ -1,4 +1,4 @@
-#requires -modules AnyPackage
+﻿#requires -modules AnyPackage
 
 Describe Register-PackageSource {
     BeforeAll {
@@ -10,7 +10,7 @@ Describe Register-PackageSource {
 
     AfterEach {
         $provider = Get-PackageProvider
-        
+
         if ($provider.Sources.Count -gt 1) {
             $provider.Sources.RemoveAt($provider.Sources.Count - 1)
         }

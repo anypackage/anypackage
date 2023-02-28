@@ -54,7 +54,7 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
         if ($request.Source) {
             $params['Source'] = $request.Source
         }
-        
+
         Find-Package @params |
         Get-Latest |
         ForEach-Object {
@@ -100,7 +100,7 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
         if ($request.Source) {
             $params['Source'] = $request.Source
         }
-        
+
         Find-Package @params |
         Get-Latest |
         ForEach-Object {
@@ -131,11 +131,11 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
     }
 
     [void] SetSource([SourceRequest] $sourceRequest) {
-        
+
     }
 
     [void] UnregisterSource([SourceRequest] $sourceRequest) {
-        
+
     }
 }
 

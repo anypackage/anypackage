@@ -1,4 +1,4 @@
-#requires -modules AnyPackage
+﻿#requires -modules AnyPackage
 
 Describe Publish-Package {
     BeforeAll {
@@ -24,7 +24,7 @@ Describe Publish-Package {
                 Path     = (Join-Path -Path TestDrive: -ChildPath apple-4.0.json)
                 Provider = 'PowerShell'
             }
-            
+
             Publish-Package @publishParams -PassThru |
             Should -Not -BeNullOrEmpty
         }
@@ -37,15 +37,15 @@ Describe Publish-Package {
             $provider = Get-PackageProvider
             $provider.Sources.Add([PSCustomObject]@{ Name = 'Test'; Location = $path; Trusted = $true })
         }
-        
+
         It 'should publish to <_> source' -ForEach 'Test' {
             $publishParams = @{
                 Path     = (Join-Path -Path TestDrive: -ChildPath apple-4.0.json)
                 Provider = 'PowerShell'
             }
-            
+
             $results = Publish-Package @publishParams -Source $_ -PassThru
-            
+
             $results | Should -Not -BeNullOrEmpty
             $results.Source.Name | Should -Be $_
         }

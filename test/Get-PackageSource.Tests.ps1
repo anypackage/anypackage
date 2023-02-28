@@ -1,10 +1,10 @@
-#requires -modules AnyPackage
+﻿#requires -modules AnyPackage
 
 Describe Get-PackageSource {
     BeforeAll {
         Import-Module (Join-Path -Path $PSScriptRoot -ChildPath PowerShellProvider)
     }
-    
+
     Context 'with no additional parameters' {
         It 'should return sources' {
             Get-PackageSource |

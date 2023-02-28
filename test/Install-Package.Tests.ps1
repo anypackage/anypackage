@@ -1,4 +1,4 @@
-#requires -modules AnyPackage
+﻿#requires -modules AnyPackage
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments',
     '',
@@ -18,7 +18,7 @@ Describe Install-Package {
     Context 'with -Name parameter' {
         It 'should install <_> package' -ForEach 'Apple', @('Apple', 'Banana') {
             $results = Install-Package -Name $_ -PassThru
-    
+
             $results | Should -Not -BeNullOrEmpty
             $results | Should -HaveCount @($_).Length
         }
