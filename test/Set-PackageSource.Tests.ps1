@@ -40,4 +40,18 @@ Describe Set-PackageSource {
             $results.Trusted | Should -BeFalse
         }
     }
+
+    Context 'with pipeline' {
+        It 'should unregister <_> from Get-PackageSource' -ForEach 'Test' {
+            Get-PackageSource -Name $_ |
+            Set-PackageSource -Location TestDrive: -PassThru |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should unregister <_> from string' -ForEach 'Test' {
+            $_ |
+            Set-PackageSource -Location TestDrive: -PassThru |
+            Should -Not -BeNullOrEmpty
+        }
+    }
 }
