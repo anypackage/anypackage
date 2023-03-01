@@ -4,8 +4,11 @@ using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
 
 [PackageProvider('PowerShell')]
-class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
-    IInstallPackage, IPublishPackage, ISavePackage, IUninstallPackage, IGetSource, ISetSource {
+class PowerShellProvider : PackageProvider,
+    IFindPackage, IGetPackage,
+    IInstallPackage, IPublishPackage,
+    ISavePackage, IUninstallPackage, IUpdatePackage,
+    IGetSource, ISetSource {
     PowerShellProvider() : base('89d76409-f1b0-46cb-a881-b012be54aef5') { }
 
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
@@ -36,7 +39,9 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
     [void] GetPackage([PackageRequest] $request) {
         $this.ProviderInfo.Packages |
         Where-Object { $request.IsMatch($_.Name, $_.version) } |
-        Write-Package -Request $request
+        ForEach-Object {
+            $_ | Write-Package -Request $request -Source $_.Source
+        }
     }
 
     [void] InstallPackage([PackageRequest] $request) {
@@ -121,6 +126,37 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
             else {
                 $_
             }
+        }
+    }
+
+    [void] UpdatePackage([PackageRequest] $request) {
+        $getPackageParams = @{
+            Name = $request.Name
+            Provider = 'PowerShell'
+            ErrorAction = 'Ignore'
+        }
+
+        $findPackageParams = @{
+            Prerelease = $request.Prerelease
+            ErrorAction = 'Ignore'
+        }
+        
+        if ($request.Version) {
+            $findPackageParams['Version'] = $request.Version
+        }
+
+        if ($request.Source) {
+            $findPackageParams['Source'] = $request.Source
+        }
+
+        Get-Package @getPackageParams |
+        Select-Object -Property Name -Unique |
+        Find-Package @findPackageParams |
+        Get-Latest |
+        ForEach-Object { 
+            $this.ProviderInfo.Packages += $_
+
+            $_ | Write-Package -Request $request -Source $_.Source
         }
     }
 
