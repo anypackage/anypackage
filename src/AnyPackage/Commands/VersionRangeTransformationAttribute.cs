@@ -8,7 +8,7 @@ using NuGet.Versioning;
 
 namespace AnyPackage.Commands
 {
-    public class VersionRangeTransformationAttribute : ArgumentTransformationAttribute
+    public sealed class VersionRangeTransformationAttribute : ArgumentTransformationAttribute
     {
         public override object Transform(EngineIntrinsics engineIntrinsics, object inputData)
         {
@@ -38,8 +38,7 @@ namespace AnyPackage.Commands
 
                 try
                 {
-                    var versionRange = VersionRange.Parse(input);
-                    return versionRange;
+                    return VersionRange.Parse(input);
                 }
                 catch (Exception ex)
                 {
