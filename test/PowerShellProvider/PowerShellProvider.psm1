@@ -5,7 +5,7 @@ using namespace System.Collections.Generic
 
 [PackageProvider('PowerShell')]
 class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
-    IInstallPackage, IPublishPackage, ISavePackage, IGetSource, ISetSource {
+    IInstallPackage, IPublishPackage, ISavePackage, IUninstallPackage, IGetSource, ISetSource {
     PowerShellProvider() : base('89d76409-f1b0-46cb-a881-b012be54aef5') { }
 
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
@@ -108,6 +108,19 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
             Copy-Item -Path $path -Destination $request.Path
 
             $_ | Write-Package -Request $request -Source $_.Source
+        }
+    }
+
+    [void] UninstallPackage([PackageRequest] $request) {
+        $this.ProviderInfo.Packages = $this.ProviderInfo.Packages |
+        ForEach-Object {
+            if ($request.IsMatch($_.Name, $_.Version)) {
+                $_ |
+                Write-Package -Request $request -Source $_.Source
+            }
+            else {
+                $_
+            }
         }
     }
 
