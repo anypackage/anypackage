@@ -162,7 +162,16 @@ class PowerShellProvider : PackageProvider, IFindPackage, IGetPackage,
     }
 
     [void] UnregisterSource([SourceRequest] $sourceRequest) {
-
+        $this.ProviderInfo.Sources = $this.ProviderInfo.Sources |
+        ForEach-Object {
+            if ($sourceRequest.Name -eq $_.Name) {
+                $_ |
+                Write-Source -SourceRequest $sourceRequest
+            }
+            else {
+                $_
+            }
+        }
     }
 }
 
