@@ -1,4 +1,4 @@
-#requires -modules AnyPackage
+﻿#requires -modules AnyPackage
 
 Describe Set-PackageSource {
     BeforeAll {
@@ -18,7 +18,7 @@ Describe Set-PackageSource {
 
     Context 'with -Location parameter' {
         It 'should set location' -ForEach 'Temp:' {
-            $results = Set-PackageSource -Name Test -Location $_ -PassThru 
+            $results = Set-PackageSource -Name Test -Location $_ -PassThru
 
             $results | Should -Not -BeNullOrEmpty
             $results.Location | Should -Be $_
@@ -27,14 +27,14 @@ Describe Set-PackageSource {
 
     Context 'with -Trusted parameter' {
         It 'should be trusted' {
-            $results = Set-PackageSource -Name Test -Trusted -PassThru 
+            $results = Set-PackageSource -Name Test -Trusted -PassThru
 
             $results | Should -Not -BeNullOrEmpty
             $results.Trusted | Should -BeTrue
         }
 
         It 'should not be trusted' {
-            $results = Set-PackageSource -Name Test -Trusted:$false -PassThru 
+            $results = Set-PackageSource -Name Test -Trusted:$false -PassThru
 
             $results | Should -Not -BeNullOrEmpty
             $results.Trusted | Should -BeFalse

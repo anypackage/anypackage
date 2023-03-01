@@ -140,7 +140,7 @@ class PowerShellProvider : PackageProvider,
             Prerelease = $request.Prerelease
             ErrorAction = 'Ignore'
         }
-        
+
         if ($request.Version) {
             $findPackageParams['Version'] = $request.Version
         }
@@ -153,7 +153,7 @@ class PowerShellProvider : PackageProvider,
         Select-Object -Property Name -Unique |
         Find-Package @findPackageParams |
         Get-Latest |
-        ForEach-Object { 
+        ForEach-Object {
             $this.ProviderInfo.Packages += $_
 
             $_ | Write-Package -Request $request -Source $_.Source

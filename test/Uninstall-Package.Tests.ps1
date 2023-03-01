@@ -1,4 +1,4 @@
-#requires -modules AnyPackage
+﻿#requires -modules AnyPackage
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments',
     '',
@@ -21,7 +21,7 @@ Describe Uninstall-Package {
         BeforeEach {
             Install-Package -Name Apple, Banana
         }
-        
+
         It 'should uninstall <_> package' -ForEach 'Apple', @('Apple', 'Banana') {
             $results = Uninstall-Package -Name $_ -PassThru
 
@@ -58,5 +58,5 @@ Describe Uninstall-Package {
             Uninstall-Package -Name Apple -Version $_ -PassThru |
             Should -Not -BeNullOrEmpty
         }
-    }   
+    }
 }
