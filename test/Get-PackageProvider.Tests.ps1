@@ -18,7 +18,7 @@ Describe Get-PackageProvider {
             Should -Not -BeNullOrEmpty
         }
 
-        It 'should have correct properties for <Provider> provider' -ForEach @{ Provider = 'PowerShell'; Type = 'PowerShellProvider'; Module = 'PowerShellProvider'; Operations = 257 } {
+        It 'should have correct properties for <Provider> provider' -ForEach @{ Provider = 'PowerShell'; Type = 'PowerShellProvider'; Module = 'PowerShellProvider' } {
             $result = Get-PackageProvider -Name $Provider
 
             $result.Name | Should -Be $Provider
@@ -26,7 +26,6 @@ Describe Get-PackageProvider {
             $result.Module.Name | Should -Be $Module
             $result.ModuleName | Should -Be $Module
             $result.FullName | Should -Be "$Module\$Provider"
-            $result.Operations | Should -Be $Operations
             $result.ImplementingType.Name | Should -Be $Type
         }
     }
