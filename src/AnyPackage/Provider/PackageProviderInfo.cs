@@ -102,33 +102,6 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// Gets the package provider capabilities.
-        /// </summary>
-        public PackageProviderCapabilities Capabilities
-        {
-            get
-            {
-                if (!_capabilitiesRead)
-                {
-                    var type = this.ImplementingType;
-                    var attrs = type.GetCustomAttributes(typeof(PackageProviderAttribute), false);
-                    var packageProviderAttribute = attrs as PackageProviderAttribute[];
-
-                    if (packageProviderAttribute?.Length == 1)
-                    {
-                        // TODO: Change to either remove capabilities
-                        // or add logic to pull from attribute.
-                        _capabilities = PackageProviderCapabilities.None;
-
-                        _capabilitiesRead = true;
-                    }
-                }
-
-                return _capabilities;
-            }
-        }
-
-        /// <summary>
         /// Gets the package operations the provider supports.
         /// </summary>
         /// <remarks>
@@ -171,9 +144,7 @@ namespace AnyPackage.Provider
         private string _name = string.Empty;
         private string? _moduleName;
         private Guid _id;
-        private PackageProviderCapabilities _capabilities = PackageProviderCapabilities.None;
         private PackageProviderOperations _operations = PackageProviderOperations.None;
-        private bool _capabilitiesRead;
         private bool _operationsRead;
         private bool _nameRead;
 
@@ -203,8 +174,6 @@ namespace AnyPackage.Provider
             Module = providerInfo.Module;
             Priority = providerInfo.Priority;
             _id = providerInfo.Id;
-            _capabilities = providerInfo.Capabilities;
-            _capabilitiesRead = true;
             _operations = providerInfo.Operations;
             _operationsRead = true;
             _name = providerInfo.Name;
@@ -229,11 +198,6 @@ namespace AnyPackage.Provider
             providerInstance.ProviderInfo = this;
 
             return providerInstance;
-        }
-
-        internal bool HasCapability(PackageProviderCapabilities capabilities)
-        {
-            return Capabilities.HasFlag(capabilities);
         }
 
         internal bool HasOperation(PackageProviderOperations operations)
