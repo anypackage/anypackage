@@ -36,11 +36,6 @@ jobs:
           name: module
           path: ./module/
 
-      - name: Upload nupkg
-        uses: actions/upload-artifact@v3
-        with:
-          path: ./out/AnyPackage.*.nupkg
-
   Test:
     needs: Build
     strategy:
