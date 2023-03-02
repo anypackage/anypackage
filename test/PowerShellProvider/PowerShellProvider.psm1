@@ -109,7 +109,7 @@ class PowerShellProvider : PackageProvider,
         Find-Package @params |
         Get-Latest |
         ForEach-Object {
-            $path = Join-Path -Path $_.Source.Location -ChildPath "$($_.Name)-$($_.Version).json"
+            $path = Join-Path -Path $_.Source.Location -ChildPath ("$($_.Name)-$($_.Version).json").ToLower()
             Copy-Item -Path $path -Destination $request.Path
 
             $_ | Write-Package -Request $request -Source $_.Source
