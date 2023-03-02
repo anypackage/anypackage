@@ -160,6 +160,7 @@ namespace AnyPackage.Provider
         {
             _module = module;
             _moduleName = module.Name;
+            _moduleRead = true;
         }
 
         internal PackageProviderInfo(Type type, string moduleName) : this(type)
