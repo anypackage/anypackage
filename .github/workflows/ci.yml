@@ -62,8 +62,8 @@ jobs:
 
           Move-Item AnyPackage $path
 
-      - name: Test
-        uses: |
+      - name: Test Path
+        run: |
           Test-Path $HOME\Documents\PowerShell\Modules\AnyPackage\AnyPackage.psd1
           
           Get-Module AnyPackage -ListAvailable
