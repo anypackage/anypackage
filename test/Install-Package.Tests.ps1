@@ -71,6 +71,11 @@ Describe Install-Package {
             Select-Object -ExpandProperty Name -Unique |
             Should -Be $_
         }
+
+        It 'should throw with wildcards' -Foreach 'T*' {
+            { Install-Package -Name Apple -Source $_ } |
+            Should -Throw -ExpectedMessage "Cannot validate argument on parameter 'Source'. The parameter does not support wildcards."
+        }
     }
 
     Context 'with -Prerelease parameter' {
