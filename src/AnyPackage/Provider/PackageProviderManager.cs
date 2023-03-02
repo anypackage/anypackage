@@ -175,13 +175,13 @@ namespace AnyPackage.Provider
             return engine;
         }
 
-        private static PSModuleInfo? GetModuleInfo(string name)
+        internal static PSModuleInfo? GetModuleInfo(string? name)
         {
             var module = PowerShell.Create(RunspaceMode.CurrentRunspace)
                                    .AddCommand("Get-Module")
                                    .AddParameter("Name", name)
                                    .Invoke<PSModuleInfo>()
-                                   .First();
+                                   .FirstOrDefault();
 
             return module;
         }

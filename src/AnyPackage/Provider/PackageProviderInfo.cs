@@ -5,6 +5,7 @@
 using System;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
+using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Provider
 {
@@ -72,18 +73,24 @@ namespace AnyPackage.Provider
         /// </summary>
         // TODO: Figure out if will be supporting non-module shipped providers.
         // This will determine if this property is nullable or not.
-        public PSModuleInfo? Module { get; }
+        public PSModuleInfo? Module
+        {
+            get
+            {
+                if (!_moduleRead)
+                {
+                    _module = GetModuleInfo(_moduleName);
+                    _moduleRead = true;
+                }
+
+                return _module;
+            }
+        }
 
         /// <summary>
         /// Gets the package provider PowerShell module.
         /// </summary>
-        public string? ModuleName
-        {
-            get
-            {
-                return Module?.Name ?? _moduleName;
-            }
-        }
+        public string? ModuleName => Module?.Name ?? _moduleName;
 
         /// <summary>
         /// Gets the provider full name.
@@ -91,15 +98,9 @@ namespace AnyPackage.Provider
         /// <remarks>
         /// The provider full name is the module name and provider name.
         /// For example, AnyPackage\NuGet
-        /// If the module name is null return null.
+        /// If the module name is null returns the provider name.
         /// </remarks>
-        public string FullName
-        {
-            get
-            {
-                return $"{ModuleName}\\{Name}";
-            }
-        }
+        public string FullName => string.IsNullOrEmpty(_moduleName) ? Name : $"{_moduleName}\\{Name}";
 
         /// <summary>
         /// Gets the package operations the provider supports.
@@ -142,10 +143,12 @@ namespace AnyPackage.Provider
 
         private string _name = string.Empty;
         private string? _moduleName;
+        private PSModuleInfo? _module;
         private Guid _id;
         private PackageProviderOperations _operations = PackageProviderOperations.None;
         private bool _operationsRead;
         private bool _nameRead;
+        private bool _moduleRead;
 
         internal PackageProviderInfo(Type type)
         {
@@ -155,7 +158,8 @@ namespace AnyPackage.Provider
 
         internal PackageProviderInfo(Type type, PSModuleInfo module) : this(type)
         {
-            Module = module;
+            _module = module;
+            _moduleName = module.Name;
         }
 
         internal PackageProviderInfo(Type type, string moduleName) : this(type)
@@ -170,13 +174,14 @@ namespace AnyPackage.Provider
         protected PackageProviderInfo(PackageProviderInfo providerInfo)
         {
             ImplementingType = providerInfo.ImplementingType;
-            Module = providerInfo.Module;
             Priority = providerInfo.Priority;
             _id = providerInfo.Id;
             _operations = providerInfo.Operations;
             _operationsRead = true;
             _name = providerInfo.Name;
             _nameRead = true;
+            _module = providerInfo.Module;
+            _moduleRead = true;
             _moduleName = providerInfo.ModuleName;
         }
 
