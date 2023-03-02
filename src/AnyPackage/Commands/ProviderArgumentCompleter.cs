@@ -11,7 +11,7 @@ using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Commands
 {
-    public class ProviderArgumentCompleter : IArgumentCompleter
+    public sealed class ProviderArgumentCompleter : IArgumentCompleter
     {
         public IEnumerable<CompletionResult> CompleteArgument(string commandName,
                                                               string parameterName,

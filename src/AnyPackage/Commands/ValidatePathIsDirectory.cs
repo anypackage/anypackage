@@ -8,7 +8,7 @@ using System.Management.Automation;
 
 namespace AnyPackage.Commands
 {
-    public class ValidatePathIsDirectoryAttribute : ValidateArgumentsAttribute
+    public sealed class ValidatePathIsDirectoryAttribute : ValidateArgumentsAttribute
     {
         protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
         {

@@ -8,7 +8,7 @@ using System.Management.Automation;
 
 namespace AnyPackage.Commands
 {
-    public class ValidateNoWildcardsAttribute : ValidateArgumentsAttribute
+    public sealed class ValidateNoWildcardsAttribute : ValidateArgumentsAttribute
     {
         protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
         {
