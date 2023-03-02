@@ -120,7 +120,7 @@ jobs:
         run: Copy-Item ./module/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
 
       - name: .NET pack
-        run: dotnet pack --configuration Release
+        run: dotnet pack --configuration Release --no-build
 
       - name: Upload NuGet package
         uses: actions/upload-artifact@v3
