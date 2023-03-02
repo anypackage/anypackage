@@ -62,6 +62,12 @@ jobs:
 
           Move-Item AnyPackage $path
 
+      - name: Test
+        uses: |
+          Test-Path $HOME\Documents\PowerShell\Modules\AnyPackage\AnyPackage.psd1
+          
+          Get-Module AnyPackage -ListAvailable
+
       - name: Test with Pester
         run: |
           $ht = Import-PowerShellDataFile PesterSettings.psd1
