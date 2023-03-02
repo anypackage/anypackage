@@ -8,8 +8,12 @@ using System.Management.Automation;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The path is directory parameter validator.
+    /// </summary>
     public sealed class ValidatePathIsDirectoryAttribute : ValidateArgumentsAttribute
     {
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.validateargumentsattribute.validate</see>
         protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
         {
             if (File.Exists(arguments.ToString()))

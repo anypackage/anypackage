@@ -26,12 +26,22 @@ namespace AnyPackage.Commands.Internal
 
         private PackageRequest? _request;
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected virtual void SetRequest()
         {
             Request.DynamicParameters = DynamicParameters;
             Request.HasWriteObject = false;
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
+        /// <param name="name">Specifies the package name.</param>
+        /// <param name="version">Specifies the package version.</param>
+        /// <param name="source">Specifies the package source.</param>
+        /// <param name="trustSource">Specifies if the source should be trusted.</param>
         protected virtual void SetRequest(string name,
                                           VersionRange? version = null,
                                           string? source = null,
@@ -44,6 +54,11 @@ namespace AnyPackage.Commands.Internal
             Request.TrustSource = trustSource;
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
+        /// <param name="package">Specifies the package.</param>
+        /// <param name="trustSource">Specifies if the source should be trusted.</param>
         protected virtual void SetRequest(PackageInfo package, bool trustSource = false)
         {
             SetRequest();

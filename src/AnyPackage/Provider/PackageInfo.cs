@@ -86,8 +86,11 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// Returns the package name.
+        /// Returns a string of the package name.
         /// </summary>
+        /// <returns>
+        /// The package name.
+        /// </returns>
         public override string ToString() => Name;
 
         // TODO: Add set property methods to return new object with updated values.

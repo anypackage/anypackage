@@ -11,6 +11,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Update-Package command.
+    /// </summary>
     [Cmdlet(VerbsData.Update, "Package",
             SupportsShouldProcess = true,
             DefaultParameterSetName = Constants.NameParameterSet,
@@ -87,11 +90,17 @@ namespace AnyPackage.Commands
         [ValidateNotNullOrEmpty]
         public PackageInfo[] InputObject { get; set; } = Array.Empty<PackageInfo>();
 
+        /// <summary>
+        /// Instantiates the <c>UpdatePackageCommand</c> class.
+        /// </summary>
         public UpdatePackageCommand()
         {
             Operation = Update;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             if (ParameterSetName == Constants.NameParameterSet)
@@ -118,6 +127,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

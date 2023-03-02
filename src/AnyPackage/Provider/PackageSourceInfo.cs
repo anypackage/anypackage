@@ -31,7 +31,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets source metadata.
         /// </summary>
-        /// TODO: Change to ImmutableDictionary<string, object>
+        // TODO: Change to ImmutableDictionary<string, object>
         public Hashtable Metadata { get; }
 
         /// <summary>
@@ -62,11 +62,11 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// Returns package source name.
+        /// Returns a string of the source name.
         /// </summary>
-        public override string ToString()
-        {
-            return Name;
-        }
+        /// <returns>
+        /// The source name.
+        /// </returns>
+        public override string ToString() => Name;
     }
 }

@@ -11,6 +11,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Save-Package command.
+    /// </summary>
     [Cmdlet(VerbsData.Save, "Package",
             SupportsShouldProcess = true,
             ConfirmImpact = ConfirmImpact.Low,
@@ -98,11 +101,17 @@ namespace AnyPackage.Commands
         [ValidateNotNullOrEmpty]
         public PackageInfo[] InputObject { get; set; } = Array.Empty<PackageInfo>();
 
+        /// <summary>
+        /// Instantiates the <c>SavePackageCommand</c> class.
+        /// </summary>
         public SavePackageCommand()
         {
             Operation = Save;
         }
 
+        /// <summary>
+        /// Initializes the command.
+        /// </summary>
         protected override void BeginProcessing()
         {
             base.BeginProcessing();
@@ -113,6 +122,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             if (ParameterSetName == Constants.NameParameterSet)
@@ -139,6 +151,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

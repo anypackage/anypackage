@@ -10,6 +10,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Get-Package command.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "Package", HelpUri = "https://go.anypackage.dev/Get-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class GetPackageCommand : PackageCommandBase
@@ -45,11 +48,17 @@ namespace AnyPackage.Commands
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
         public override string Provider { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Instantiates the <c>GetPackageCommand</c> class.
+        /// </summary>
         public GetPackageCommand()
         {
             Operation = Get;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             var instances = GetInstances(Provider);
@@ -92,6 +101,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

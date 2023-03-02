@@ -11,6 +11,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Install-Package command.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Install, "Package",
             SupportsShouldProcess = true,
             DefaultParameterSetName = Constants.NameParameterSet,
@@ -88,11 +91,17 @@ namespace AnyPackage.Commands
         [ValidateNotNullOrEmpty]
         public PackageInfo[] InputObject { get; set; } = Array.Empty<PackageInfo>();
 
+        /// <summary>
+        /// Instantiates the <c>InstallPackageCommand</c> class.
+        /// </summary>
         public InstallPackageCommand()
         {
             Operation = Install;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             if (ParameterSetName == Constants.NameParameterSet)
@@ -119,6 +128,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

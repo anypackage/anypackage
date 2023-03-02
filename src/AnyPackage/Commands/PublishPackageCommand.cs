@@ -10,6 +10,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Publish-Package command.
+    /// </summary>
     [Cmdlet(VerbsData.Publish, "Package",
             SupportsShouldProcess = true,
             HelpUri = "https://go.anypackage.dev/Publish-Package")]
@@ -52,11 +55,17 @@ namespace AnyPackage.Commands
         [Parameter]
         public SwitchParameter PassThru { get; set; }
 
+        /// <summary>
+        /// Instantiates the <c>PublishPackageCommand</c> class.
+        /// </summary>
         public PublishPackageCommand()
         {
             Operation = Publish;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             if (!ShouldProcess(Path))

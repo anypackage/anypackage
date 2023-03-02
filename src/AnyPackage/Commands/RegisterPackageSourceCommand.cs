@@ -10,6 +10,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Register-Package command.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Register, "PackageSource",
             SupportsShouldProcess = true,
             ConfirmImpact = ConfirmImpact.Low,
@@ -35,7 +38,6 @@ namespace AnyPackage.Commands
         /// <summary>
         /// Gets or sets the source location.
         /// </summary>
-        /// <value></value>
         [Parameter(Mandatory = true,
             Position = 1,
             ParameterSetName = Constants.NameParameterSet,
@@ -71,11 +73,17 @@ namespace AnyPackage.Commands
         [Parameter]
         public SwitchParameter Force { get; set; }
 
+        /// <summary>
+        /// Instantiates the <c>RegisterPackageSourceCommand</c> class.
+        /// </summary>
         public RegisterPackageSourceCommand()
         {
             Operation = SetSource;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             if (!ShouldProcess(Name))
@@ -114,6 +122,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

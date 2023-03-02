@@ -57,12 +57,29 @@ namespace AnyPackage.Provider
 
         internal PackageRequest(PSCmdlet command) : base(command) { }
 
+        /// <summary>
+        /// Checks if the name satisfies the request.
+        /// </summary>
+        /// <param name="name">Specifies the name.</param>
+        /// <returns>
+        /// Returns true is the name is a wildcard match to the request.
+        /// </returns>
+        /// <remarks>
+        /// Case is ignored during comparison.
+        /// </remarks>
         public bool IsMatch(string name)
         {
             var wildcardPattern = WildcardPattern.Get(Name, WildcardOptions.IgnoreCase);
             return wildcardPattern.IsMatch(name);
         }
 
+        /// <summary>
+        /// Checks if the version satisfies the request.
+        /// </summary>
+        /// <param name="version">Specifies the version.</param>
+        /// <returns>
+        /// Returns true if the version satisfies the version range requirements.
+        /// </returns>
         public bool IsMatch(NuGetVersion version)
         {
             if (version.IsPrerelease && !Prerelease)
@@ -78,6 +95,14 @@ namespace AnyPackage.Provider
             return Version.Satisfies(version);
         }
 
+        /// <summary>
+        /// Checks if the package name and version satisfies the request.
+        /// </summary>
+        /// <param name="name">Specifies the name.</param>
+        /// <param name="version">Specifies the version.</param>
+        /// <returns>
+        /// Returns true if the name and version satisfies the request.
+        /// </returns>
         public bool IsMatch(string name, NuGetVersion version)
         {
             return IsMatch(name) && IsMatch(version);

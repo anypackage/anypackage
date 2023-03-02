@@ -8,8 +8,12 @@ using System.Management.Automation;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The no wildcards parameter validator.
+    /// </summary>
     public sealed class ValidateNoWildcardsAttribute : ValidateArgumentsAttribute
     {
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.validateargumentsattribute.validate</see>
         protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
         {
             var collection = arguments as IEnumerable;

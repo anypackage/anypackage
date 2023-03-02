@@ -10,6 +10,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Find-Package command.
+    /// </summary>
     [Cmdlet(VerbsCommon.Find, "Package", HelpUri = "https://go.anypackage.dev/Find-Package")]
     [OutputType(typeof(PackageInfo))]
     public sealed class FindPackageCommand : PackageCommandBase
@@ -59,11 +62,17 @@ namespace AnyPackage.Commands
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
         public override string Provider { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Instances the <c>FindPackageCommand</c> class.
+        /// </summary>
         public FindPackageCommand()
         {
             Operation = Find;
         }
 
+        /// <summary>
+        /// Initializes the command.
+        /// </summary>
         protected override void BeginProcessing()
         {
             base.BeginProcessing();
@@ -71,6 +80,9 @@ namespace AnyPackage.Commands
             Request.PassThru = true;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             var instances = GetInstances(Provider);
@@ -114,6 +126,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

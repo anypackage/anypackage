@@ -104,7 +104,6 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the package operations the provider supports.
         /// </summary>
-        /// <remarks>
         public PackageProviderOperations Operations
         {
             get
