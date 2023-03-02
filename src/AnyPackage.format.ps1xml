@@ -206,12 +206,6 @@
                                 <PropertyName>Trusted</PropertyName>
                             </ListItem>
                             <ListItem>
-                                <PropertyName>Registered</PropertyName>
-                            </ListItem>
-                            <ListItem>
-                                <PropertyName>Validated</PropertyName>
-                            </ListItem>
-                            <ListItem>
                                 <PropertyName>Metadata</PropertyName>
                             </ListItem>
                         </ListItems>
