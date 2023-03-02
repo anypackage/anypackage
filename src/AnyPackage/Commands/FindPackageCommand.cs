@@ -44,6 +44,7 @@ namespace AnyPackage.Commands
         /// </summary>
         [Parameter(ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
+        [ValidateNoWildcards]
         [Alias("Repository")]
         public string Source { get; set; } = string.Empty;
 

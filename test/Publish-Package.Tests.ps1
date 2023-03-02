@@ -55,5 +55,16 @@ Describe Publish-Package {
             $results | Should -Not -BeNullOrEmpty
             $results.Source.Name | Should -Be $_
         }
+
+        It 'should throw with wildcards' {
+            $publishParams = @{
+                Path     = (Join-Path -Path TestDrive: -ChildPath apple-4.0.json)
+                Provider = 'PowerShell'
+                Source   = 'T*'
+            }
+            
+            { Publish-Package @publishParams } |
+            Should -Throw -ExpectedMessage "Cannot validate argument on parameter 'Source'. The parameter does not support wildcards."
+        }
     }
 }

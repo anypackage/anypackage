@@ -49,6 +49,7 @@ namespace AnyPackage.Commands
         /// </summary>
         [Parameter(ParameterSetName = Constants.NameParameterSet)]
         [ValidateNotNullOrEmpty]
+        [ValidateNoWildcards]
         [Alias("Repository")]
         public string Source { get; set; } = string.Empty;
 

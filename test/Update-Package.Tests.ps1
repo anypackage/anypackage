@@ -84,6 +84,11 @@ Describe Update-Package {
             Select-Object -ExpandProperty Name -Unique |
             Should -Be $_
         }
+
+        It 'should throw with wildcards' -Foreach 'T*' {
+            { Update-Package -Source $_ } |
+            Should -Throw -ExpectedMessage "Cannot validate argument on parameter 'Source'. The parameter does not support wildcards."
+        }
     }
 
     Context 'with -Prerelease parameter' {
