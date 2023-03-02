@@ -38,6 +38,12 @@ Describe Publish-Package {
             $provider.Sources.Add([PSCustomObject]@{ Name = 'Test'; Location = $path; Trusted = $true })
         }
 
+        AfterAll {
+            if ($provider.Sources.Count -gt 1) {
+                $provider.Sources.RemoveAt($provider.Sources.Count - 1)
+            }
+        }
+
         It 'should publish to <_> source' -ForEach 'Test' {
             $publishParams = @{
                 Path     = (Join-Path -Path TestDrive: -ChildPath apple-4.0.json)

@@ -1,0 +1,162 @@
+name: CI
+
+defaults:
+  run:
+    shell: pwsh
+
+on:
+  push:
+    branches: [ main ]
+
+  pull_request:
+    branches: [ main ]
+
+  release:
+    types: [ published ]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: .NET Build
+        run: dotnet build --configuration Release
+
+      - name: Create module
+        run: |
+          New-Item module -ItemType Directory
+          $settings = Import-PowerShellDataFile ./BuildSettings.psd1
+          Copy-Item @settings
+
+      - name: Upload module
+        uses: actions/upload-artifact@v3
+        with:
+          name: module
+          path: ./module/
+
+  Test:
+    needs: Build
+    strategy:
+      matrix:
+          os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Download module
+        uses: actions/download-artifact@v3
+        with:
+          name: module
+          path: AnyPackage
+
+      - name: Move module
+        run: |
+          if ($IsWindows) {
+            $path = "$HOME\Documents\PowerShell\Modules"
+          } else {
+            $path = "$HOME/.local/share/powershell/Modules"
+          }
+
+          if (-not (Test-Path $path)) {
+            New-Item $path -ItemType Directory
+          }
+
+          Move-Item AnyPackage $path
+
+      - name: Test with Pester
+        run: |
+          $ht = Import-PowerShellDataFile PesterSettings.psd1
+          $config = New-PesterConfiguration $ht
+          Invoke-Pester -Configuration $config
+
+  Sign:
+    needs: Test
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Download module
+        uses: actions/download-artifact@v3
+        with:
+          name: module
+          path: module
+
+      - name: Import certificate
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.CERTIFICATE_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+          CERTIFICATE_PASSWORD_KEY_BASE64: ${{ secrets.CERTIFICATE_PASSWORD_KEY_BASE64 }}
+        run: |
+          [convert]::FromBase64String($env:CERTIFICATE_BASE64) | Set-Content -Path cert.pfx -AsByteStream
+          $key = [convert]::FromBase64String($env:CERTIFICATE_PASSWORD_KEY_BASE64)
+          $password = ConvertTo-SecureString $env:CERTIFICATE_PASSWORD -Key $key
+          Import-PfxCertificate cert.pfx -Password $password -CertStoreLocation Cert:\CurrentUser\My
+
+      - name: Sign files
+        run: |
+          $config = Import-PowerShellDataFile SignSettings.psd1
+          $config['Certificate'] = Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert
+          Set-Location .\module
+          Set-AuthenticodeSignature @config
+
+      - name: Create and sign catalog file
+        run: |
+          $config = Import-PowerShellDataFile SignSettings.psd1
+          $config['FilePath'] = 'AnyPackage.cat'
+          $config['Certificate'] = Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert
+          Set-Location .\module
+          New-FileCatalog $config['FilePath'] -CatalogVersion 2
+          Set-AuthenticodeSignature @config
+
+      - name: .NET Build
+        run: dotnet build --configuration Release
+
+      - name: Copy signed AnyPackage.dll to release directory
+        run: Copy-Item ./module/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
+
+      - name: .NET pack
+        run: dotnet pack --configuration Release --no-build
+
+      - name: Upload NuGet package
+        uses: actions/upload-artifact@v3
+        with:
+          name: nupkg
+          path: ./src/AnyPackage/bin/Release/*.nupkg
+
+      - name: Upload module
+        uses: actions/upload-artifact@v3
+        with:
+          name: module-signed
+          path: ./module/
+
+  Publish:
+    needs: Sign
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download NuGet package
+        uses: actions/download-artifact@v3
+        with:
+          name: nupkg
+          path: nupkg
+
+      - name: Download module
+        uses: actions/download-artifact@v3
+        with:
+          name: module-signed
+          path: '~/.local/share/powershell/Modules/AnyPackage'
+
+      - name: Publish NuGet package
+        env:
+          NUGET_ORG_KEY: ${{ secrets.NUGET_ORG_KEY }}
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key $env:NUGET_ORG_KEY
+
+      - name: Publish Module
+        env:
+          NUGET_KEY: ${{ secrets.NUGET_KEY }}
+        run: Publish-Module -Name AnyPackage -NuGetApiKey $env:NUGET_KEY
