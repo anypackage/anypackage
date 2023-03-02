@@ -161,7 +161,7 @@ namespace AnyPackage.Commands
                 }
             }
 
-            if (!Request.HasWriteObject)
+            if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name)) 
             {
                 var ex = new PackageNotFoundException(Request.Name);
                 var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, Request.Name);
