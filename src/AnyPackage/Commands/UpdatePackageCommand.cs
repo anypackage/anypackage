@@ -153,12 +153,6 @@ namespace AnyPackage.Commands
                     var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, Request.Name);
                     WriteError(er);
                 }
-
-                // Only update first package found.
-                if (Request.HasWriteObject)
-                {
-                    break;
-                }
             }
 
             if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name)) 
