@@ -35,6 +35,11 @@ Describe Update-Package {
             { Update-Package -Name $_ -ErrorAction Stop } |
             Should -Throw -ExpectedMessage "Package not found. (Package '$_')"
         }
+
+        It 'should not error on non-existent package with wildcard' -ForEach 'broke*' {
+            { Update-Package -Name $_ -ErrorAction Stop } |
+            Should -Not -Throw
+        }
     }
 
     Context 'with -Version parameter' {
