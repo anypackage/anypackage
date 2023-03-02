@@ -11,6 +11,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Uninstall-Package command.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Uninstall, "Package",
             SupportsShouldProcess = true,
             DefaultParameterSetName = Constants.NameParameterSet,
@@ -67,11 +70,17 @@ namespace AnyPackage.Commands
         [ValidateNotNullOrEmpty]
         public PackageInfo[] InputObject { get; set; } = Array.Empty<PackageInfo>();
 
+        /// <summary>
+        /// Instantiates the <c>UninstallPackageCommand</c> class.
+        /// </summary>
         public UninstallPackageCommand()
         {
             Operation = Uninstall;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             if (ParameterSetName == Constants.NameParameterSet)
@@ -97,6 +106,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

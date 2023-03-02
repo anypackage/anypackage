@@ -8,8 +8,12 @@ using NuGet.Versioning;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The NuGet version range parameter validator.
+    /// </summary>
     public sealed class VersionRangeTransformationAttribute : ArgumentTransformationAttribute
     {
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.argumenttransformationattribute.transform</see>
         public override object Transform(EngineIntrinsics engineIntrinsics, object inputData)
         {
             if (inputData is null)

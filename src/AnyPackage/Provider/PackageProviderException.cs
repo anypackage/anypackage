@@ -7,15 +7,36 @@ using System.Runtime.Serialization;
 
 namespace AnyPackage.Provider
 {
+    /// <summary>
+    /// The <c>PackageProviderException</c> class.
+    /// </summary>
     [Serializable]
     public class PackageProviderException : Exception
     {
+        /// <summary>
+        /// Instantiates the <c>PackageProviderException</c> class.
+        /// </summary>
         public PackageProviderException() { }
 
+        /// <summary>
+        /// Instantiates the <c>PackageProviderException</c> class.
+        /// </summary>
+        /// <param name="message">Specifies the message.</param>
         public PackageProviderException(string? message) : base(message) { }
 
+        /// <summary>
+        /// Instantiates the <c>PackageProviderException</c> class.
+        /// </summary>
+        /// <param name="message">Specifies the message.</param>
+        /// <param name="innerException">Specifies the inner exception.</param>
+        /// <returns></returns>
         public PackageProviderException(string? message, Exception? innerException) : base(message, innerException) { }
 
+        /// <summary>
+        /// Instantiates the <c>PackageProviderException</c> class.
+        /// </summary>
+        /// <param name="info">Serialized info.</param>
+        /// <param name="context">Streaming context.</param>
         protected PackageProviderException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }    
 }

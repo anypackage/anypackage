@@ -29,12 +29,15 @@ namespace AnyPackage.Provider
         {
             Cmdlet = command;
         }
-
+        
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.cmdlet.shouldcontinue</see>
         public bool ShouldContinue(string query, string caption) => Cmdlet.ShouldContinue(query, caption);
 
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.cmdlet.shouldcontinue</see>
         public bool ShouldContinue(string query, string caption, ref bool yesToAll, ref bool noToAll) =>
             Cmdlet.ShouldContinue(query, caption, ref yesToAll, ref noToAll);
 
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.cmdlet.shouldcontinue</see>
         public bool ShouldContinue(string query, string caption, bool hasSecurityImpact, ref bool yesToAll, ref bool noToAll) =>
             Cmdlet.ShouldContinue(query, caption, hasSecurityImpact, ref yesToAll, ref noToAll);
 

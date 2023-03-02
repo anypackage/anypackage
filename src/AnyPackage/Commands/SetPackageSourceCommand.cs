@@ -9,6 +9,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Set-PackageSource command.
+    /// </summary>
     [Cmdlet(VerbsCommon.Set, "PackageSource",
             SupportsShouldProcess = true,
             HelpUri = "https://go.anypackage.dev/Set-PackageSource")]
@@ -56,11 +59,17 @@ namespace AnyPackage.Commands
         [Parameter]
         public SwitchParameter PassThru { get; set; }
 
+        /// <summary>
+        /// Instantiates the <c>SetPackageSource</c> class.
+        /// </summary>
         public SetPackageSourceCommand()
         {
             Operation = SetSource;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             if (!ShouldProcess(Name))
@@ -112,6 +121,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

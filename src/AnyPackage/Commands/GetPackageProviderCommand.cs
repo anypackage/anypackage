@@ -11,6 +11,9 @@ using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Get-PackageProvider command.
+    /// </summary>
     [Cmdlet(VerbsCommon.Get, "PackageProvider", HelpUri = "https://go.anypackage.dev/Get-PackageProvider")]
     [OutputType(typeof(PackageProviderInfo))]
     public sealed class GetPackageProviderCommand : PSCmdlet
@@ -27,6 +30,9 @@ namespace AnyPackage.Commands
         [Alias("Provider")]
         public string[] Name { get; set; } = Array.Empty<string>();
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             if (Name.Length > 0)

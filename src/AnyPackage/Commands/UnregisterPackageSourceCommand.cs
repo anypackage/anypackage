@@ -9,6 +9,9 @@ using AnyPackage.Provider;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Unregister-PackageSource command.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Unregister, "PackageSource",
             SupportsShouldProcess = true,
             HelpUri = "https://go.anypackage.dev/Unregister-PackageSource")]
@@ -43,11 +46,17 @@ namespace AnyPackage.Commands
         [Parameter]
         public SwitchParameter PassThru { get; set; }
 
+        /// <summary>
+        /// Instantiates the <c>UnregisterPackageSourceCommand</c> class.
+        /// </summary>
         public UnregisterPackageSourceCommand()
         {
             Operation = SetSource;
         }
 
+        /// <summary>
+        /// Processes input.
+        /// </summary>
         protected override void ProcessRecord()
         {
             var instances = GetInstances(Provider);
@@ -99,6 +108,9 @@ namespace AnyPackage.Commands
             }
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected override void SetRequest()
         {
             base.SetRequest();

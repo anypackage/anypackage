@@ -9,15 +9,23 @@ using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The provider parameter validator.
+    /// </summary>
     public sealed class ValidateProviderAttribute : ValidateArgumentsAttribute
     {
         private PackageProviderOperations _operations;
 
+        /// <summary>
+        /// Instantiates the <c>ValidateProviderAttribute</c> class.
+        /// </summary>
+        /// <param name="operations">Specifies the package provider operation.</param>
         public ValidateProviderAttribute(PackageProviderOperations operations)
         {
             _operations = operations;
         }
 
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.validateargumentsattribute.validate</see>
         protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
         {
             var provider = arguments.ToString();

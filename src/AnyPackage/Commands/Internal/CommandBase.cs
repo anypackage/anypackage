@@ -35,6 +35,13 @@ namespace AnyPackage.Commands.Internal
         /// </summary>
         protected PackageProviderOperations Operation { get; set; }
 
+        /// <summary>
+        /// Returns an instance of an object that defines dynamic parameters.
+        /// </summary>
+        /// <returns>
+        /// This method should return an object with properties with parameter attributes or a <c>RuntimeDefinedParameterDictionary</c>.
+        /// </returns>
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.IDynamicParameters.GetDynamicParameters</see>
         public virtual object GetDynamicParameters()
         {
             if (!string.IsNullOrEmpty(Provider))
@@ -47,6 +54,9 @@ namespace AnyPackage.Commands.Internal
             return DynamicParameters!;
         }
 
+        /// <summary>
+        /// Initializes the command.
+        /// </summary>
         protected override void BeginProcessing()
         {
             var providers = GetProviders(Operation);
@@ -63,6 +73,13 @@ namespace AnyPackage.Commands.Internal
             }
         }
 
+        /// <summary>
+        /// Returns instances of a package provider.
+        /// </summary>
+        /// <param name="provider">Package provider name.</param>
+        /// <returns>
+        /// Returns instances of a package provider.
+        /// </returns>
         protected IEnumerable<PackageProvider> GetInstances(string provider)
         {
             if (!string.IsNullOrEmpty(provider))

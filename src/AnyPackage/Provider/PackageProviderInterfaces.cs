@@ -9,6 +9,13 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface IFindPackage
     {
+        /// <summary>
+        /// Finds packages with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested package is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void FindPackage(PackageRequest request);
     }
 
@@ -17,6 +24,13 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface IGetPackage
     {
+        /// <summary>
+        /// Gets packages with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested package is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void GetPackage(PackageRequest request);
     }
 
@@ -25,6 +39,13 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface IInstallPackage
     {
+        /// <summary>
+        /// Installs packages with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested package is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void InstallPackage(PackageRequest request);
     }
 
@@ -33,6 +54,13 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface IPublishPackage
     {
+        /// <summary>
+        /// Publishes packages with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested package is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void PublishPackage(PackageRequest request);
     }
 
@@ -41,6 +69,13 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface ISavePackage
     {
+        /// <summary>
+        /// Saves packages with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested package is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void SavePackage(PackageRequest request);
     }
 
@@ -49,6 +84,13 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface IUninstallPackage
     {
+        /// <summary>
+        /// Uninstalls packages with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested package is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void UninstallPackage(PackageRequest request);
     }
 
@@ -57,6 +99,13 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface IUpdatePackage
     {
+        /// <summary>
+        /// Updates packages with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested package is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void UpdatePackage(PackageRequest request);
     }
 
@@ -65,6 +114,13 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface IGetSource
     {
+        /// <summary>
+        /// Gets package sources with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested source is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void GetSource(SourceRequest request);
     }
 
@@ -75,8 +131,28 @@ namespace AnyPackage.Provider
     /// </summary>
     public interface ISetSource
     {
+        /// <summary>
+        /// Gets package sources with the specified request.
+        /// </summary>
+        /// <param name="request">Package request.</param>
         void RegisterSource(SourceRequest request);
+        
+        /// <summary>
+        /// Sets package sources with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested source is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void SetSource(SourceRequest request);
+
+        /// <summary>
+        /// Unregister a package source with the specified request.
+        /// </summary>
+        /// <remarks>
+        /// If the requested source is not found, no exception should be thrown.
+        /// </remarks>
+        /// <param name="request">Package request.</param>
         void UnregisterSource(SourceRequest request);
     }
 }

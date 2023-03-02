@@ -52,6 +52,12 @@ namespace AnyPackage.Provider
             VersionRange = versionRange;
         }
 
+        /// <summary>
+        /// Returns a string of the package name.
+        /// </summary>
+        /// <returns>
+        /// The package name.
+        /// </returns>
         public override string ToString() => Name;
     }
 }

@@ -11,8 +11,12 @@ using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Commands
 {
+    /// <summary>
+    /// The Provider parameter argument completer.
+    /// </summary>
     public sealed class ProviderArgumentCompleter : IArgumentCompleter
     {
+        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.iargumentcompleter.completeargument</see>
         public IEnumerable<CompletionResult> CompleteArgument(string commandName,
                                                               string parameterName,
                                                               string wordToComplete,

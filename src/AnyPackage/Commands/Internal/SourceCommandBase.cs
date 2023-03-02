@@ -25,12 +25,22 @@ namespace AnyPackage.Commands.Internal
 
         private SourceRequest? _request;
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         protected virtual void SetRequest()
         {
             Request.DynamicParameters = DynamicParameters;
             Request.HasWriteObject = false;
         }
 
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
+        /// <param name="name">Specifies the source name.</param>
+        /// <param name="location">Specifies the source location.</param>
+        /// <param name="trusted">Specifies if the source is trusted.</param>
+        /// <param name="force">Specifies if an existing source should be overwritten.</param>
         protected virtual void SetRequest(string name, string? location = null, bool? trusted = null, bool? force = null)
         {
             SetRequest();
@@ -38,16 +48,6 @@ namespace AnyPackage.Commands.Internal
             Request.Location = location;
             Request.Trusted = trusted;
             Request.Force = force;
-        }
-
-        protected virtual void SetRequest(PackageSourceInfo source)
-        {
-            SetRequest();
-            Request.Name = source.Name;
-            Request.Location = source.Location;
-            Request.Trusted = source.Trusted;
-            Request.ProviderInfo = source.Provider;
-            Request.Source = source;
         }
     }
 }
