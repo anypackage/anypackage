@@ -74,7 +74,7 @@ jobs:
 
   Sign:
     needs: Test
-    # if: github.event_name == 'release' && github.event.action == 'published'
+    if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
@@ -139,12 +139,22 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: ubuntu-latest
     steps:
+      - name: Download NuGet package
+        uses: actions/download-artifact@v3
+        with:
+          name: nupkg
+          path: nupkg
 
       - name: Download module
         uses: actions/download-artifact@v3
         with:
           name: module-signed
           path: '~/.local/share/powershell/Modules/AnyPackage'
+
+      - name: Publish NuGet package
+        env:
+          NUGET_ORG_KEY: ${{ secrets.NUGET_ORG_KEY }}
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key $env:NUGET_ORG_KEY
 
       - name: Publish Module
         env:
