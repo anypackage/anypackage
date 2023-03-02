@@ -60,13 +60,11 @@ jobs:
             $path = "$HOME/.local/share/powershell/Modules"
           }
 
-          Move-Item AnyPackage $path
+          if (-not (Test-Path $path)) {
+            New-Item $path -ItemType Directory
+          }
 
-      - name: Test Path
-        run: |
-          Test-Path $HOME\Documents\PowerShell\Modules\AnyPackage\AnyPackage.psd1
-          
-          Get-Module AnyPackage -ListAvailable
+          Move-Item AnyPackage $path
 
       - name: Test with Pester
         run: |
