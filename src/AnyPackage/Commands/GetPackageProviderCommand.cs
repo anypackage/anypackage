@@ -3,6 +3,7 @@
 // terms of the MIT license.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
@@ -31,6 +32,25 @@ namespace AnyPackage.Commands
         public string[] Name { get; set; } = Array.Empty<string>();
 
         /// <summary>
+        /// Gets or sets if available providers are returned. 
+        /// </summary>
+        [Parameter]
+        public SwitchParameter ListAvailable { get; set; }
+
+        private List<PackageProviderInfo> _availableProviders = new List<PackageProviderInfo>();
+
+        /// <summary>
+        /// Initializes the command.
+        /// </summary>
+        protected override void BeginProcessing()
+        {
+            if (ListAvailable)
+            {
+                _availableProviders = GetAvailableProviders();
+            }
+        }
+
+        /// <summary>
         /// Processes input.
         /// </summary>
         protected override void ProcessRecord()
@@ -38,10 +58,16 @@ namespace AnyPackage.Commands
             if (Name.Length > 0)
             {
                 List<PackageProviderInfo> provider;
-                
+
                 foreach (var name in Name)
                 {
-                    provider = GetProviders(name).ToList();
+                    if (ListAvailable)
+                    {
+                        provider = _availableProviders.Where(x => x.IsMatch(name)).ToList();
+                    }
+                    else {
+                        provider = GetProviders(name).ToList();
+                    }
 
                     if (provider.Count > 0)
                     {
@@ -55,10 +81,63 @@ namespace AnyPackage.Commands
                     }
                 }
             }
+            else if (ListAvailable)
+            {
+                WriteObject(_availableProviders, true);
+            }
             else
             {
                 WriteObject(GetProviders(), true);
             }
+        }
+
+        private List<PackageProviderInfo> GetAvailableProviders()
+        {
+            var modules = PowerShell
+                          .Create()
+                          .AddCommand("Get-Module")
+                          .AddParameter("ListAvailable")
+                          .Invoke<PSModuleInfo>()
+                          .AsEnumerable();
+
+            List<PackageProviderInfo> providerInfos = new List<PackageProviderInfo>();
+
+            foreach (var module in modules)
+            {
+                var privateData = module.PrivateData as Hashtable;
+
+                if (privateData is null) { continue; }
+                
+                if (privateData.ContainsKey("AnyPackage"))
+                {
+                    var anyPackage = privateData["AnyPackage"] as Hashtable;
+
+                    if (anyPackage is null) { continue; }
+
+                    if (anyPackage.ContainsKey("Providers"))
+                    {
+                        IEnumerable? providers = null;
+                        
+                        if (anyPackage["Providers"] is string)
+                        {
+                            providers = new object[] { anyPackage["Providers"] };
+                        }
+                        else if (anyPackage["Providers"] is Array)
+                        {
+                            providers = anyPackage["Providers"] as Array;
+                        }
+
+                        if (providers is null) { continue; }
+
+                        foreach (var provider in providers)
+                        {
+                            providerInfos.Add(new PackageProviderInfo(provider.ToString(), module));
+                        }
+                    }
+                }
+            }
+
+            return providerInfos;
         }
     }
 }

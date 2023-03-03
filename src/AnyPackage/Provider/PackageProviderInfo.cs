@@ -156,6 +156,16 @@ namespace AnyPackage.Provider
             ImplementingType = type;
         }
 
+        internal PackageProviderInfo(string name, PSModuleInfo module)
+        {
+            _name = name;
+            _nameRead = true;
+            _module = module;
+            _moduleName = module.Name;
+            _moduleRead = true;
+            ImplementingType = null!;
+        }
+
         internal PackageProviderInfo(Type type, PSModuleInfo module) : this(type)
         {
             _module = module;
