@@ -80,7 +80,7 @@ namespace AnyPackage.Commands
                             WriteObject(provider, true);
                         }
                     }
-                    else
+                    else if (!WildcardPattern.ContainsWildcardCharacters(name))
                     {
                         var e = new PackageProviderNotFoundException(name);
                         var err = new ErrorRecord(e, "PackageProviderNotFoundError", ErrorCategory.ObjectNotFound, name);

@@ -23,6 +23,16 @@ Describe Get-PackageProvider {
             Should -Not -BeNullOrEmpty
         }
 
+        It 'should error with non-existent package' -ForEach 'broke' {
+            { Get-PackageProvider -Name $_ -ErrorAction Stop } |
+            Should -Throw -ExpectedMessage "Package provider not found. (Provider '$_')"
+        }
+
+        It 'should not error with wildcard non-existent package' -ForEach 'broke*' {
+            { Get-PackageProvider -Name $_ -ErrorAction Stop } |
+            Should -Not -Throw
+        }
+
         It 'should have correct properties for <Provider> provider' -ForEach @{ Provider = 'PowerShell'; Type = 'PowerShellProvider'; Module = 'PowerShellProvider' } {
             $result = Get-PackageProvider -Name $Provider
 
