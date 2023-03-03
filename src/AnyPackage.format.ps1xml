@@ -129,6 +129,9 @@
                         <Width>20</Width>
                     </TableColumnHeader>
                     <TableColumnHeader>
+                        <Width>7</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
                         <Width>8</Width>
                     </TableColumnHeader>
                     <TableColumnHeader>
@@ -141,10 +144,61 @@
                                 <PropertyName>Name</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
+                                <PropertyName>Version</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
                                 <PropertyName>Priority</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>Operations</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>Default</Name>
+            <ViewSelectedBy>
+                <TypeName>PackageProviderInfoGrouping</TypeName>
+            </ViewSelectedBy>
+            <GroupBy>
+                <Label>Directory</Label>
+                <ScriptBlock>
+                    Split-Path -Parent $_.Module.Path |
+                    ForEach-Object {
+                        if ([version]::TryParse((Split-Path $_ -Leaf), [ref] $null)) {
+                            Split-Path -Parent $_
+                        } else {
+                            $_
+                        }
+                    } |
+                    Split-Path -Parent
+                </ScriptBlock>
+            </GroupBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader>
+                        <Width>20</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Width>7</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Width>30</Width>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>Name</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Version</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Module</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

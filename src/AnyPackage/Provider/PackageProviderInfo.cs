@@ -103,6 +103,11 @@ namespace AnyPackage.Provider
         public string FullName => string.IsNullOrEmpty(_moduleName) ? Name : $"{_moduleName}\\{Name}";
 
         /// <summary>
+        /// Gets the package provider version using the module's version.
+        /// </summary>
+        public Version? Version => Module?.Version;
+
+        /// <summary>
         /// Gets the package operations the provider supports.
         /// </summary>
         public PackageProviderOperations Operations
@@ -154,6 +159,16 @@ namespace AnyPackage.Provider
         {
             ValidateType(type);
             ImplementingType = type;
+        }
+
+        internal PackageProviderInfo(string name, PSModuleInfo module)
+        {
+            _name = name;
+            _nameRead = true;
+            _module = module;
+            _moduleName = module.Name;
+            _moduleRead = true;
+            ImplementingType = null!;
         }
 
         internal PackageProviderInfo(Type type, PSModuleInfo module) : this(type)

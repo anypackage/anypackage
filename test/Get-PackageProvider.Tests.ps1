@@ -1,5 +1,10 @@
 ﻿#requires -modules AnyPackage
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments',
+    '',
+    Justification = 'Does not work with Pester scopes.')]
+param()
+
 Describe Get-PackageProvider {
     BeforeAll {
         Import-Module (Join-Path -Path $PSScriptRoot -ChildPath PowerShellProvider)
@@ -27,6 +32,37 @@ Describe Get-PackageProvider {
             $result.ModuleName | Should -Be $Module
             $result.FullName | Should -Be "$Module\$Provider"
             $result.ImplementingType.Name | Should -Be $Type
+        }
+    }
+
+    Context 'with -ListAvailable parameter' {
+        BeforeAll {
+            $beforeModulePath = $env:PSModulePath
+            
+            if ($IsWindows) {
+                $env:PSModulePath += ";$PSScriptRoot"
+            }
+            else {
+                $env:PSModulePath += ":$PSScriptRoot"
+            }
+        }
+
+        AfterAll {
+            $env:PSModulePath = $beforeModulePath
+        }
+        
+        It 'should return results' {
+            Get-PackageProvider -ListAvailable |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should return <_> provider' -ForEach 'PowerShell', 'P*', '*' {
+            $results = Get-PackageProvider -Name $_ -ListAvailable
+
+            $results | Should -Not -BeNullOrEmpty
+            $results |
+            Select-Object -ExpandProperty Name -Unique |
+            Should -BeLike $_
         }
     }
 
