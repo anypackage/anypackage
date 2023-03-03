@@ -71,7 +71,14 @@ namespace AnyPackage.Commands
 
                     if (provider.Count > 0)
                     {
-                        WriteObject(provider, true);
+                        if (ListAvailable)
+                        {
+                            WriteAvailable(provider);
+                        }
+                        else
+                        {
+                            WriteObject(provider, true);
+                        }
                     }
                     else
                     {
@@ -83,7 +90,7 @@ namespace AnyPackage.Commands
             }
             else if (ListAvailable)
             {
-                WriteObject(_availableProviders, true);
+                WriteAvailable(_availableProviders);
             }
             else
             {
@@ -97,8 +104,7 @@ namespace AnyPackage.Commands
                           .Create()
                           .AddCommand("Get-Module")
                           .AddParameter("ListAvailable")
-                          .Invoke<PSModuleInfo>()
-                          .AsEnumerable();
+                          .Invoke<PSModuleInfo>();
 
             List<PackageProviderInfo> providerInfos = new List<PackageProviderInfo>();
 
@@ -138,6 +144,16 @@ namespace AnyPackage.Commands
             }
 
             return providerInfos;
+        }
+
+        private void WriteAvailable(IEnumerable<PackageProviderInfo> providers)
+        {
+            foreach (var provider in providers)
+            {
+                var info = new PSObject(provider);
+                info.TypeNames.Insert(0, "PackageProviderInfoGrouping");
+                WriteObject(info);
+            }
         }
     }
 }

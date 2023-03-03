@@ -103,6 +103,11 @@ namespace AnyPackage.Provider
         public string FullName => string.IsNullOrEmpty(_moduleName) ? Name : $"{_moduleName}\\{Name}";
 
         /// <summary>
+        /// Gets the package provider version using the module's version.
+        /// </summary>
+        public Version? Version => Module?.Version;
+
+        /// <summary>
         /// Gets the package operations the provider supports.
         /// </summary>
         public PackageProviderOperations Operations
