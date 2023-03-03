@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2023-03-03
+
+### Added
+
+- Add ValidateNoWildcards to parameters (#21)
+- Add xml code documentation (#48)
+- Add validate no wildcards to source parameter (#49)
+- Add Get-PackageProvider -ListAvailable parameter (#52)
+
+### Fixed
+
+- Fix analyzer issues (#28)
+- Fix Update-Package error with wildcards (#42)
+- Fix Update-Package not calling all providers (#43)
+- Fix module property (#50)
+- Fix Get-PackageProvider error when using wildcards (#53)
+
 ## [0.1.2] - 2023-02-04
 
 ### Fixed
@@ -33,7 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[Unreleased]: https://github.com/AnyPackage/AnyPackage/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/AnyPackage/AnyPackage/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.2.0
 [0.1.2]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.1.2
 [0.1.1]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.1.1
 [0.1.0]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.1.0

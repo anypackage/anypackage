@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.1.2</Version>
+    <Version>0.2.0</Version>
     <Authors>ThomasNieto</Authors>
     <Copyright>© 2023 Thomas Nieto. All rights reserved.</Copyright>
     <Description>A PowerShell universal package manager.</Description>
