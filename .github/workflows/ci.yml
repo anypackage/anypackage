@@ -154,7 +154,7 @@ jobs:
       - name: Publish NuGet package
         env:
           NUGET_ORG_KEY: ${{ secrets.NUGET_ORG_KEY }}
-        run: dotnet nuget push ./nupkg/*.nupkg --api-key $env:NUGET_ORG_KEY
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key $env:NUGET_ORG_KEY --source https://api.nuget.org/v3/index.json
 
       - name: Publish Module
         env:
