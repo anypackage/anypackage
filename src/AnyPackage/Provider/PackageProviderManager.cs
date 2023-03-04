@@ -3,7 +3,6 @@
 // terms of the MIT license.
 
 using System;
-using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
@@ -15,7 +14,21 @@ namespace AnyPackage.Provider
     /// </summary>
     public static class PackageProviderManager
     {
-        private static ImmutableDictionary<Guid, PackageProviderInfo> Providers = ImmutableDictionary<Guid, PackageProviderInfo>.Empty;
+        [ThreadStatic]
+        private static Dictionary<Guid, PackageProviderInfo>? t_providers;
+
+        private static Dictionary<Guid, PackageProviderInfo> Providers
+        {
+            get
+            {
+                if (t_providers is null)
+                {
+                   t_providers = new Dictionary<Guid, PackageProviderInfo>();
+                }
+
+                return t_providers;
+            }
+        }
 
         /// <summary>
         /// Register a package provider.
@@ -154,7 +167,7 @@ namespace AnyPackage.Provider
             var instance = provider.CreateInstance();
             instance.Initialize();
 
-            Providers = Providers.Add(instance.Id, instance.ProviderInfo);
+            Providers.Add(instance.Id, instance.ProviderInfo);
         }
 
         private static void CleanProvider(PackageProviderInfo provider)
@@ -162,7 +175,7 @@ namespace AnyPackage.Provider
             var instance = provider.CreateInstance();
             instance.Clean();
 
-            Providers = Providers.Remove(provider.Id);
+            Providers.Remove(provider.Id);
         }
 
         private static EngineIntrinsics GetExecutionContext()
