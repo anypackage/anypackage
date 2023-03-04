@@ -31,7 +31,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets source metadata.
         /// </summary>
-        // TODO: Change to ImmutableDictionary<string, object>
+        // TODO: Change to IDictionary<string, object>
         public Hashtable Metadata { get; }
 
         /// <summary>
