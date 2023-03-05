@@ -7,7 +7,6 @@
     Copyright = '(c) 2023 Thomas Nieto. All rights reserved.'
     Description = 'Use various package managers with a single set of commands.'
     PowerShellVersion = '5.1'
-    RequiredAssemblies = @('NuGet.Versioning.dll', 'System.Collections.Immutable.dll')
     FormatsToProcess = @('AnyPackage.format.ps1xml')
     FunctionsToExport = @()
     AliasesToExport = @()

@@ -125,4 +125,30 @@ Describe Get-PackageProvider {
             Should -Not -BeNullOrEmpty
         }
     }
+
+    Context 'inside runspace' {
+        BeforeAll {
+            $scriptBlock = {
+                Import-Module (Join-Path -Path $using:PSScriptRoot -ChildPath PowerShellProvider)
+                Get-PackageProvider
+            }
+        }
+        
+        It 'should return results with Foreach-Object -Parallel' -ForEach 10 {
+            1..$_ |
+            ForEach-Object -UseNewRunspace -Parallel $scriptBlock |
+            Should -HaveCount $_
+        }
+
+        It 'should return results with ThreadJob' -ForEach 10 {
+            for ($i = 0; $i -lt $_; $i++) {
+                Start-ThreadJob -ScriptBlock $scriptBlock
+            }
+            
+            Get-Job |
+            Wait-Job |
+            Receive-Job |
+            Should -HaveCount $_
+        }
+    }
 }

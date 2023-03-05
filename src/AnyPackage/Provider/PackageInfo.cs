@@ -37,7 +37,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets additional metadata about the package.
         /// </summary>
-        // TODO: Change to an immutable dictionary IDictionary<string,object>
+        // TODO: Change to an IDictionary<string,object>
         public Hashtable Metadata { get; }
 
         /// <summary>
@@ -50,7 +50,6 @@ namespace AnyPackage.Provider
         /// </summary>
         public IEnumerable<PackageDependency> Dependencies => _dependencies;
 
-        // TODO: Change to ImmutableList<PackageDependency>
         private List<PackageDependency> _dependencies;
 
         /// <summary>
