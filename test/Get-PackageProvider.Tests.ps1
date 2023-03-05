@@ -136,7 +136,7 @@ Describe Get-PackageProvider {
         
         It 'should return results with Foreach-Object -Parallel' -ForEach 10 {
             1..$_ |
-            ForEach-Object -Parallel $scriptBlock |
+            ForEach-Object -UseNewRunspace -Parallel $scriptBlock |
             Should -HaveCount $_
         }
 
