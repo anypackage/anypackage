@@ -101,7 +101,7 @@ namespace AnyPackage.Commands
         private List<PackageProviderInfo> GetAvailableProviders()
         {
             var modules = PowerShell
-                          .Create()
+                          .Create(RunspaceMode.CurrentRunspace)
                           .AddCommand("Get-Module")
                           .AddParameter("ListAvailable")
                           .Invoke<PSModuleInfo>();
