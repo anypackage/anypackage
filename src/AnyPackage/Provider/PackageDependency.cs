@@ -24,6 +24,14 @@ namespace AnyPackage.Provider
         public VersionRange VersionRange { get; } = VersionRange.AllStable;
 
         /// <summary>
+        /// Gets the package provider.
+        /// </summary>
+        /// <remarks>
+        /// If null the current provider should be used.
+        /// </remarks>
+        public PackageProviderInfo? Provider { get; }
+
+        /// <summary>
         /// Constructs a new instance of the <c>PackageDependency</c> class.
         /// </summary>
         /// <param name="name">Package name.</param>
@@ -50,6 +58,37 @@ namespace AnyPackage.Provider
             }
 
             VersionRange = versionRange;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of the <c>PackageDependency</c> class.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="provider">Package provider.</param>
+        public PackageDependency(string name, PackageProviderInfo provider) : this(name)
+        {
+            if (provider is null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+
+            Provider = provider;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of the <c>PackageDependency</c> class.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="versionRange">Version range.</param>
+        /// <param name="provider">Package provider.</param>
+        public PackageDependency(string name, VersionRange versionRange, PackageProviderInfo provider) : this(name, versionRange)
+        {
+            if (provider is null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+
+            Provider = provider;
         }
 
         /// <summary>
