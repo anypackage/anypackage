@@ -43,7 +43,21 @@ namespace AnyPackage.Provider
 
         internal SourceRequest(PSCmdlet command) : base(command) { }
 
-        // TODO: Add IsMatch methods
+        /// <summary>
+        /// Checks if the name satisfies the request.
+        /// </summary>
+        /// <returns>
+        /// Returns true if the name is a wildcard match to the request.
+        /// </returns>
+        /// <remarks>
+        /// Case is ignored during comparison.
+        /// </remarks>
+        /// <param name="name">Specifies the name.</param>
+        public bool IsMatch(string name)
+        {
+            var wildcardPattern = WildcardPattern.Get(Name, WildcardOptions.IgnoreCase);
+            return wildcardPattern.IsMatch(name);
+        }
 
         /// <summary>
         /// Writes the package source to the pipeline.
