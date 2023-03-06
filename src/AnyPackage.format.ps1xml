@@ -163,7 +163,6 @@
                 <TypeName>PackageProviderInfoGrouping</TypeName>
             </ViewSelectedBy>
             <GroupBy>
-                <Label>Directory</Label>
                 <ScriptBlock>
                     Split-Path -Parent $_.Module.Path |
                     ForEach-Object {
@@ -175,6 +174,7 @@
                     } |
                     Split-Path -Parent
                 </ScriptBlock>
+                <Label>Directory</Label>
             </GroupBy>
             <TableControl>
                 <TableHeaders>
