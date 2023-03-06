@@ -214,13 +214,15 @@
             <TableControl>
                 <TableHeaders>
                     <TableColumnHeader>
-                        <Width>30</Width>
+                        <Width>20</Width>
                     </TableColumnHeader>
                     <TableColumnHeader>
                         <Width>50</Width>
                     </TableColumnHeader>
                     <TableColumnHeader>
                         <Width>7</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
                     </TableColumnHeader>
                 </TableHeaders>
                 <TableRowEntries>
@@ -234,6 +236,9 @@
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>Trusted</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Provider</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>
@@ -258,6 +263,9 @@
                             </ListItem>
                             <ListItem>
                                 <PropertyName>Trusted</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>Provider</PropertyName>
                             </ListItem>
                             <ListItem>
                                 <PropertyName>Metadata</PropertyName>
