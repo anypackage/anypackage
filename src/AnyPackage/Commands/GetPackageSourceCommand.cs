@@ -26,6 +26,7 @@ namespace AnyPackage.Commands
             ValueFromPipelineByPropertyName = true)]
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
+        [ArgumentCompleter(typeof(SourceArgumentCompleter))]
         public string[] Name { get; set; } = new string[] { "*" };
 
         /// <summary>

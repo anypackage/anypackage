@@ -29,6 +29,7 @@ namespace AnyPackage.Commands
             ValueFromPipelineByPropertyName = true)]
         [ValidateNotNullOrEmpty]
         [ValidateNoWildcards]
+        [ArgumentCompleter(typeof(SourceArgumentCompleter))]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
