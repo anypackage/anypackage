@@ -51,6 +51,7 @@ namespace AnyPackage.Commands
         [Parameter(ParameterSetName = Constants.NameParameterSet)]
         [ValidateNotNullOrEmpty]
         [ValidateNoWildcards]
+        [ArgumentCompleter(typeof(SourceArgumentCompleter))]
         [Alias("Repository")]
         public string Source { get; set; } = string.Empty;
 
