@@ -8,8 +8,9 @@
     <Description>A PowerShell universal package manager.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://anypackage.dev</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/AnyPackage/AnyPackage.git</RepositoryUrl> 
-    <RepositoryType>git</RepositoryType> 
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/AnyPackage/AnyPackage.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -19,6 +20,10 @@
   <ItemGroup>
     <PackageReference Include="NuGet.Versioning" Version="6.4.0" />
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>
