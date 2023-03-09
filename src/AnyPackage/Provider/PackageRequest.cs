@@ -60,13 +60,13 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Checks if the name satisfies the request.
         /// </summary>
-        /// <param name="name">Specifies the name.</param>
         /// <returns>
-        /// Returns true is the name is a wildcard match to the request.
+        /// Returns true if the name is a wildcard match to the request.
         /// </returns>
         /// <remarks>
         /// Case is ignored during comparison.
         /// </remarks>
+        /// <param name="name">Specifies the name.</param>
         public bool IsMatch(string name)
         {
             var wildcardPattern = WildcardPattern.Get(Name, WildcardOptions.IgnoreCase);
