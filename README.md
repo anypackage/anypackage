@@ -1,30 +1,14 @@
 # AnyPackage
 
-`PackageManagement` is being retired by Microsoft.
-The role it played is still needed by the community.
-`PackageManagement` was unable deliver the promise of a universal package manager due to the lack of package providers.
+`AnyPackage` is a spiritual successor to `PackageManagement` also known as `OneGet`.
 
-`AnyPackage` is a spiritual successor to `PackageManagement`.
-The project will make use of the lessons learned and use design principles from `PowerShellGet` v3.
+`AnyPackage` provides the ability to use multiple package management systems through a single set of commands.
 
 For more information on what `AnyPackage` is and how to use it refer to [about_AnyPackage](https://anypackage.dev/docs/reference/about_AnyPackage).
 
-## PowerShellGet
-
-`AnyPackage` will support managing packages from `PowerShellGet` v3.
-The goal of this project is to be a superset of `PowerShellGet` v3 by supporting `PowerShellGet` package types and other package management systems. For more information about `PowerShellGet` v3 refer to [PowerShell/PowerShell-RFC#185](https://github.com/PowerShell/PowerShell-RFC/pull/185).
-
 ## PackageManagement
 
-This project will not be compatible with `PackageManagement` or existing package providers.
-
-## Motivation
-
-```none
-As a PowerShell user,
-I want to learn a single set of cmdlets to manage multiple package managers,
-so I can be more productive.
-```
+`AnyPackage` is not a fork of `PackageManagement` as such does not support any `PackageManagement` providers.
 
 ## Package Providers
 
@@ -32,17 +16,15 @@ so I can be more productive.
 Each package management system creates a package provider which implements the `AnyPackage` interface.
 Package providers are shipped in a PowerShell module. For more information on how to use a provider refer to [about_Package_Providers](https://anypackage.dev/docs/reference/about_Package_Providers).
 
+### Provider Catalog
+
+To view the available package providers go to the [Provider Catalog](https://anypackage.dev/docs/provider-catalog).
+
 ### Creating a Provider
 
 To learn how to create a package provider refer to [about_Creating_Package_Providers](https://anypackage.dev/docs/reference/about_Creating_Package_Providers).
 
-## Core Providers
+## Documentation
 
-`AnyPackage` will implement the following providers to match the current scope of `PackageManagement`.
-The providers will not be shipped with `AnyPackage` and will separate modules to better handle updating.
-
-- [PowerShellGet v3](https://github.com/AnyPackage/AnyPackage.PowerShellGet)
-- MSI
-- MSU
-- Programs
-- NuGet
+Documentation is located on the [anypackage.dev](https://anypackage.dev) website.
+The source is located in the [AnyPackage-Docs](https://github.com/AnyPackage/AnyPackage-Docs) repository.
