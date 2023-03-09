@@ -5,7 +5,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation;
 using NuGet.Versioning;
 
@@ -51,7 +50,7 @@ namespace AnyPackage.Provider
         internal bool PassThru { get; set; }
         internal bool TrustSource { get; set; }
 
-        private Dictionary<Guid, List<string>> _trustedRepositories = new Dictionary<Guid, List<string>>();
+        private Dictionary<Guid, HashSet<string>> _trustedRepositories = new Dictionary<Guid, HashSet<string>>();
         private bool _yesToAll;
         private bool _noToAll;
 
@@ -118,13 +117,12 @@ namespace AnyPackage.Provider
         public bool PromptUntrustedSource(string source)
         {
             if (TrustSource) { return true; }
-            if (_yesToAll) { return _yesToAll; }
-            if (_noToAll) { return _noToAll; }
+            if (_yesToAll) { return true; }
+            if (_noToAll) { return false; }
 
-            // TODO: Consider changing to current culture case insensitive comparison.
             if (ProviderInfo is not null &&
                 _trustedRepositories.TryGetValue(ProviderInfo.Id, out var trustedRepositories) &&
-                trustedRepositories.Where(x => x.ToLower() == source.ToLower()).Count() > 0)
+                trustedRepositories.Contains(source))
             {
                 return true;
             }
@@ -139,8 +137,12 @@ namespace AnyPackage.Provider
                 noToAll: ref _noToAll
             );
 
-            if (ProviderInfo is not null && trusted)
+            if (trusted && ProviderInfo is not null)
             {
+                if (!_trustedRepositories.ContainsKey(ProviderInfo.Id)) {
+                    _trustedRepositories[ProviderInfo.Id] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                }
+
                 _trustedRepositories[ProviderInfo.Id].Add(source);
             }
 
