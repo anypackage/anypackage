@@ -14,8 +14,8 @@ namespace AnyPackage.Provider
     public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, IEquatable<PackageVersion>
     {
         private static readonly Regex s_semVer = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$");
-        private static readonly Regex s_multiNumericSuffix = new Regex(@"^(?<version>[\d\.]+\d+)(?<suffix>\w+)$");
-        private static readonly Regex s_multiNumeric = new Regex(@"^[\d\.]+$");
+        private static readonly Regex s_multiNumericSuffix = new Regex(@"^(?<version>((\d+\.)+\d+))(?<suffix>[a-zA-Z]\w*)$");
+        private static readonly Regex s_multiNumeric = new Regex(@"^(\d+\.)+\d+$");
 
         /// <summary>
         /// Gets the version.
@@ -25,27 +25,27 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the dot separated first position.
         /// </summary>
-        public int? Major => _digits.Count > 0 ? _digits[0] : null;
+        public int? Major => _parts.Count > 0 ? _parts[0] : null;
 
         /// <summary>
         /// Gets the dot separated second position.
         /// </summary>
-        public int? Minor => _digits.Count > 1 ? _digits[1] : null;
+        public int? Minor => _parts.Count > 1 ? _parts[1] : null;
 
         /// <summary>
         /// Gets the dot separated third position.
         /// </summary>
-        public int? Patch => _digits.Count > 2 ? _digits[2] : null;
+        public int? Patch => _parts.Count > 2 ? _parts[2] : null;
 
         /// <summary>
         /// Gets the dot separated fourth position. 
         /// </summary>
-        public int? Revision => _digits.Count > 3 ? _digits[3] : null;
+        public int? Revision => _parts.Count > 3 ? _parts[3] : null;
 
         /// <summary>
         /// Gets all the dot separated values.
         /// </summary>
-        public IEnumerable<int> Digits => _digits;
+        public IEnumerable<int> Parts => _parts;
 
         /// <summary>
         /// Gets if the version is a prerelease.
@@ -65,7 +65,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets if there
         /// </summary>
-        public bool HasMetadata => _metadata.Count > 0;
+        public bool HasBuildMetadata => _buildMetadata.Count > 0;
 
         /// <summary>
         /// Gets the dot separated values of the prerelease string.
@@ -75,16 +75,16 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the dot separated values of the build metadata string.
         /// </summary>
-        public IEnumerable<string> BuildMetadata => _metadata;
+        public IEnumerable<string> BuildMetadata => _buildMetadata;
 
         /// <summary>
         /// Gets the version scheme.
         /// </summary>
         public PackageVersionScheme Scheme { get; }
 
-        private List<int> _digits = new List<int>();
+        private List<int> _parts = new List<int>();
         private List<string> _prerelease = new List<string>();
-        private List<string> _metadata = new List<string>();
+        private List<string> _buildMetadata = new List<string>();
 
         /// <summary>
         /// Constructs an instance of the <c>PackageVersion</c> class.
@@ -107,21 +107,61 @@ namespace AnyPackage.Provider
             if (s_semVer.IsMatch(version))
             {
                 match = s_semVer.Match(version);
-                SetDigits(match.Groups[1].Value);
-                // TODO: Set prerelease and metadata
+                _parts.Add(int.Parse(match.Groups[1].Value));
+                _parts.Add(int.Parse(match.Groups[2].Value));
+                _parts.Add(int.Parse(match.Groups[3].Value));
+
+                if (match.Groups[4].Success)
+                {
+                    var prerelease = match.Groups[4].Value;
+
+                    if (prerelease.Contains("."))
+                    {
+                        foreach (var section in prerelease.Split('.'))
+                        {
+                            _prerelease.Add(section);
+                        }
+                    }
+                    else
+                    {
+                        _prerelease.Add(prerelease);
+                    }
+                }
+
+                if (match.Groups[5].Success)
+                {
+                    var buildMetadata = match.Groups[5].Value;
+
+                    if (buildMetadata.Contains("."))
+                    {
+                        foreach (var section in buildMetadata.Split('.'))
+                        {
+                            _buildMetadata.Add(section);
+                        }
+                    }
+                    else
+                    {
+                        _buildMetadata.Add(buildMetadata);
+                    }
+                }
+
                 Scheme = PackageVersionScheme.SemanticVersion;
             }
             else if (s_multiNumericSuffix.IsMatch(version))
             {
                 match = s_multiNumericSuffix.Match(version);
-                SetDigits(match.Groups[1].Value);
-                Suffix = match.Groups[2].Value;
+                SetDigits(match.Groups[match.Groups.Count - 2].Value);
+                Suffix = match.Groups[match.Groups.Count - 1].Value;
                 Scheme = PackageVersionScheme.MultiPartNumericSuffix;
             }
             else if (s_multiNumeric.IsMatch(version))
             {
                 match = s_multiNumeric.Match(version);
                 SetDigits(match.Captures[0].Value);
+                Scheme = PackageVersionScheme.MultiPartNumeric;
+            }
+            else
+            {
                 Scheme = PackageVersionScheme.AlphaNumeric;
             }
 
@@ -130,9 +170,9 @@ namespace AnyPackage.Provider
 
         private void SetDigits(string abc)
         {
-            foreach (var digit in abc.Split('.'))
+            foreach (var digit in input.Split('.'))
             {
-                _digits.Add(int.Parse(digit));
+                _parts.Add(int.Parse(digit));
             }
         }
 
