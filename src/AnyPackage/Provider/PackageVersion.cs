@@ -225,9 +225,18 @@ namespace AnyPackage.Provider
         /// <returns>
         /// <c>true</c> if the <c>version</c> parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
-        public static bool TryParse(string version, out PackageVersion result)
+        public static bool TryParse(string version, out PackageVersion? result)
         {
-            throw new NotImplementedException();
+            try
+            {
+                result = new PackageVersion(version);
+                return true;
+            }
+            catch
+            {
+                result = null;
+                return false;
+            }
         }
 
         /// <summary>
