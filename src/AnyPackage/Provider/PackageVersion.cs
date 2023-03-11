@@ -191,6 +191,20 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
+        /// Implicit cast operator for casing <c>Version</c> to <c>PackageVersion</c>.
+        /// </summary>
+        /// <param name="version">The Version object to convert to PackageVersion.</param>
+        /// <returns>The corresponding PackageVersion object.</returns>
+        public static implicit operator PackageVersion(Version version) => new PackageVersion(version);
+
+        /// <summary>
+        /// Explicit cast operator for casting <c>PackageVersion</c> to <c>Version</c>.
+        /// </summary>
+        /// <param name="version">The PackageVersion object to convert to Version.</param>
+        /// <returns>The corresponding Version object.</returns>
+        public static explicit operator Version(PackageVersion version) => version.ToVersion();
+
+        /// <summary>
         /// Converts the string representation of a version to an equivalent <c>PackageVersion</c> object.
         /// </summary>
         /// <param name="version">A string that contains a version to convert.</param>
