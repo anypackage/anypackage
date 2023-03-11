@@ -168,7 +168,21 @@ namespace AnyPackage.Provider
             Version = version;
         }
 
-        private void SetDigits(string abc)
+        /// <summary>
+        /// Constructs an instance of the <c>PackageVersion</c> class.
+        /// </summary>
+        /// <param name="version">The version.</param>
+        public PackageVersion(Version version)
+        {
+            Version = version.ToString();
+            _parts.Add(version.Major);
+            _parts.Add(version.Minor);
+
+            if (version.Build != -1) { _parts.Add(version.Build); }
+            if (version.Revision != -1) { _parts.Add(version.Revision); }
+        }
+
+        private void SetDigits(string input)
         {
             foreach (var digit in input.Split('.'))
             {
@@ -200,6 +214,35 @@ namespace AnyPackage.Provider
         public static bool TryParse(string version, out PackageVersion result)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// A Version representation of <c>PackageVersion</c>.
+        /// </summary>
+        /// <returns>A Version representation of <c>PackageVersion</c>.</returns>
+        public Version ToVersion()
+        {
+            if (Scheme == PackageVersionScheme.AlphaNumeric)
+            {
+                throw new InvalidOperationException("Cannot convert alpha-numeric versions to Version type.");
+            }
+
+            if (_parts.Count > 4)
+            {
+                throw new InvalidOperationException("Version contains more than four parts.");
+            }
+
+            if (IsPrerelease)
+            {
+                throw new InvalidOperationException("Version contains prerelease.");
+            }
+
+            if (HasBuildMetadata)
+            {
+                throw new InvalidOperationException("Version contains build metadata.");
+            }
+
+            return System.Version.Parse(Version);
         }
 
         public int CompareTo(object obj)
