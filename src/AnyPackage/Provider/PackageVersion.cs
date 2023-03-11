@@ -190,6 +190,18 @@ namespace AnyPackage.Provider
             }
         }
 
+        public static bool operator ==(PackageVersion left, PackageVersion right) => left.Equals(right);
+
+        public static bool operator !=(PackageVersion left, PackageVersion right) => !left.Equals(right);
+
+        public static bool operator <(PackageVersion left, PackageVersion right) => left.CompareTo(right) < 0;
+
+        public static bool operator >(PackageVersion left, PackageVersion right) => left.CompareTo(right) > 0;
+
+        public static bool operator <=(PackageVersion left, PackageVersion right) => left.CompareTo(right) <= 0;
+
+        public static bool operator >=(PackageVersion left, PackageVersion right) => left.CompareTo(right) >= 0;
+
         /// <summary>
         /// Implicit cast operator for casing <c>Version</c> to <c>PackageVersion</c>.
         /// </summary>
@@ -268,22 +280,101 @@ namespace AnyPackage.Provider
             return System.Version.Parse(Version);
         }
 
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
-            throw new NotImplementedException();
+            var version = obj as PackageVersion;
+            return CompareTo(version);
         }
 
-        public int CompareTo(PackageVersion other)
+        /// <summary>
+        /// Compares this object to the other for version sorting.
+        /// </summary>
+        /// <param name="other">The version to compare against.</param>
+        /// <returns></returns>
+        public int CompareTo(PackageVersion? other)
         {
-            throw new NotImplementedException();
+            if (other is null) { return 1; }
+
+            if (Scheme == PackageVersionScheme.AlphaNumeric && other.Scheme == PackageVersionScheme.AlphaNumeric)
+            {
+                return Version.CompareTo(other.Version);
+            }
+            else if (Scheme == PackageVersionScheme.AlphaNumeric)
+            {
+                // Alpha-numeric goes after numerical based versioning.
+                return 1;
+            }
+            else if (other.Scheme == PackageVersionScheme.AlphaNumeric)
+            {
+                // Numerical based versioning goes before alpha-numeric.
+                return -1;
+            }
+
+            var count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
+            int a, b;
+
+            for (var i = 0; i < count; i++)
+            {
+                a = i < _parts.Count ? _parts[i] : 0;
+                b = i < other._parts.Count ? other._parts[i] : 0;
+
+                if (a != b)
+                {
+                    return a.CompareTo(b);
+                }
+            }
+
+            if (HasSuffix && other.HasSuffix)
+            {
+                return Suffix!.CompareTo(other.Suffix);
+            }
+            else if (HasSuffix)
+            {
+                return 1;
+            }
+            else if (other.HasSuffix)
+            {
+                return -1;
+            }
+
+            if (IsPrerelease && other.IsPrerelease)
+            {
+                count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
+                string x, y;
+
+                for (var i = 0; i < count; i++)
+                {
+                    x = i < _prerelease.Count ? _prerelease[i] : "";
+                    y = i < other._prerelease.Count ? other._prerelease[i] : "";
+
+                    if (x != y)
+                    {
+                        return x.CompareTo(y);
+                    }
+                }
+            }
+            else if (IsPrerelease)
+            {
+                return -1;
+            }
+            else if (other.IsPrerelease)
+            {
+                return 1;
+            }
+
+            return 0;
         }
 
-        public bool Equals(PackageVersion other)
+        public bool Equals(PackageVersion? other)
         {
-            throw new NotImplementedException();
+            return Version.Equals(other?.Version);
         }
 
-        public override bool Equals(object obj) => Version.Equals(obj);
+        public override bool Equals(object? obj)
+        {
+            var version = obj as PackageVersion;
+            return Equals(version);
+        }
 
         public override int GetHashCode() => Version.GetHashCode();
 
