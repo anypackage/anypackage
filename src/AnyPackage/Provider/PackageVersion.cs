@@ -14,8 +14,8 @@ namespace AnyPackage.Provider
     public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, IEquatable<PackageVersion>
     {
         private static readonly Regex s_semVer = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$");
-        private static readonly Regex s_multiNumericSuffix = new Regex(@"^(?<version>((\d+\.)+\d+))(?<suffix>[a-zA-Z]\w*)$");
-        private static readonly Regex s_multiNumeric = new Regex(@"^(\d+\.)+\d+$");
+        private static readonly Regex s_multiPartNumericSuffix = new Regex(@"^(?<version>((\d+\.)+\d+))(?<suffix>[a-zA-Z]\w*)$");
+        private static readonly Regex s_multiPartNumeric = new Regex(@"^(\d+\.)+\d+$");
 
         /// <summary>
         /// Gets the version.
@@ -147,16 +147,16 @@ namespace AnyPackage.Provider
 
                 Scheme = PackageVersionScheme.SemanticVersion;
             }
-            else if (s_multiNumericSuffix.IsMatch(version))
+            else if (s_multiPartNumericSuffix.IsMatch(version))
             {
-                match = s_multiNumericSuffix.Match(version);
+                match = s_multiPartNumericSuffix.Match(version);
                 SetDigits(match.Groups[match.Groups.Count - 2].Value);
                 Suffix = match.Groups[match.Groups.Count - 1].Value;
                 Scheme = PackageVersionScheme.MultiPartNumericSuffix;
             }
-            else if (s_multiNumeric.IsMatch(version))
+            else if (s_multiPartNumeric.IsMatch(version))
             {
-                match = s_multiNumeric.Match(version);
+                match = s_multiPartNumeric.Match(version);
                 SetDigits(match.Captures[0].Value);
                 Scheme = PackageVersionScheme.MultiPartNumeric;
             }
