@@ -198,51 +198,63 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// 
+        /// Implements the == (equality) operator.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
+        /// <param name="left">LHS package version.</param>
+        /// <param name="right">RHS package version.</param>
+        /// <returns>
+        /// Returns true if the left hand side version is equal to the right hand side.
+        /// </returns>
         public static bool operator ==(PackageVersion left, PackageVersion right) => left.Equals(right);
 
         /// <summary>
-        /// 
+        /// Implements the != (inequality) operator.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
+        /// <param name="left">LHS package version.</param>
+        /// <param name="right">RHS package version.</param>
+        /// <returns>
+        /// Returns true if the left hand side version is not equal to the right hand side.
+        /// </returns>
         public static bool operator !=(PackageVersion left, PackageVersion right) => !left.Equals(right);
 
         /// <summary>
-        /// 
+        /// Implements the &lt; (less-than) operator.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
+        /// <param name="left">LHS package version.</param>
+        /// <param name="right">RHS package version.</param>
+        /// <returns>
+        /// Returns true if the left hand side is lower version than right hand side.
+        /// </returns>
         public static bool operator <(PackageVersion left, PackageVersion right) => left.CompareTo(right) < 0;
 
         /// <summary>
-        /// 
+        /// Implements the &gt; (greater-than) operator.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
+        /// <param name="left">LHS package version.</param>
+        /// <param name="right">RHS package version.</param>
+        /// <returns>
+        /// Returns true if the left hand side version is lower than right hand side.
+        /// </returns>
         public static bool operator >(PackageVersion left, PackageVersion right) => left.CompareTo(right) > 0;
 
         /// <summary>
-        /// 
+        /// Implements the &lt;= (less-than or equal to) operator. 
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
+        /// <param name="left">LHS package version.</param>
+        /// <param name="right">RHS package version.</param>
+        /// <returns>
+        /// Returns true if the left hand side version is lower or equal to right hand side.
+        /// </returns>
         public static bool operator <=(PackageVersion left, PackageVersion right) => left.CompareTo(right) <= 0;
 
         /// <summary>
-        /// 
+        /// Implements the &gt;= (greater-than or equals to) operator.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
+        /// <param name="left">LHS package version.</param>
+        /// <param name="right">RHS package version.</param>
+        /// <returns>
+        /// Returns true if the left hand side version is higher or equal to right hand side.
+        /// </returns>
         public static bool operator >=(PackageVersion left, PackageVersion right) => left.CompareTo(right) >= 0;
 
         /// <summary>
