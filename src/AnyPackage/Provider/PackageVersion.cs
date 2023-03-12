@@ -151,14 +151,14 @@ namespace AnyPackage.Provider
             else if (s_multiPartNumericSuffix.IsMatch(version))
             {
                 match = s_multiPartNumericSuffix.Match(version);
-                SetDigits(match.Groups[match.Groups.Count - 2].Value);
+                SetParts(match.Groups[match.Groups.Count - 2].Value);
                 Suffix = match.Groups[match.Groups.Count - 1].Value;
                 Scheme = PackageVersionScheme.MultiPartNumericSuffix;
             }
             else if (s_multiPartNumeric.IsMatch(version))
             {
                 match = s_multiPartNumeric.Match(version);
-                SetDigits(match.Captures[0].Value);
+                SetParts(match.Captures[0].Value);
                 Scheme = PackageVersionScheme.MultiPartNumeric;
             }
             else if (s_integer.IsMatch(version))
@@ -189,11 +189,11 @@ namespace AnyPackage.Provider
             if (version.Revision != -1) { _parts.Add(version.Revision); }
         }
 
-        private void SetDigits(string input)
+        private void SetParts(string input)
         {
-            foreach (var digit in input.Split('.'))
+            foreach (var part in input.Split('.'))
             {
-                _parts.Add(int.Parse(digit));
+                _parts.Add(int.Parse(part));
             }
         }
 
