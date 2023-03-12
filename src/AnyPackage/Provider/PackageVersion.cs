@@ -197,16 +197,52 @@ namespace AnyPackage.Provider
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator ==(PackageVersion left, PackageVersion right) => left.Equals(right);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator !=(PackageVersion left, PackageVersion right) => !left.Equals(right);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator <(PackageVersion left, PackageVersion right) => left.CompareTo(right) < 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator >(PackageVersion left, PackageVersion right) => left.CompareTo(right) > 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator <=(PackageVersion left, PackageVersion right) => left.CompareTo(right) <= 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator >=(PackageVersion left, PackageVersion right) => left.CompareTo(right) >= 0;
 
         /// <summary>
@@ -350,12 +386,10 @@ namespace AnyPackage.Provider
             }
             else if (Scheme == PackageVersionScheme.AlphaNumeric)
             {
-                // Alpha-numeric goes after numerical based versioning.
                 return 1;
             }
             else if (other.Scheme == PackageVersionScheme.AlphaNumeric)
             {
-                // Numerical based versioning goes before alpha-numeric.
                 return -1;
             }
 
@@ -414,21 +448,37 @@ namespace AnyPackage.Provider
             return 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(PackageVersion? other)
         {
             return Version.Equals(other?.Version);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object? obj)
         {
             var version = obj as PackageVersion;
             return Equals(version);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode() => Version.GetHashCode();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString() => Version;
-
-        // TODO: Override operators
     }
 }
