@@ -287,6 +287,19 @@ namespace AnyPackage.Provider
             return System.Version.Parse(Version);
         }
 
+        /// <summary>
+        /// Compares this object to the other for version comparison.
+        /// </summary>
+        /// <remarks>
+        /// Refer to <c>CompareTo(PackageVersion other)</c> for
+        /// version comparison rules.
+        /// </remarks>
+        /// <param name="obj">The version to compare against</param>
+        /// <returns>
+        /// Returns -1 when this object is a lower version than the other.
+        /// Returns 0 when this object and other object are equal.
+        /// Returns 1 for this object is a higher version than the other.
+        /// </returns>
         public int CompareTo(object? obj)
         {
             var version = obj as PackageVersion;
@@ -294,10 +307,39 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// Compares this object to the other for version sorting.
+        /// Compares this object to the other for version comparison.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The sorting is by first comparing if both versions are using
+        /// the alpha-numeric version scheme. If so then it compares using
+        /// string comparison. If one of the two versions is alpha-numeric
+        /// it be considered higher compared to the numeric version.
+        /// </para>
+        /// <para>
+        /// Numeric sorting takes place after it is determined neither is
+        /// alpha-numeric. It will compare each version part numerically until
+        /// one part is different. The version sorting is able to compare different
+        /// version lengths (1.0 vs 1.0.0 or 1.0.0.1). If no difference is found
+        /// it will then compare suffix and prerelease.
+        /// </para>
+        /// <para>
+        /// Versions with a suffix are considered higher than their non-suffix
+        /// counterparts (1.0 is lower than 1.0a). If both versions contain
+        /// a suffix they will compared using the string comparison.
+        /// </para>
+        /// <para>
+        /// Versions with a prerelease are considered lower than their non-prerelease
+        /// counterparts (1.0 is higher than 1.0-alpha). If both versions contain a
+        /// prerelease they will compared using the rules defined in semver 2.0.
+        /// </para>
+        /// </remarks>
         /// <param name="other">The version to compare against.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Returns -1 when this object is a lower version than the other.
+        /// Returns 0 when this object and other object are equal.
+        /// Returns 1 for this object is a higher version than the other.
+        /// </returns>
         public int CompareTo(PackageVersion? other)
         {
             if (other is null) { return 1; }
