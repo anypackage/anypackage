@@ -461,20 +461,20 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// 
+        /// Provides an Equals implementation.
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
+        /// <param name="other">Input object.</param>
+        /// <returns>Returns true if the objects are equal.</returns>
         public bool Equals(PackageVersion? other)
         {
             return Version.Equals(other?.Version);
         }
 
         /// <summary>
-        /// 
+        /// Provides an Equals implementation.
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <param name="obj">Input object.</param>
+        /// <returns>Returns true if the objects are equal.</returns>
         public override bool Equals(object? obj)
         {
             var version = obj as PackageVersion;
@@ -482,15 +482,15 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// 
+        /// Provides a GetHashCode implementation.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns the hash code for Version property.</returns>
         public override int GetHashCode() => Version.GetHashCode();
 
         /// <summary>
-        /// 
+        /// Provides a ToString implementation.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns the Version property.</returns>
         public override string ToString() => Version;
     }
 }
