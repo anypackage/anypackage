@@ -16,6 +16,7 @@ namespace AnyPackage.Provider
         private static readonly Regex s_semVer = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$");
         private static readonly Regex s_multiPartNumericSuffix = new Regex(@"^(?<version>((\d+\.)+\d+))(?<suffix>[a-zA-Z]\w*)$");
         private static readonly Regex s_multiPartNumeric = new Regex(@"^(\d+\.)+\d+$");
+        private static readonly Regex s_integer = new Regex(@"^\d+$");
 
         /// <summary>
         /// Gets the version.
@@ -159,6 +160,12 @@ namespace AnyPackage.Provider
                 match = s_multiPartNumeric.Match(version);
                 SetDigits(match.Captures[0].Value);
                 Scheme = PackageVersionScheme.MultiPartNumeric;
+            }
+            else if (s_integer.IsMatch(version))
+            {
+                match = s_integer.Match(version);
+                _parts.Add(int.Parse(match.Captures[0].Value));
+                Scheme = PackageVersionScheme.Integer;
             }
             else
             {
