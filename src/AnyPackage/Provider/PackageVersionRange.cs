@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace AnyPackage.Provider
@@ -12,7 +11,7 @@ namespace AnyPackage.Provider
     /// <summary>
     /// The <c>PackageVersionRange</c>.
     /// </summary>
-    public class PackageVersionRange
+    public sealed class PackageVersionRange
     {
         /// <summary>
         /// Gets the minimum package version.
@@ -121,7 +120,7 @@ namespace AnyPackage.Provider
             MinVersion = minVersion;
             MaxVersion = maxVersion;
             IsMinInclusive = isMinInclusive;
-            IsMaxInclusive = IsMaxInclusive;
+            IsMaxInclusive = isMaxInclusive;
         }
 
         /// <summary>
@@ -131,7 +130,7 @@ namespace AnyPackage.Provider
         /// <returns>
         /// An object that is equivalent to the version range specified in the versionRange parameter.
         /// </returns>
-        public PackageVersionRange Parse(string versionRange) => new PackageVersionRange(versionRange);
+        public static PackageVersionRange Parse(string versionRange) => new PackageVersionRange(versionRange);
 
         /// <summary>
         /// Tries to convert the string representation of a
@@ -146,7 +145,7 @@ namespace AnyPackage.Provider
         /// <returns>
         /// <c>true</c> if the <c>version</c> parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
-        public bool TryParse(string versionRange, out PackageVersionRange? result)
+        public static bool TryParse(string versionRange, out PackageVersionRange? result)
         {
             try
             {
@@ -171,9 +170,9 @@ namespace AnyPackage.Provider
             {
                 throw new ArgumentNullException(nameof(version));
             }
-            
+
             var satisfies = true;
-            
+
             if (MinVersion is not null)
             {
                 if (IsMinInclusive)
@@ -213,9 +212,9 @@ namespace AnyPackage.Provider
             {
                 throw new ArgumentNullException(nameof(version));
             }
-            
+
             var satisfies = true;
-            
+
             if (MinVersion is not null)
             {
                 if (IsMinInclusive)
@@ -260,23 +259,25 @@ namespace AnyPackage.Provider
                 }
                 else
                 {
-                    return string.Format(CultureInfo.InvariantCulture, "({0},)", MinVersion);
+                    return string.Format("({0},)", MinVersion);
                 }
             }
             else if (MinVersion is null && MaxVersion is not null)
             {
                 if (IsMaxInclusive)
                 {
-                    return string.Format(CultureInfo.InvariantCulture, "(,{0}]", MaxVersion);
+                    return string.Format("(,{0}]", MaxVersion);
                 }
                 else
                 {
-                    return string.Format(CultureInfo.InvariantCulture, "(,{0})", MaxVersion);
+                    return string.Format("(,{0})", MaxVersion);
                 }
             }
-            else if (MinVersion is not null && MaxVersion is not null && MinVersion == MaxVersion)
+            else if (MinVersion is not null
+                     && MaxVersion is not null
+                     && MinVersion == MaxVersion)
             {
-                return string.Format(CultureInfo.InvariantCulture, "[{0}]", MinVersion);
+                return string.Format("[{0}]", MinVersion);
             }
             else
             {
@@ -284,7 +285,7 @@ namespace AnyPackage.Provider
                 var lhs = IsMinInclusive ? '[' : '(';
                 var rhs = IsMaxInclusive ? ']' : ')';
 
-                return string.Format(CultureInfo.InvariantCulture, "{0}{1},{2}{3}", lhs, MinVersion, MaxVersion, rhs);
+                return string.Format("{0}{1},{2}{3}", lhs, MinVersion, MaxVersion, rhs);
             }
         }
     }
