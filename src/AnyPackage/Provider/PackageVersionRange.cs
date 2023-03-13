@@ -34,14 +34,58 @@ namespace AnyPackage.Provider
         public bool IsMaxInclusive { get; }
 
         /// <summary>
+        /// Constructs a version range using a PowerShell modified NuGet package version range syntax.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// To maintain type conversion compatibility with the PowerShell cmdlet parameters
+        /// the default behavior is to change min version syntax into required.
+        /// For example, <c>1.0</c> would become <c>[1.0]</c> since PowerShell users expect the version
+        /// to be the exact version supplied instead of NuGet syntax of min version inclusive.
+        /// To pass a min version inclusive use <c>[1.0,]</c> syntax.
+        /// </para>
+        /// This behavior is only used when constructing the version range.
+        /// The standard NuGet syntax is used elsewhere.
+        /// If you need to use NuGet syntax use the constructor with useNuGetSyntax parameter.
+        /// </remarks>
+        /// <param name="versionRange">NuGet package version formatted string.</param>
+        /// <exception cref="ArgumentNullException">Version range is null.</exception>
+        /// <exception cref="ArgumentException">Version range is not in correct format.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Min version is higher than max version.</exception>
+        public PackageVersionRange(string versionRange) : this(versionRange, false) { }
+
+        /// <summary>
         /// Constructs a version range using a NuGet package version range syntax.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// To maintain type conversion compatibility with the PowerShell cmdlet parameters
+        /// the default behavior is to change min version syntax into required.
+        /// For example, 1.0 would become [1.0] since PowerShell users expect the version
+        /// to be the exact version supplied instead of NuGet syntax of min version inclusive.
+        /// To pass a min version inclusive use <c>[1.0,]</c> syntax.
+        /// </para>
+        /// This behavior is only used when constructing the version range.
+        /// The standard NuGet syntax is used elsewhere.
+        /// If you need to use NuGet syntax use the useNuGetSyntax parameter.
+        /// </remarks>
         /// <param name="versionRange">NuGet package version formatted string.</param>
-        public PackageVersionRange(string versionRange)
+        /// <param name="useNuGetSyntax">
+        /// If <c>true</c> use NuGet syntax otherwise <c>false</c> uses PowerShell modified syntax.
+        /// </param>
+        /// <exception cref="ArgumentNullException">Version range is null.</exception>
+        /// <exception cref="ArgumentException">Version range is not in correct format.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Min version is higher than max version.</exception>
+        public PackageVersionRange(string versionRange, bool useNuGetSyntax)
         {
+            if (versionRange is null)
+            {
+                throw new ArgumentNullException(versionRange);
+            }
+            
             if (string.IsNullOrWhiteSpace(versionRange))
             {
-                throw new ArgumentNullException(nameof(versionRange), "Cannot be null or whitespace.");
+                throw new ArgumentException(nameof(versionRange), "Cannot be null or whitespace.");
             }
 
             var first = versionRange[0];
@@ -51,6 +95,14 @@ namespace AnyPackage.Provider
             {
                 MinVersion = new PackageVersion(versionRange);
                 IsMinInclusive = true;
+                
+                if (!useNuGetSyntax)
+                {
+                    MaxVersion = MinVersion;
+                    IsMinInclusive = true;
+                    IsMaxInclusive = true;
+                }
+
                 return;
             }
 
@@ -103,6 +155,13 @@ namespace AnyPackage.Provider
             {
                 MaxVersion = new PackageVersion(maximumVersion);
             }
+
+            if (MinVersion is not null
+                && MaxVersion is not null
+                && MinVersion > MaxVersion)
+            {
+                throw new ArgumentOutOfRangeException(nameof(versionRange), "Min version is higher than max version.");
+            }
         }
 
         /// <summary>
@@ -112,11 +171,19 @@ namespace AnyPackage.Provider
         /// <param name="maxVersion">Maximum version.</param>
         /// <param name="isMinInclusive">If min version is inclusive.</param>
         /// <param name="isMaxInclusive">If max version is inclusive.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Min version is higher than max version.</exception>
         public PackageVersionRange(PackageVersion? minVersion = null,
                                    PackageVersion? maxVersion = null,
                                    bool isMinInclusive = true,
                                    bool isMaxInclusive = true)
         {
+            if (minVersion is not null
+                && maxVersion is not null
+                && minVersion > maxVersion)
+            {
+                throw new ArgumentOutOfRangeException(nameof(minVersion), "Min version is higher than max version.");
+            }
+            
             MinVersion = minVersion;
             MaxVersion = maxVersion;
             IsMinInclusive = isMinInclusive;
@@ -126,11 +193,55 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Converts the string representation of a version range to an equivalent <c>PackageVersionRange</c> object.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// To maintain type conversion compatibility with the PowerShell cmdlet parameters
+        /// the default behavior is to change min version syntax into required.
+        /// For example, <c>1.0</c> would become <c>[1.0]</c> since PowerShell users expect the version
+        /// to be the exact version supplied instead of NuGet syntax of min version inclusive.
+        /// To pass a min version inclusive use <c>[1.0,]</c> syntax.
+        /// </para>
+        /// This behavior is only used when constructing the version range.
+        /// The standard NuGet syntax is used elsewhere.
+        /// If you need to use NuGet syntax use the Parse method with useNuGetSyntax parameter.
+        /// </remarks>
         /// <param name="versionRange">A string that contains a version range to convert.</param>
         /// <returns>
         /// An object that is equivalent to the version range specified in the versionRange parameter.
         /// </returns>
-        public static PackageVersionRange Parse(string versionRange) => new PackageVersionRange(versionRange);
+        /// <exception cref="ArgumentNullException">Version range is null.</exception>
+        /// <exception cref="ArgumentException">Version range is not in correct format.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Min version is higher than max version.</exception>
+        public static PackageVersionRange Parse(string versionRange)
+            => new PackageVersionRange(versionRange);
+
+        /// <summary>
+        /// Converts the string representation of a version range to an equivalent <c>PackageVersionRange</c> object.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// To maintain type conversion compatibility with the PowerShell cmdlet parameters
+        /// the default behavior is to change min version syntax into required.
+        /// For example, <c>1.0</c> would become <c>[1.0]</c> since PowerShell users expect the version
+        /// to be the exact version supplied instead of NuGet syntax of min version inclusive.
+        /// To pass a min version inclusive use <c>[1.0,]</c> syntax.
+        /// </para>
+        /// This behavior is only used when constructing the version range.
+        /// The standard NuGet syntax is used elsewhere.
+        /// If you need to use NuGet syntax use the useNuGetSyntax parameter.
+        /// </remarks>
+        /// <param name="versionRange">A string that contains a version range to convert.</param>
+        /// <param name="useNuGetSyntax">
+        /// If <c>true</c> use NuGet syntax otherwise <c>false</c> uses PowerShell modified syntax.
+        /// </param>
+        /// <returns>
+        /// An object that is equivalent to the version range specified in the versionRange parameter.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Version range is null.</exception>
+        /// <exception cref="ArgumentException">Version range is not in correct format.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Min version is higher than max version.</exception>
+        public static PackageVersionRange Parse(string versionRange, bool useNuGetSyntax)
+            => new PackageVersionRange(versionRange, useNuGetSyntax);
 
         /// <summary>
         /// Tries to convert the string representation of a
@@ -150,6 +261,48 @@ namespace AnyPackage.Provider
             try
             {
                 result = new PackageVersionRange(versionRange);
+                return true;
+            }
+            catch
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of a
+        /// version to an equivalent <c>PackageVersionRange</c> object,
+        /// and returns a value that indicates whether the conversion succeeded.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// To maintain type conversion compatibility with the PowerShell cmdlet parameters
+        /// the default behavior is to change min version syntax into required.
+        /// For example, <c>1.0</c> would become <c>[1.0]</c> since PowerShell users expect the version
+        /// to be the exact version supplied instead of NuGet syntax of min version inclusive.
+        /// To pass a min version inclusive use <c>[1.0,]</c> syntax.
+        /// </para>
+        /// This behavior is only used when constructing the version range.
+        /// The standard NuGet syntax is used elsewhere.
+        /// If you need to use NuGet syntax use the useNuGetSyntax parameter.
+        /// </remarks>
+        /// <param name="versionRange">A string that contains a version range to convert.</param>
+        /// <param name="useNuGetSyntax">
+        /// If <c>true</c> use NuGet syntax otherwise <c>false</c> uses PowerShell modified syntax.
+        /// </param>
+        /// <param name="result">
+        /// When this methods returns, contains the <c>PackageVersionRange</c> equivalent of the string, if the conversion succeeded.
+        /// If <c>version</c> is <c>null</c>, Empty, or if the conversion fails, <c>result</c> is <c>null</c> when the method returns.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the <c>version</c> parameter was converted successfully; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool TryParse(string versionRange, bool useNuGetSyntax, out PackageVersionRange? result)
+        {
+            try
+            {
+                result = new PackageVersionRange(versionRange, useNuGetSyntax);
                 return true;
             }
             catch
