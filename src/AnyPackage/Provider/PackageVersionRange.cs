@@ -3,6 +3,8 @@
 // terms of the MIT license.
 
 using System;
+using System.Globalization;
+using System.Linq;
 
 namespace AnyPackage.Provider
 {
@@ -24,12 +26,12 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets if the minimum version is inclusive.
         /// </summary>
-        public bool IsMinVersionInclusive { get; }
+        public bool IsMinInclusive { get; }
 
         /// <summary>
         /// Gets if the maximum version is inclusive.
         /// </summary>
-        public bool IsMaxVersionInclusive { get; }
+        public bool IsMaxInclusive { get; }
 
         /// <summary>
         /// Constructs a version range using a NuGet package version range syntax.
@@ -37,7 +39,70 @@ namespace AnyPackage.Provider
         /// <param name="versionRange">NuGet package version formatted string.</param>
         public PackageVersionRange(string versionRange)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(versionRange))
+            {
+                throw new ArgumentNullException(nameof(versionRange), "Cannot be null or whitespace.");
+            }
+
+            var first = versionRange[0];
+            var last = versionRange[versionRange.Length - 1];
+
+            if (first != '[' && first != '(' && last != ']' && last != ')')
+            {
+                MinVersion = new PackageVersion(versionRange);
+                IsMinInclusive = true;
+                return;
+            }
+
+            switch (first)
+            {
+                case '[':
+                    IsMinInclusive = true;
+                    break;
+                case '(':
+                    IsMinInclusive = false;
+                    break;
+                default:
+                    throw new ArgumentException(nameof(versionRange), "Invalid format.");
+            }
+
+            switch (last)
+            {
+                case ']':
+                    IsMaxInclusive = true;
+                    break;
+                case ')':
+                    IsMaxInclusive = false;
+                    break;
+                default:
+                    throw new ArgumentException(nameof(versionRange), "Invalid format.");
+            }
+
+            // Strip off opening and closing characters
+            var nuGetVersion = versionRange.Substring(1, versionRange.Length - 2);
+
+            // Split on comma, to get both version parts
+            string[] parts = nuGetVersion.Split(',');
+
+            if ((parts.Length > 2 ||
+                 parts.All(string.IsNullOrEmpty)) ||
+                 (parts.Length == 1 && first == '(' && last == ')'))
+            {
+                throw new ArgumentException(nameof(nuGetVersion), "Invalid format.");
+            }
+
+            var minimumVersion = parts[0];
+            var maximumVersion = parts.Length == 2 ? parts[1] : parts[0];
+
+            if (!string.IsNullOrWhiteSpace(minimumVersion))
+            {
+                MinVersion = new PackageVersion(minimumVersion);
+            }
+
+            if (!string.IsNullOrWhiteSpace(maximumVersion))
+            {
+                MaxVersion = new PackageVersion(maximumVersion);
+            }
         }
 
         /// <summary>
@@ -45,17 +110,17 @@ namespace AnyPackage.Provider
         /// </summary>
         /// <param name="minVersion">Minimum version.</param>
         /// <param name="maxVersion">Maximum version.</param>
-        /// <param name="isMinVersionInclusive">If min version is inclusive.</param>
-        /// <param name="isMaxVersionInclusive">If max version is inclusive.</param>
+        /// <param name="isMinInclusive">If min version is inclusive.</param>
+        /// <param name="isMaxInclusive">If max version is inclusive.</param>
         public PackageVersionRange(PackageVersion? minVersion = null,
                                    PackageVersion? maxVersion = null,
-                                   bool isMinVersionInclusive = true,
-                                   bool isMaxVersionInclusive = true)
+                                   bool isMinInclusive = true,
+                                   bool isMaxInclusive = true)
         {
             MinVersion = minVersion;
             MaxVersion = maxVersion;
-            IsMinVersionInclusive = isMaxVersionInclusive;
-            IsMaxVersionInclusive = IsMaxVersionInclusive;
+            IsMinInclusive = isMinInclusive;
+            IsMaxInclusive = IsMaxInclusive;
         }
 
         /// <summary>
@@ -91,6 +156,92 @@ namespace AnyPackage.Provider
             {
                 result = null;
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks the supplied version satisfies the version range.
+        /// </summary>
+        /// <param name="version">The package version to check.</param>
+        /// <returns>Returns <c>true</c> if the version range is satisfied by the supplied version.</returns>
+        public bool Satisfies(PackageVersion version)
+        {
+            if (version is null)
+            {
+                throw new ArgumentNullException(nameof(version));
+            }
+            
+            var satisfies = true;
+            
+            if (MinVersion is not null)
+            {
+                if (IsMinInclusive)
+                {
+                    satisfies &= MinVersion.CompareTo(version) <= 0;
+                }
+                else
+                {
+                    satisfies &= MinVersion.CompareTo(version) < 0;
+                }
+            }
+
+            if (MaxVersion is not null)
+            {
+                if (IsMaxInclusive)
+                {
+                    satisfies &= MaxVersion.CompareTo(version) >= 0;
+                }
+                else
+                {
+                    satisfies &= MaxVersion.CompareTo(version) > 0;
+                }
+            }
+
+            return satisfies;
+        }
+
+        /// <summary>
+        /// Provides a <c>ToString</c> implementation.
+        /// </summary>
+        /// <remarks>
+        /// For more information refer to: https://docs.microsoft.com/en-us/nuget/concepts/package-versioning
+        /// </remarks>
+        /// <returns>A NuGet package version reference string.</returns>
+        public override string ToString()
+        {
+            if (MinVersion is not null && MaxVersion is null)
+            {
+                if (IsMinInclusive)
+                {
+                    return MinVersion.ToString();
+                }
+                else
+                {
+                    return string.Format(CultureInfo.InvariantCulture, "({0},)", MinVersion);
+                }
+            }
+            else if (MinVersion is null && MaxVersion is not null)
+            {
+                if (IsMaxInclusive)
+                {
+                    return string.Format(CultureInfo.InvariantCulture, "(,{0}]", MaxVersion);
+                }
+                else
+                {
+                    return string.Format(CultureInfo.InvariantCulture, "(,{0})", MaxVersion);
+                }
+            }
+            else if (MinVersion is not null && MaxVersion is not null && MinVersion == MaxVersion)
+            {
+                return string.Format(CultureInfo.InvariantCulture, "[{0}]", MinVersion);
+            }
+            else
+            {
+                // TODO: May need to check if (1.0,2.0] is valid
+                var lhs = IsMinInclusive ? '[' : '(';
+                var rhs = IsMaxInclusive ? ']' : ')';
+
+                return string.Format(CultureInfo.InvariantCulture, "{0}{1},{2}{3}", lhs, MinVersion, MaxVersion, rhs);
             }
         }
     }
