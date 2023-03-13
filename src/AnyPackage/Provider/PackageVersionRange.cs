@@ -3,6 +3,7 @@
 // terms of the MIT license.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -194,6 +195,48 @@ namespace AnyPackage.Provider
                 else
                 {
                     satisfies &= MaxVersion.CompareTo(version) > 0;
+                }
+            }
+
+            return satisfies;
+        }
+
+        /// <summary>
+        /// Checks the supplied version satisfies the version range.
+        /// </summary>
+        /// <param name="version">The package version to check.</param>
+        /// <param name="comparer">The custom comparer to use for version comparisons.</param>
+        /// <returns>Returns <c>true</c> if the version range is satisfied by the supplied version.</returns>
+        public bool Satisfies(PackageVersion version, IComparer<PackageVersion> comparer)
+        {
+            if (version is null)
+            {
+                throw new ArgumentNullException(nameof(version));
+            }
+            
+            var satisfies = true;
+            
+            if (MinVersion is not null)
+            {
+                if (IsMinInclusive)
+                {
+                    satisfies &= comparer.Compare(MinVersion, version) <= 0;
+                }
+                else
+                {
+                    satisfies &= comparer.Compare(MinVersion, version) < 0;
+                }
+            }
+
+            if (MaxVersion is not null)
+            {
+                if (IsMaxInclusive)
+                {
+                    satisfies &= comparer.Compare(MaxVersion, version) >= 0;
+                }
+                else
+                {
+                    satisfies &= comparer.Compare(MaxVersion, version) > 0;
                 }
             }
 
