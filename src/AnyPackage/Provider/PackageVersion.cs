@@ -54,11 +54,6 @@ namespace AnyPackage.Provider
         public bool IsPrerelease => _prerelease.Count > 0;
 
         /// <summary>
-        /// Gets if the version contains a suffix.
-        /// </summary>
-        public bool HasSuffix => Suffix is not null;
-
-        /// <summary>
         /// Gets the suffix of a multi-part numeric with suffix version.
         /// </summary>
         public string? Suffix { get; }
@@ -66,7 +61,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets if there
         /// </summary>
-        public bool HasBuildMetadata => _buildMetadata.Count > 0;
+        public bool HasMetadata => _metadata.Count > 0;
 
         /// <summary>
         /// Gets the dot separated values of the prerelease string.
@@ -76,7 +71,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the dot separated values of the build metadata string.
         /// </summary>
-        public IEnumerable<string> BuildMetadata => _buildMetadata;
+        public IEnumerable<string> Metadata => _metadata;
 
         /// <summary>
         /// Gets the version scheme.
@@ -85,7 +80,7 @@ namespace AnyPackage.Provider
 
         private List<int> _parts = new List<int>();
         private List<string> _prerelease = new List<string>();
-        private List<string> _buildMetadata = new List<string>();
+        private List<string> _metadata = new List<string>();
 
         /// <summary>
         /// Constructs an instance of the <c>PackageVersion</c> class.
@@ -137,12 +132,12 @@ namespace AnyPackage.Provider
                     {
                         foreach (var section in buildMetadata.Split('.'))
                         {
-                            _buildMetadata.Add(section);
+                            _metadata.Add(section);
                         }
                     }
                     else
                     {
-                        _buildMetadata.Add(buildMetadata);
+                        _metadata.Add(buildMetadata);
                     }
                 }
 
@@ -327,7 +322,7 @@ namespace AnyPackage.Provider
                 throw new InvalidOperationException("Version contains prerelease.");
             }
 
-            if (HasBuildMetadata)
+            if (HasMetadata)
             {
                 throw new InvalidOperationException("Version contains build metadata.");
             }
@@ -419,15 +414,15 @@ namespace AnyPackage.Provider
                 }
             }
 
-            if (HasSuffix && other.HasSuffix)
+            if (Suffix is not null && other.Suffix is not null)
             {
                 return Suffix!.CompareTo(other.Suffix);
             }
-            else if (HasSuffix)
+            else if (Suffix is not null)
             {
                 return 1;
             }
-            else if (other.HasSuffix)
+            else if (other.Suffix is not null)
             {
                 return -1;
             }
