@@ -88,6 +88,8 @@ namespace AnyPackage.Provider
                 throw new ArgumentException(nameof(versionRange), "Cannot be null or whitespace.");
             }
 
+            if (versionRange == "*") { return; }
+
             var first = versionRange[0];
             var last = versionRange[versionRange.Length - 1];
 
