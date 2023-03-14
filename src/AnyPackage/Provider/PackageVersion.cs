@@ -421,7 +421,7 @@ namespace AnyPackage.Provider
 
             if (Suffix is not null && other.Suffix is not null)
             {
-                return Suffix!.CompareTo(other.Suffix);
+                return Suffix.CompareTo(other.Suffix);
             }
             else if (Suffix is not null)
             {
