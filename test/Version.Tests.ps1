@@ -180,6 +180,48 @@ Describe PackageVersion {
                     HasMetadata  = $false
                     Metadata     = @()
                 }
+                @{
+                    Version      = [version]'5.6'
+                    Scheme       = 'MultiPartNumeric'
+                    Major        = 5
+                    Minor        = 6
+                    Patch        = $null
+                    Revision     = $null
+                    Parts        = @(5, 6)
+                    Suffix       = $null
+                    IsPrerelease = $false
+                    Prerelease   = @()
+                    HasMetadata  = $false
+                    Metadata     = @()
+                }
+                @{
+                    Version      = [version]'5.6.7'
+                    Scheme       = 'MultiPartNumeric'
+                    Major        = 5
+                    Minor        = 6
+                    Patch        = 7
+                    Revision     = $null
+                    Parts        = @(5, 6, 7)
+                    Suffix       = $null
+                    IsPrerelease = $false
+                    Prerelease   = @()
+                    HasMetadata  = $false
+                    Metadata     = @()
+                }
+                @{
+                    Version      = [version]'5.6.7.8'
+                    Scheme       = 'MultiPartNumeric'
+                    Major        = 5
+                    Minor        = 6
+                    Patch        = 7
+                    Revision     = 8
+                    Parts        = @(5, 6, 7, 8)
+                    Suffix       = $null
+                    IsPrerelease = $false
+                    Prerelease   = @()
+                    HasMetadata  = $false
+                    Metadata     = @()
+                }
             )
         }
 

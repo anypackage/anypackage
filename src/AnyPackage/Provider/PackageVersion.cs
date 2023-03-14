@@ -177,6 +177,7 @@ namespace AnyPackage.Provider
         public PackageVersion(Version version)
         {
             Version = version.ToString();
+            Scheme = PackageVersionScheme.MultiPartNumeric;
             _parts.Add(version.Major);
             _parts.Add(version.Minor);
 
