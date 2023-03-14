@@ -317,6 +317,11 @@ namespace AnyPackage.Provider
                 throw new InvalidOperationException("Version contains more than four parts.");
             }
 
+            if (_parts.Count < 2)
+            {
+                throw new InvalidOperationException("Version contains less than two parts.");
+            }
+
             if (IsPrerelease)
             {
                 throw new InvalidOperationException("Version contains prerelease.");
