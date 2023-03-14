@@ -184,14 +184,6 @@ namespace AnyPackage.Provider
             if (version.Revision != -1) { _parts.Add(version.Revision); }
         }
 
-        private void SetParts(string input)
-        {
-            foreach (var part in input.Split('.'))
-            {
-                _parts.Add(int.Parse(part));
-            }
-        }
-
         /// <summary>
         /// Implements the == (equality) operator.
         /// </summary>
@@ -492,5 +484,13 @@ namespace AnyPackage.Provider
         /// </summary>
         /// <returns>Returns the Version property.</returns>
         public override string ToString() => Version;
+
+        private void SetParts(string input)
+        {
+            foreach (var part in input.Split('.'))
+            {
+                _parts.Add(int.Parse(part));
+            }
+        }
     }
 }
