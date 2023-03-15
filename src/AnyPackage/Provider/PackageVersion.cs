@@ -26,27 +26,27 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the dot separated first position.
         /// </summary>
-        public int? Major => _parts.Count > 0 ? _parts[0] : null;
+        public ulong? Major => _parts.Count > 0 ? _parts[0] : null;
 
         /// <summary>
         /// Gets the dot separated second position.
         /// </summary>
-        public int? Minor => _parts.Count > 1 ? _parts[1] : null;
+        public ulong? Minor => _parts.Count > 1 ? _parts[1] : null;
 
         /// <summary>
         /// Gets the dot separated third position.
         /// </summary>
-        public int? Patch => _parts.Count > 2 ? _parts[2] : null;
+        public ulong? Patch => _parts.Count > 2 ? _parts[2] : null;
 
         /// <summary>
         /// Gets the dot separated fourth position. 
         /// </summary>
-        public int? Revision => _parts.Count > 3 ? _parts[3] : null;
+        public ulong? Revision => _parts.Count > 3 ? _parts[3] : null;
 
         /// <summary>
         /// Gets all the dot separated values.
         /// </summary>
-        public IEnumerable<int> Parts => _parts;
+        public IEnumerable<ulong> Parts => _parts;
 
         /// <summary>
         /// Gets if the version is a prerelease.
@@ -78,7 +78,7 @@ namespace AnyPackage.Provider
         /// </summary>
         public PackageVersionScheme Scheme { get; }
 
-        private List<int> _parts = new List<int>();
+        private List<ulong> _parts = new List<ulong>();
         private List<string> _prerelease = new List<string>();
         private List<string> _metadata = new List<string>();
 
@@ -103,9 +103,9 @@ namespace AnyPackage.Provider
             if (s_semVer.IsMatch(version))
             {
                 match = s_semVer.Match(version);
-                _parts.Add(int.Parse(match.Groups[1].Value));
-                _parts.Add(int.Parse(match.Groups[2].Value));
-                _parts.Add(int.Parse(match.Groups[3].Value));
+                _parts.Add(ulong.Parse(match.Groups[1].Value));
+                _parts.Add(ulong.Parse(match.Groups[2].Value));
+                _parts.Add(ulong.Parse(match.Groups[3].Value));
 
                 if (match.Groups[4].Success)
                 {
@@ -159,7 +159,7 @@ namespace AnyPackage.Provider
             else if (s_integer.IsMatch(version))
             {
                 match = s_integer.Match(version);
-                _parts.Add(int.Parse(match.Captures[0].Value));
+                _parts.Add(ulong.Parse(match.Captures[0].Value));
                 Scheme = PackageVersionScheme.Integer;
             }
             else
@@ -178,11 +178,11 @@ namespace AnyPackage.Provider
         {
             Version = version.ToString();
             Scheme = PackageVersionScheme.MultiPartNumeric;
-            _parts.Add(version.Major);
-            _parts.Add(version.Minor);
+            _parts.Add((ulong)version.Major);
+            _parts.Add((ulong)version.Minor);
 
-            if (version.Build != -1) { _parts.Add(version.Build); }
-            if (version.Revision != -1) { _parts.Add(version.Revision); }
+            if (version.Build != -1) { _parts.Add((ulong)version.Build); }
+            if (version.Revision != -1) { _parts.Add((ulong)version.Revision); }
         }
 
         /// <summary>
@@ -399,7 +399,7 @@ namespace AnyPackage.Provider
             }
 
             var count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
-            int a, b;
+            ulong a, b;
 
             for (var i = 0; i < count; i++)
             {
@@ -490,7 +490,7 @@ namespace AnyPackage.Provider
         {
             foreach (var part in input.Split('.'))
             {
-                _parts.Add(int.Parse(part));
+                _parts.Add(ulong.Parse(part));
             }
         }
     }
