@@ -2,7 +2,6 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
-using NuGet.Versioning;
 using AnyPackage.Provider;
 
 namespace AnyPackage.Commands.Internal
@@ -43,7 +42,7 @@ namespace AnyPackage.Commands.Internal
         /// <param name="source">Specifies the package source.</param>
         /// <param name="trustSource">Specifies if the source should be trusted.</param>
         protected virtual void SetRequest(string name,
-                                          VersionRange? version = null,
+                                          PackageVersionRange? version = null,
                                           string? source = null,
                                           bool trustSource = false)
         {
@@ -68,7 +67,7 @@ namespace AnyPackage.Commands.Internal
             Request.Prerelease = package.Version.IsPrerelease;
             Request.ProviderInfo = package.Provider;
             Request.TrustSource = trustSource;
-            Request.Version = VersionRange.Parse($"[{package.Version}]");
+            Request.Version = PackageVersionRange.Parse($"[{package.Version}]");
         }
     }
 }

@@ -4,7 +4,6 @@
 
 using System;
 using System.Management.Automation;
-using NuGet.Versioning;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
 
@@ -36,8 +35,8 @@ namespace AnyPackage.Commands
         /// Accepts NuGet version range syntax.
         /// </remarks>
         [Parameter(Position = 1)]
-        [VersionRangeTransformation]
-        public VersionRange Version { get; set; } = VersionRange.All;
+        [ValidateNotNullOrEmpty]
+        public PackageVersionRange Version { get; set; } = new PackageVersionRange();
 
         /// <summary>
         /// Gets or sets the provider.
@@ -63,7 +62,7 @@ namespace AnyPackage.Commands
         {
             var instances = GetInstances(Provider);
 
-            VersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+            PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
 
             foreach (var name in Name)
             {
