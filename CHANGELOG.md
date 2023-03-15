@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2023-03-15
+
+### Removed
+
+- Remove NuGet.Versioning (#75)
+
 ## [0.3.0] - 2023-03-09
 
 ### Added
 
 - Add Provider property to PackageDependency (#65)
 - Add IsMatch method to SourceRequest (#66)
-- Add Source argument completer (#67) 
+- Add Source argument completer (#67)
 
 ### Changed
 
@@ -69,7 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[Unreleased]: https://github.com/AnyPackage/AnyPackage/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/AnyPackage/AnyPackage/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.4.0
 [0.3.0]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.3.0
 [0.2.0]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.2.0
 [0.1.2]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.1.2
