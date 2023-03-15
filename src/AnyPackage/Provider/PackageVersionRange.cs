@@ -177,7 +177,7 @@ namespace AnyPackage.Provider
         public PackageVersionRange(PackageVersion? minVersion = null,
                                    PackageVersion? maxVersion = null,
                                    bool isMinInclusive = true,
-                                   bool isMaxInclusive = true)
+                                   bool isMaxInclusive = false)
         {
             if (minVersion is not null
                 && maxVersion is not null
@@ -185,11 +185,26 @@ namespace AnyPackage.Provider
             {
                 throw new ArgumentOutOfRangeException(nameof(minVersion), "Min version is higher than max version.");
             }
-            
-            MinVersion = minVersion;
-            MaxVersion = maxVersion;
-            IsMinInclusive = isMinInclusive;
-            IsMaxInclusive = isMaxInclusive;
+
+            if (minVersion is not null)
+            {
+                MinVersion = minVersion;
+                IsMinInclusive = isMinInclusive;
+            }
+            else
+            {
+                IsMaxInclusive = false;
+            }
+
+            if (maxVersion is not null)
+            {
+                MaxVersion = maxVersion;
+                IsMaxInclusive = isMaxInclusive;
+            }
+            else
+            {
+                IsMaxInclusive = false;
+            }
         }
 
         /// <summary>
@@ -406,7 +421,11 @@ namespace AnyPackage.Provider
         /// <returns>A NuGet package version reference string.</returns>
         public override string ToString()
         {
-            if (MinVersion is not null && MaxVersion is null)
+            if (MinVersion is null && MaxVersion is null)
+            {
+                return "*";
+            }
+            else if (MinVersion is not null && MaxVersion is null)
             {
                 if (IsMinInclusive)
                 {
@@ -436,7 +455,6 @@ namespace AnyPackage.Provider
             }
             else
             {
-                // TODO: May need to check if (1.0,2.0] is valid
                 var lhs = IsMinInclusive ? '[' : '(';
                 var rhs = IsMaxInclusive ? ']' : ')';
 
