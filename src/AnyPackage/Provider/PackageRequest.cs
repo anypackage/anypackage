@@ -6,7 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Management.Automation;
-using NuGet.Versioning;
 
 namespace AnyPackage.Provider
 {
@@ -24,7 +23,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the package version range.
         /// </summary>
-        public VersionRange? Version { get; internal set; }
+        public PackageVersionRange? Version { get; internal set; }
 
         /// <summary>
         /// Gets the package source name.
@@ -79,7 +78,7 @@ namespace AnyPackage.Provider
         /// <returns>
         /// Returns true if the version satisfies the version range requirements.
         /// </returns>
-        public bool IsMatch(NuGetVersion version)
+        public bool IsMatch(PackageVersion version)
         {
             if (version.IsPrerelease && !Prerelease)
             {
@@ -102,7 +101,7 @@ namespace AnyPackage.Provider
         /// <returns>
         /// Returns true if the name and version satisfies the request.
         /// </returns>
-        public bool IsMatch(string name, NuGetVersion version)
+        public bool IsMatch(string name, PackageVersion version)
         {
             return IsMatch(name) && IsMatch(version);
         }
@@ -179,7 +178,7 @@ namespace AnyPackage.Provider
         /// <param name="metadata">Additional metadata about the package.</param>
         /// <param name="dependencies">The package dependencies.</param>
         public void WritePackage(string name,
-                                 NuGetVersion version,
+                                 PackageVersion version,
                                  string description = "",
                                  PackageSourceInfo? source = null,
                                  Hashtable? metadata = null,
@@ -205,7 +204,7 @@ namespace AnyPackage.Provider
         }
 
         private PackageInfo NewPackageInfo(string name,
-                                           NuGetVersion version,
+                                           PackageVersion version,
                                            string description = "",
                                            PackageSourceInfo? source = null,
                                            Hashtable? metadata = null,
