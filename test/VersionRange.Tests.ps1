@@ -50,7 +50,7 @@ Describe VersionRange {
                     MaxVersion     = $null
                     IsMinInclusive = $true
                     IsMaxInclusive = $false
-                    String         = '1.0'
+                    String         = '[1.0,)'
                 }
                 @{
                     Range          = '(1.0,)'
@@ -148,7 +148,7 @@ Describe VersionRange {
                     MaxVersion     = $null
                     IsMinInclusive = $true
                     IsMaxInclusive = $false
-                    String         = '1.0'
+                    String         = '[1.0,)'
                 }
                 @{
                     MinVersion     = [AnyPackage.Provider.PackageVersion]'1.0'
