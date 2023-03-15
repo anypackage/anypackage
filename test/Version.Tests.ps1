@@ -243,11 +243,11 @@ Describe PackageVersion {
     Context 'ToVersion() method' {
         BeforeDiscovery {
             $messages = @{
-                AlphaNumeric = 'Exception calling "ToVersion" with "0" argument(s): "Cannot convert alpha-numeric versions to Version type."'
-                TooManyParts = 'Exception calling "ToVersion" with "0" argument(s): "Version contains more than four parts."'
-                TooFewParts  = 'Exception calling "ToVersion" with "0" argument(s): "Version contains less than two parts."'
-                Prerelease   = 'Exception calling "ToVersion" with "0" argument(s): "Version contains prerelease."'
-                Metadata     = 'Exception calling "ToVersion" with "0" argument(s): "Version contains build metadata."'
+                AlphaNumeric = '*Cannot convert alpha-numeric versions to Version type.*'
+                TooManyParts = '*Version contains more than four parts.*'
+                TooFewParts  = '*Version contains less than two parts."'
+                Prerelease   = '*Version contains prerelease.*'
+                Metadata     = '*Version contains build metadata.*'
             }
 
             $badVersions = @(
@@ -263,7 +263,7 @@ Describe PackageVersion {
 
         It 'should error for <version> version' -ForEach $badVersions {
             { [AnyPackage.Provider.PackageVersion]::new($Version).ToVersion() } |
-                Should -Throw -ExpectedMessage $Message
+                Should -Throw $Message
         }
 
         It 'should work for <_> version' -ForEach $goodVersions {
