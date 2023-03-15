@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
-using NuGet.Versioning;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
 
@@ -43,8 +42,8 @@ namespace AnyPackage.Commands
         /// </remarks>
         [Parameter(ParameterSetName = Constants.NameParameterSet,
             Position = 1)]
-        [VersionRangeTransformation]
-        public VersionRange Version { get; set; } = VersionRange.AllStable;
+        [ValidateNotNullOrEmpty]
+        public PackageVersionRange Version { get; set; } = new PackageVersionRange();
 
         /// <summary>
         /// Gets or sets the source.
@@ -133,7 +132,7 @@ namespace AnyPackage.Commands
             {
                 var instances = GetInstances(Provider);
 
-                VersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+                PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
 
                 foreach (var name in Name)

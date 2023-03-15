@@ -3,7 +3,6 @@
 // terms of the MIT license.
 
 using System;
-using NuGet.Versioning;
 
 namespace AnyPackage.Provider
 {
@@ -21,7 +20,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the version range.
         /// </summary>
-        public VersionRange VersionRange { get; } = VersionRange.AllStable;
+        public PackageVersionRange VersionRange { get; } = new PackageVersionRange();
 
         /// <summary>
         /// Gets the package provider.
@@ -50,7 +49,7 @@ namespace AnyPackage.Provider
         /// </summary>
         /// <param name="name">Package name.</param>
         /// <param name="versionRange">Version range.</param>
-        public PackageDependency(string name, VersionRange versionRange) : this(name)
+        public PackageDependency(string name, PackageVersionRange versionRange) : this(name)
         {
             if (versionRange is null)
             {
@@ -81,7 +80,7 @@ namespace AnyPackage.Provider
         /// <param name="name">Package name.</param>
         /// <param name="versionRange">Version range.</param>
         /// <param name="provider">Package provider.</param>
-        public PackageDependency(string name, VersionRange versionRange, PackageProviderInfo provider) : this(name, versionRange)
+        public PackageDependency(string name, PackageVersionRange versionRange, PackageProviderInfo provider) : this(name, versionRange)
         {
             if (provider is null)
             {

@@ -5,7 +5,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NuGet.Versioning;
 
 namespace AnyPackage.Provider
 {
@@ -22,7 +21,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the package version.
         /// </summary>
-        public NuGetVersion Version { get; }
+        public PackageVersion Version { get; }
 
         /// <summary>
         /// Gets the package description.
@@ -63,7 +62,7 @@ namespace AnyPackage.Provider
         /// <param name="metadata">Additional package metadata.</param>
         /// <param name="dependencies">Package dependencies.</param>
         internal PackageInfo(string name,
-                           NuGetVersion version,
+                           PackageVersion version,
                            string description,
                            PackageProviderInfo providerInfo,
                            PackageSourceInfo? source,
