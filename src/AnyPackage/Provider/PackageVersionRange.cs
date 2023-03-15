@@ -419,7 +419,14 @@ namespace AnyPackage.Provider
         /// For more information refer to: https://docs.microsoft.com/en-us/nuget/concepts/package-versioning
         /// </remarks>
         /// <returns>A NuGet package version reference string.</returns>
-        public override string ToString()
+        public override string ToString() => ToString(false);
+
+        /// <summary>
+        /// Provides a <c>ToString</c> implementation.
+        /// </summary>
+        /// <param name="shortNotation">Min version inclusive will return just the version.</param>
+        /// <returns>A NuGet package version reference string with short notation.</returns>
+        public string ToString(bool shortNotation)
         {
             if (MinVersion is null && MaxVersion is null)
             {
@@ -427,9 +434,13 @@ namespace AnyPackage.Provider
             }
             else if (MinVersion is not null && MaxVersion is null)
             {
-                if (IsMinInclusive)
+                if (IsMinInclusive && shortNotation)
                 {
                     return MinVersion.ToString();
+                }
+                else if (IsMinInclusive)
+                {
+                    return string.Format("[{0},)", MinVersion);
                 }
                 else
                 {
