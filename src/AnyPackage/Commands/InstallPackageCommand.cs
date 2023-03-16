@@ -122,6 +122,14 @@ namespace AnyPackage.Commands
             {
                 foreach (var package in InputObject)
                 {
+                    if (!package.Provider.Operations.HasFlag(PackageProviderOperations.Install))
+                    {
+                        var ex = new InvalidOperationException($"Package provider '{package.Provider.Name}' does not support this operation.");
+                        var er = new ErrorRecord(ex, "PackageProviderOperationNotSupported", ErrorCategory.InvalidOperation, Request.Name);
+                        WriteError(er);
+                        return;
+                    }
+
                     var instances = GetInstances(package.Provider.FullName);
                     SetRequest(package, TrustSource);
                     InstallPackage(instances);
