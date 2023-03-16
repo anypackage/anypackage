@@ -69,7 +69,7 @@ namespace AnyPackage.Commands.Internal
             }
 
             if (noProvider) {
-                throw new InvalidOperationException("No package provider available.");
+                throw new InvalidOperationException("No package providers support this operation.");
             }
         }
 
