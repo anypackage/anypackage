@@ -75,7 +75,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Performs one time clean up of the package provider during unregistration.
         /// </summary>
-        internal protected virtual void Clean() { }
+        protected internal virtual void Clean() { }
 
         /// <summary>
         /// Gets the dynamic parameters for command name.
