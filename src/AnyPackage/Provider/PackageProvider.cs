@@ -85,7 +85,7 @@ namespace AnyPackage.Provider
         /// The method can be overwritten to return an object
         /// or a <c>RuntimeDefinedParameterDictionary</c>.
         /// </returns>
-        internal protected virtual object? GetDynamicParameters(string commandName)
+        protected internal virtual object? GetDynamicParameters(string commandName)
         {
             return null;
         }
