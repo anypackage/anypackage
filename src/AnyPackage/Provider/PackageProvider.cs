@@ -80,7 +80,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the dynamic parameters for command name.
         /// </summary>
-        /// <param name="commandName"></param>
+        /// <param name="commandName">The cmdlet name.</param>
         /// <returns>
         /// The method can be overwritten to return an object
         /// or a <c>RuntimeDefinedParameterDictionary</c>.
