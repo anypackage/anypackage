@@ -246,6 +246,12 @@ namespace AnyPackage.Provider
         public static bool operator >=(PackageVersion left, PackageVersion right) => left.CompareTo(right) >= 0;
 
         /// <summary>
+        /// Implicit cast operator for casing <c>string</c> to <c>PackageVersion</c>.
+        /// </summary>
+        /// <param name="version">String representation of version.</param>
+        public static implicit operator PackageVersion(string version) => new PackageVersion(version);
+
+        /// <summary>
         /// Implicit cast operator for casing <c>Version</c> to <c>PackageVersion</c>.
         /// </summary>
         /// <param name="version">The Version object to convert to PackageVersion.</param>
