@@ -316,8 +316,6 @@ function Write-Package {
                                       $InputObject.Version,
                                       $Source,
                                       $InputObject.Description,
-                                      $null,
-                                      $InputObject.Metadata,
                                       $Provider)
 
         $Request.WritePackage($package)
