@@ -31,7 +31,7 @@ class PowerShellProvider : PackageProvider,
                 Get-Content -Path $_.FullName |
                 ConvertFrom-Json |
                 Where-Object { $request.IsMatch($_.Name, $_.Version) } |
-                Write-Package -Request $request -Source $source
+                Write-Package -Request $request -Source $source -Provider $this.ProviderInfo
             }
         }
     }
@@ -40,7 +40,7 @@ class PowerShellProvider : PackageProvider,
         $this.ProviderInfo.Packages |
         Where-Object { $request.IsMatch($_.Name, $_.version) } |
         ForEach-Object {
-            $_ | Write-Package -Request $request -Source $_.Source
+            $_ | Write-Package -Request $request -Source $_.Source -Provider $this.ProviderInfo
         }
     }
 
@@ -64,7 +64,7 @@ class PowerShellProvider : PackageProvider,
         Get-Latest |
         ForEach-Object {
             $this.ProviderInfo.Packages += $_
-            $_ | Write-Package -Request $request -Source $_.Source
+            $_ | Write-Package -Request $request -Source $_.Source -Provider $this.ProviderInfo
         }
     }
 
@@ -87,7 +87,7 @@ class PowerShellProvider : PackageProvider,
         Copy-Item -Path $request.Path -Destination $source.Location -ErrorAction Stop
 
         $package |
-        Write-Package -Request $request -Source $source
+        Write-Package -Request $request -Source $source -Provider $this.ProviderInfo
     }
 
     [void] SavePackage([PackageRequest] $request) {
@@ -112,7 +112,7 @@ class PowerShellProvider : PackageProvider,
             $path = Join-Path -Path $_.Source.Location -ChildPath ("$($_.Name)-$($_.Version).json").ToLower()
             Copy-Item -Path $path -Destination $request.Path
 
-            $_ | Write-Package -Request $request -Source $_.Source
+            $_ | Write-Package -Request $request -Source $_.Source -Provider $this.ProviderInfo
         }
     }
 
@@ -121,7 +121,7 @@ class PowerShellProvider : PackageProvider,
         ForEach-Object {
             if ($request.IsMatch($_.Name, $_.Version)) {
                 $_ |
-                Write-Package -Request $request -Source $_.Source
+                Write-Package -Request $request -Source $_.Source -Provider $this.ProviderInfo
             }
             else {
                 $_
@@ -156,14 +156,14 @@ class PowerShellProvider : PackageProvider,
         ForEach-Object {
             $this.ProviderInfo.Packages += $_
 
-            $_ | Write-Package -Request $request -Source $_.Source
+            $_ | Write-Package -Request $request -Source $_.Source -Provider $this.ProviderInfo
         }
     }
 
     [void] GetSource([SourceRequest] $sourceRequest) {
         $this.ProviderInfo.Sources |
         Where-Object Name -like $sourceRequest.Name |
-        Write-Source -SourceRequest $sourceRequest
+        Write-Source -SourceRequest $sourceRequest -Provider $this.ProviderInfo
     }
 
     [void] RegisterSource([SourceRequest] $sourceRequest) {
@@ -176,7 +176,7 @@ class PowerShellProvider : PackageProvider,
         $this.ProviderInfo.Sources += $source
 
         $source |
-        Write-Source -SourceRequest $sourceRequest
+        Write-Source -SourceRequest $sourceRequest -Provider $this.ProviderInfo
     }
 
     [void] SetSource([SourceRequest] $sourceRequest) {
@@ -194,7 +194,7 @@ class PowerShellProvider : PackageProvider,
         }
 
         $source |
-        Write-Source -SourceRequest $sourceRequest
+        Write-Source -SourceRequest $sourceRequest -Provider $this.ProviderInfo
     }
 
     [void] UnregisterSource([SourceRequest] $sourceRequest) {
@@ -202,7 +202,7 @@ class PowerShellProvider : PackageProvider,
         ForEach-Object {
             if ($sourceRequest.Name -eq $_.Name) {
                 $_ |
-                Write-Source -SourceRequest $sourceRequest
+                Write-Source -SourceRequest $sourceRequest -Provider $this.ProviderInfo
             }
             else {
                 $_
@@ -271,7 +271,11 @@ function Write-Source {
 
         [Parameter(Mandatory)]
         [SourceRequest]
-        $SourceRequest
+        $SourceRequest,
+
+        [Parameter(Mandatory)]
+        [PackageProviderInfo]
+        $Provider
     )
 
     process {
@@ -296,18 +300,26 @@ function Write-Package {
 
         [Parameter()]
         [object]
-        $Source
+        $Source,
+
+        [Parameter(Mandatory)]
+        [PackageProviderInfo]
+        $Provider
     )
 
     process {
         if ($Source) {
-            $Source = $Request.NewSourceInfo($Source.Name, $Source.Location, $Source.Trusted)
+            $Source = [PackageSourceInfo]::new($Source.Name, $Source.Location, $Source.Trusted, $Provider)
         }
 
-        $Request.WritePackage($InputObject.Name,
-                              $InputObject.Version,
-                              $InputObject.Description,
-                              $Source,
-                              $InputObject.Metadata)
+        $package = [PackageInfo]::new($InputObject.Name,
+                                      $InputObject.Version,
+                                      $Source,
+                                      $InputObject.Description,
+                                      $null,
+                                      $InputObject.Metadata,
+                                      $Provider)
+
+        $Request.WritePackage($package)
     }
 }
