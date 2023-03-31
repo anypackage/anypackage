@@ -279,10 +279,8 @@ function Write-Source {
     )
 
     process {
-        $SourceRequest.WriteSource($InputObject.Name,
-                                   $InputObject.Location,
-                                   $InputObject.Trusted,
-                                   $InputObject.Metadata)
+        $source = [PackageSourceInfo]::new($InputObject.Name, $InputObject.Location, $InputObject.Trusted, $Provider)
+        $SourceRequest.WriteSource($source)
     }
 }
 
