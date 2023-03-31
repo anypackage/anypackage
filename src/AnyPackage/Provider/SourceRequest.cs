@@ -74,12 +74,6 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// Writes the package repositories to the pipeline.
-        /// </summary>
-        /// <param name="source">The package repositories.</param>
-        public void WriteSource(IEnumerable<PackageSourceInfo> source) => WriteSource(source);
-
-        /// <summary>
         /// Writes the package source to the pipeline.
         /// </summary>
         /// <param name="name">The package source name.</param>
