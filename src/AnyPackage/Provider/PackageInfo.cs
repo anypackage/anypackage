@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace AnyPackage.Provider
 {
@@ -26,7 +27,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the package description.
         /// </summary>
-        public string Description { get; }
+        public string Description { get; } = string.Empty;
 
         /// <summary>
         /// Gets the package source.
@@ -36,8 +37,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets additional metadata about the package.
         /// </summary>
-        // TODO: Change to an IDictionary<string,object>
-        public Hashtable Metadata { get; }
+        public IReadOnlyDictionary<string, object> Metadata { get; }
 
         /// <summary>
         /// Gets the package provider.
@@ -49,38 +49,179 @@ namespace AnyPackage.Provider
         /// </summary>
         public IEnumerable<PackageDependency> Dependencies => _dependencies;
 
-        private List<PackageDependency> _dependencies;
+        private List<PackageDependency> _dependencies = new List<PackageDependency>();
 
         /// <summary>
-        /// Instantiates 
+        /// Instantiates a <c>PackageInfo</c> object.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="provider">Package provider info.</param>
+        public PackageInfo(string name, PackageProviderInfo provider)
+        {
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (provider is null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+
+            Name = name;
+            Provider = provider;
+            Metadata = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>());
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> object.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="version">Package version.</param>
+        /// <param name="provider">Package provider info.</param>
+        public PackageInfo(string name, PackageVersion? version, PackageProviderInfo provider)
+            : this(name, provider)
+        {
+            Version = version;
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> object.
         /// </summary>
         /// <param name="name">Package name.</param>
         /// <param name="version">Package version.</param>
         /// <param name="description">Package description.</param>
-        /// <param name="providerInfo">Package provider info.</param>
-        /// <param name="source">Package source.</param>
-        /// <param name="metadata">Additional package metadata.</param>
-        /// <param name="dependencies">Package dependencies.</param>
-        internal PackageInfo(string name,
-                             PackageVersion? version,
-                             string description,
-                             PackageProviderInfo providerInfo,
-                             PackageSourceInfo? source,
-                             Hashtable? metadata,
-                             IEnumerable<PackageDependency>? dependencies)
+        /// <param name="provider">Package provider info.</param>
+        public PackageInfo(string name, PackageVersion? version, string description, PackageProviderInfo provider)
+            : this(name, version, provider)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (description is null)
             {
-                throw new ArgumentException("Name cannot be null or whitespace.", nameof(name));
+                throw new ArgumentNullException(nameof(description));
             }
-            
-            Name = name;
-            Version = version;
+
+            Description = description; 
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> object.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="version">Package version.</param>
+        /// <param name="source">Package source.</param>
+        /// <param name="provider">Package provider info.</param>
+        public PackageInfo(string name, PackageVersion? version, PackageSourceInfo source, PackageProviderInfo provider)
+            : this(name, version, provider)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             Source = source;
-            Provider = providerInfo;
-            Description = description ?? string.Empty;
-            Metadata = metadata ?? new Hashtable();
-            _dependencies = dependencies is not null ? new List<PackageDependency>(dependencies) : new List<PackageDependency>();
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> object.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="version">Package version.</param>
+        /// <param name="source">Package source.</param>
+        /// <param name="description">Package description.</param>
+        /// <param name="provider">Package provider info.</param>
+        public PackageInfo(string name,
+                           PackageVersion? version,
+                           PackageSourceInfo? source,
+                           string description,
+                           PackageProviderInfo provider)
+            : this(name, version, description, provider)
+        {
+            Source = source;
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> object.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="version">Package version.</param>
+        /// <param name="source">Package source.</param>
+        /// <param name="description">Package description.</param>
+        /// <param name="dependencies">Package dependencies.</param>
+        /// <param name="provider">Package provider info.</param>
+        public PackageInfo(string name,
+                           PackageVersion? version,
+                           PackageSourceInfo? source,
+                           string description,
+                           IEnumerable<PackageDependency>? dependencies,
+                           PackageProviderInfo provider)
+            : this(name, version, description, provider)
+        {
+            Source = source;
+            _dependencies = new List<PackageDependency>(dependencies);
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> object.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="version">Package version.</param>
+        /// <param name="source">Package source.</param>
+        /// <param name="description">Package description.</param>
+        /// <param name="dependencies">Package dependencies.</param>
+        /// <param name="metadata">Additional package metadata.</param>
+        /// <param name="provider">Package provider info.</param>
+        public PackageInfo(string name,
+                           PackageVersion? version,
+                           PackageSourceInfo? source,
+                           string description,
+                           IEnumerable<PackageDependency>? dependencies,
+                           IDictionary<string, object> metadata,
+                           PackageProviderInfo provider)
+            : this(name, version, source, description, dependencies, provider)
+        {
+            if (metadata is null)
+            {
+                throw new ArgumentNullException(nameof(metadata));
+            }
+
+            Metadata = new ReadOnlyDictionary<string, object>(metadata);
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> object.
+        /// </summary>
+        /// <param name="name">Package name.</param>
+        /// <param name="version">Package version.</param>
+        /// <param name="source">Package source.</param>
+        /// <param name="description">Package description.</param>
+        /// <param name="dependencies">Package dependencies.</param>
+        /// <param name="metadata">Additional package metadata.</param>
+        /// <param name="provider">Package provider info.</param>
+        public PackageInfo(string name,
+                           PackageVersion? version,
+                           PackageSourceInfo? source,
+                           string description,
+                           IEnumerable<PackageDependency>? dependencies,
+                           Hashtable metadata,
+                           PackageProviderInfo provider)
+            : this(name, version, source, description, dependencies, provider)
+        {
+            if (metadata is null)
+            {
+                throw new ArgumentNullException(nameof(metadata));
+            }
+
+            if (metadata.Count > 0)
+            {
+                var dictionary = new Dictionary<string, object>();
+
+                foreach (var key in metadata.Keys)
+                {
+                    dictionary.Add(key.ToString(), metadata[key]);
+                }
+
+                Metadata = new ReadOnlyDictionary<string, object>(dictionary);
+            }
         }
 
         /// <summary>

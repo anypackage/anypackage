@@ -84,7 +84,7 @@ namespace AnyPackage.Provider
             {
                 return false;
             }
-            
+
             if (Version is null)
             {
                 return true;
@@ -138,7 +138,8 @@ namespace AnyPackage.Provider
 
             if (trusted && ProviderInfo is not null)
             {
-                if (!_trustedRepositories.ContainsKey(ProviderInfo.Id)) {
+                if (!_trustedRepositories.ContainsKey(ProviderInfo.Id))
+                {
                     _trustedRepositories[ProviderInfo.Id] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 }
 
@@ -160,62 +161,6 @@ namespace AnyPackage.Provider
             {
                 Cmdlet.WriteObject(package);
             }
-        }
-
-        /// <summary>
-        /// Writes the package to the pipeline.
-        /// </summary>
-        /// <param name="name">The package name.</param>
-        /// <param name="version">The package version.</param>
-        /// <param name="description">The package description.</param>
-        /// <param name="source">The package source.</param>
-        /// <param name="metadata">Additional metadata about the package.</param>
-        /// <param name="dependencies">The package dependencies.</param>
-        public void WritePackage(string name,
-                                 PackageVersion? version,
-                                 string description = "",
-                                 PackageSourceInfo? source = null,
-                                 Hashtable? metadata = null,
-                                 IEnumerable<PackageDependency>? dependencies = null)
-        {
-            var package = NewPackageInfo(name, version, description, source, metadata, dependencies);
-            WritePackage(package);
-        }
-
-        /// <summary>
-        /// Creates a new <c>PackageSourceInfo</c>.
-        /// </summary>
-        /// <param name="name">The package source name.</param>
-        /// <param name="location">The package source location.</param>
-        /// <param name="trusted">If the package source is trusted or not.</param>
-        /// <param name="metadata">Additional metadata about the package source.</param>
-        /// <returns>A <c>PackageSourceInfo</c> object.</returns>
-        public PackageSourceInfo NewSourceInfo(string name,
-                                               string location,
-                                               bool trusted = false,
-                                               Hashtable? metadata = null)
-        {
-            return new PackageSourceInfo(name, location, ProviderInfo!, trusted, metadata);
-        }
-
-        /// <summary>
-        /// Creates a new <c>PackageInfo</c>.
-        /// </summary>
-        /// <param name="name">The package name.</param>
-        /// <param name="version">The package version.</param>
-        /// <param name="description">The package description.</param>
-        /// <param name="source">The package source.</param>
-        /// <param name="metadata">Additional metadata about the package.</param>
-        /// <param name="dependencies">The package dependencies.</param>
-        /// <returns>A <c>PackageInfo</c> object.</returns>
-        public PackageInfo NewPackageInfo(string name,
-                                          PackageVersion? version,
-                                          string description = "",
-                                          PackageSourceInfo? source = null,
-                                          Hashtable? metadata = null,
-                                          IEnumerable<PackageDependency>? dependencies = null)
-        {
-            return new PackageInfo(name, version, description, ProviderInfo!, source, metadata, dependencies);
         }
     }
 }
