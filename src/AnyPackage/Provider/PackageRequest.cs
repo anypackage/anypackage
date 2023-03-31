@@ -189,10 +189,11 @@ namespace AnyPackage.Provider
         /// <param name="location">The package source location.</param>
         /// <param name="trusted">If the package source is trusted or not.</param>
         /// <param name="metadata">Additional metadata about the package source.</param>
+        /// <returns>A <c>PackageSourceInfo</c> object.</returns>
         public PackageSourceInfo NewSourceInfo(string name,
-                                                       string location,
-                                                       bool trusted = false,
-                                                       Hashtable? metadata = null)
+                                               string location,
+                                               bool trusted = false,
+                                               Hashtable? metadata = null)
         {
             return new PackageSourceInfo(name, location, ProviderInfo!, trusted, metadata);
         }
