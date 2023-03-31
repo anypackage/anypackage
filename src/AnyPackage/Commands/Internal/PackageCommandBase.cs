@@ -64,7 +64,7 @@ namespace AnyPackage.Commands.Internal
             Request.Name = package.Name;
             Request.Source = package.Source?.Name;
             Request.Package = package;
-            Request.Prerelease = package.Version.IsPrerelease;
+            Request.Prerelease = package.Version?.IsPrerelease ?? false;
             Request.ProviderInfo = package.Provider;
             Request.TrustSource = trustSource;
             Request.Version = PackageVersionRange.Parse($"[{package.Version}]");

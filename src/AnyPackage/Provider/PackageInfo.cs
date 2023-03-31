@@ -21,7 +21,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the package version.
         /// </summary>
-        public PackageVersion Version { get; }
+        public PackageVersion? Version { get; }
 
         /// <summary>
         /// Gets the package description.
@@ -62,12 +62,12 @@ namespace AnyPackage.Provider
         /// <param name="metadata">Additional package metadata.</param>
         /// <param name="dependencies">Package dependencies.</param>
         internal PackageInfo(string name,
-                           PackageVersion version,
-                           string description,
-                           PackageProviderInfo providerInfo,
-                           PackageSourceInfo? source,
-                           Hashtable? metadata,
-                           IEnumerable<PackageDependency>? dependencies)
+                             PackageVersion? version,
+                             string description,
+                             PackageProviderInfo providerInfo,
+                             PackageSourceInfo? source,
+                             Hashtable? metadata,
+                             IEnumerable<PackageDependency>? dependencies)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
