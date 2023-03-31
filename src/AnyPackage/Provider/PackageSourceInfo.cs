@@ -46,52 +46,25 @@ namespace AnyPackage.Provider
         /// <param name="name">Source name.</param>
         /// <param name="location">Source location.</param>
         /// <param name="provider">Package provider.</param>
-        /// <param name="trusted">If source is trusted.</param>
-        /// <param name="metadata">Additional metadata about source.</param>
-        internal PackageSourceInfo(string name,
-                                   string location,
-                                   PackageProviderInfo provider,
-                                   bool trusted,
-                                   IDictionary<string, object>? metadata) : this(name, location, provider, trusted)
+        /// <exception cref="ArgumentNullException">If name, location, or provider is null.</exception>
+        /// <exception cref="ArgumentException">If name or location is empty or whitespace.</exception>
+        public PackageSourceInfo(string name, string location, PackageProviderInfo provider)
         {
-            if (metadata is not null)
+            if (name is null)
             {
-                Metadata = new ReadOnlyDictionary<string, object>(metadata);
+                throw new ArgumentNullException(nameof(name));
             }
-        }
 
-        /// <summary>
-        /// Instantiates a <c>PackageSourceInfo</c> class.
-        /// </summary>
-        /// <remarks>
-        /// Metadata hashtable keys will be converted to strings.
-        /// </remarks>
-        /// <param name="name">Source name.</param>
-        /// <param name="location">Source location.</param>
-        /// <param name="provider">Package provider.</param>
-        /// <param name="trusted">If source is trusted.</param>
-        /// <param name="metadata">Additional metadata about source.</param>
-        internal PackageSourceInfo(string name,
-                                   string location,
-                                   PackageProviderInfo provider,
-                                   bool trusted,
-                                   Hashtable? metadata) : this(name, location, provider, trusted)
-        {
-            if (metadata is not null && metadata.Count > 0)
+            if (location is null)
             {
-                var dictionary = new Dictionary<string, object>();
-
-                foreach (var key in metadata.Keys)
-                {
-                    dictionary.Add(key.ToString(), metadata[key]);
-                }
-
-                Metadata = new ReadOnlyDictionary<string, object>(dictionary);
+                throw new ArgumentNullException(nameof(location));
             }
-        }
 
-        private PackageSourceInfo(string name, string location, PackageProviderInfo provider, bool trusted)
-        {
+            if (provider is null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+            
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Cannot be null or whitespace.", nameof(name));
@@ -105,8 +78,83 @@ namespace AnyPackage.Provider
             Name = name;
             Location = location;
             Provider = provider;
-            Trusted = trusted;
             Metadata = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>());
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageSourceInfo</c> class.
+        /// </summary>
+        /// <param name="name">Source name.</param>
+        /// <param name="location">Source location.</param>
+        /// <param name="trusted">If source is trusted.</param>
+        /// <param name="provider">Package provider.</param>
+        /// <exception cref="ArgumentNullException">If name, location, or provider is null.</exception>
+        /// <exception cref="ArgumentException">If name or location is empty or whitespace.</exception>
+        public PackageSourceInfo(string name, string location, bool trusted, PackageProviderInfo provider)
+            : this(name, location, provider)
+        {
+            Trusted = trusted;
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageSourceInfo</c> class.
+        /// </summary>
+        /// <param name="name">Source name.</param>
+        /// <param name="location">Source location.</param>
+        /// <param name="trusted">If source is trusted.</param>
+        /// <param name="metadata">Additional metadata about source.</param>
+        /// <param name="provider">Package provider.</param>
+        /// <exception cref="ArgumentNullException">If name, location, provider, or metadata is null.</exception>
+        /// <exception cref="ArgumentException">If name or location is empty or whitespace.</exception>
+        public PackageSourceInfo(string name,
+                                 string location,
+                                 bool trusted,
+                                 IDictionary<string, object> metadata,
+                                 PackageProviderInfo provider) : this(name, location, trusted, provider)
+        {
+            if (metadata is null)
+            {
+                throw new ArgumentNullException(nameof(metadata));
+            }
+
+            Metadata = new ReadOnlyDictionary<string, object>(metadata);
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageSourceInfo</c> class.
+        /// </summary>
+        /// <remarks>
+        /// Metadata hashtable keys will be converted to strings.
+        /// </remarks>
+        /// <param name="name">Source name.</param>
+        /// <param name="location">Source location.</param>
+        /// <param name="provider">Package provider.</param>
+        /// <param name="trusted">If source is trusted.</param>
+        /// <param name="metadata">Additional metadata about source.</param>
+        /// <exception cref="ArgumentNullException">If name, location, provider, or metadata is null.</exception>
+        /// <exception cref="ArgumentException">If name or location is empty or whitespace.</exception>
+        public PackageSourceInfo(string name,
+                                 string location,
+                                 bool trusted,
+                                 Hashtable metadata,
+                                 PackageProviderInfo provider) : this(name, location, trusted, provider)
+        {
+            if (metadata is null)
+            {
+                throw new ArgumentNullException(nameof(metadata));
+            }
+
+            if (metadata.Count > 0)
+            {
+                var dictionary = new Dictionary<string, object>();
+
+                foreach (var key in metadata.Keys)
+                {
+                    dictionary.Add(key.ToString(), metadata[key]);
+                }
+
+                Metadata = new ReadOnlyDictionary<string, object>(dictionary);
+            }
         }
 
         /// <summary>
