@@ -172,7 +172,7 @@ namespace AnyPackage.Provider
         /// <param name="metadata">Additional metadata about the package.</param>
         /// <param name="dependencies">The package dependencies.</param>
         public void WritePackage(string name,
-                                 PackageVersion version,
+                                 PackageVersion? version,
                                  string description = "",
                                  PackageSourceInfo? source = null,
                                  Hashtable? metadata = null,
@@ -197,12 +197,22 @@ namespace AnyPackage.Provider
             return new PackageSourceInfo(name, location, ProviderInfo!, trusted, metadata);
         }
 
-        private PackageInfo NewPackageInfo(string name,
-                                           PackageVersion version,
-                                           string description = "",
-                                           PackageSourceInfo? source = null,
-                                           Hashtable? metadata = null,
-                                           IEnumerable<PackageDependency>? dependencies = null)
+        /// <summary>
+        /// Creates a new <c>PackageInfo</c>.
+        /// </summary>
+        /// <param name="name">The package name.</param>
+        /// <param name="version">The package version.</param>
+        /// <param name="description">The package description.</param>
+        /// <param name="source">The package source.</param>
+        /// <param name="metadata">Additional metadata about the package.</param>
+        /// <param name="dependencies">The package dependencies.</param>
+        /// <returns>A <c>PackageInfo</c> object.</returns>
+        public PackageInfo NewPackageInfo(string name,
+                                          PackageVersion? version,
+                                          string description = "",
+                                          PackageSourceInfo? source = null,
+                                          Hashtable? metadata = null,
+                                          IEnumerable<PackageDependency>? dependencies = null)
         {
             return new PackageInfo(name, version, description, ProviderInfo!, source, metadata, dependencies);
         }
