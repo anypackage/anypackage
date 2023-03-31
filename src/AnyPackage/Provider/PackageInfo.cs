@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace AnyPackage.Provider
 {
@@ -26,7 +27,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the package description.
         /// </summary>
-        public string Description { get; }
+        public string Description { get; } = string.Empty;
 
         /// <summary>
         /// Gets the package source.
@@ -36,8 +37,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets additional metadata about the package.
         /// </summary>
-        // TODO: Change to an IDictionary<string,object>
-        public Hashtable Metadata { get; }
+        public IReadOnlyDictionary<string, object> Metadata { get; }
 
         /// <summary>
         /// Gets the package provider.
@@ -49,10 +49,10 @@ namespace AnyPackage.Provider
         /// </summary>
         public IEnumerable<PackageDependency> Dependencies => _dependencies;
 
-        private List<PackageDependency> _dependencies;
+        private List<PackageDependency> _dependencies = new List<PackageDependency>();
 
         /// <summary>
-        /// Instantiates 
+        /// Instantiates a <c>PackageInfo</c> object.
         /// </summary>
         /// <param name="name">Package name.</param>
         /// <param name="version">Package version.</param>
@@ -63,24 +63,79 @@ namespace AnyPackage.Provider
         /// <param name="dependencies">Package dependencies.</param>
         internal PackageInfo(string name,
                              PackageVersion? version,
-                             string description,
+                             string? description,
+                             PackageProviderInfo providerInfo,
+                             PackageSourceInfo? source,
+                             IDictionary<string, object>? metadata,
+                             IEnumerable<PackageDependency>? dependencies) : this(name, version, description, providerInfo, source, dependencies)
+        {
+            if (metadata is not null)
+            {
+                Metadata = new ReadOnlyDictionary<string, object>(metadata);
+            }
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> object.
+        /// </summary>
+        /// <remarks>
+        /// Metadata hashtable keys will be converted to strings.
+        /// </remarks>
+        /// <param name="name">Package name.</param>
+        /// <param name="version">Package version.</param>
+        /// <param name="description">Package description.</param>
+        /// <param name="providerInfo">Package provider info.</param>
+        /// <param name="source">Package source.</param>
+        /// <param name="metadata">Additional package metadata.</param>
+        /// <param name="dependencies">Package dependencies.</param>
+        internal PackageInfo(string name,
+                             PackageVersion? version,
+                             string? description,
                              PackageProviderInfo providerInfo,
                              PackageSourceInfo? source,
                              Hashtable? metadata,
-                             IEnumerable<PackageDependency>? dependencies)
+                             IEnumerable<PackageDependency>? dependencies) : this(name, version, description, providerInfo, source, dependencies)
+        {
+            if (metadata is not null && metadata.Count > 0)
+            {
+                var dictionary = new Dictionary<string, object>();
+
+                foreach (var key in metadata.Keys)
+                {
+                    dictionary.Add(key.ToString(), metadata[key]);
+                }
+
+                Metadata = new ReadOnlyDictionary<string, object>(dictionary);
+            }
+        }
+
+        private PackageInfo(string name,
+                            PackageVersion? version,
+                            string? description,
+                            PackageProviderInfo providerInfo,
+                            PackageSourceInfo? source,
+                            IEnumerable<PackageDependency>? dependencies)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Name cannot be null or whitespace.", nameof(name));
             }
-            
+
             Name = name;
             Version = version;
             Source = source;
             Provider = providerInfo;
-            Description = description ?? string.Empty;
-            Metadata = metadata ?? new Hashtable();
-            _dependencies = dependencies is not null ? new List<PackageDependency>(dependencies) : new List<PackageDependency>();
+            Metadata = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>());
+
+            if (description is not null)
+            {
+                Description = description;
+            }
+
+            if (dependencies is not null)
+            {
+                _dependencies = new List<PackageDependency>(dependencies);
+            }
         }
 
         /// <summary>

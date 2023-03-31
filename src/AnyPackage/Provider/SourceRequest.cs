@@ -81,9 +81,28 @@ namespace AnyPackage.Provider
         /// <param name="trusted">If the package source is trusted or not.</param>
         /// <param name="metadata">Additional metadata about the package source.</param>
         public void WriteSource(string name,
-                                    string location,
-                                    bool trusted = false,
-                                    Hashtable? metadata = null)
+                                string location,
+                                bool trusted = false,
+                                IDictionary<string, object>? metadata = null)
+        {
+            var source = new PackageSourceInfo(name, location, ProviderInfo!, trusted, metadata);
+            WriteSource(source);
+        }
+
+        /// <summary>
+        /// Writes the package source to the pipeline.
+        /// </summary>
+        /// <remarks>
+        /// Metadata hashtable keys will be converted to strings.
+        /// </remarks>
+        /// <param name="name">The package source name.</param>
+        /// <param name="location">The package source location.</param>
+        /// <param name="trusted">If the package source is trusted or not.</param>
+        /// <param name="metadata">Additional metadata about the package source.</param>
+        public void WriteSource(string name,
+                                string location,
+                                bool trusted = false,
+                                Hashtable? metadata = null)
         {
             var source = new PackageSourceInfo(name, location, ProviderInfo!, trusted, metadata);
             WriteSource(source);

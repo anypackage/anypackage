@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace AnyPackage.Provider
 {
@@ -31,8 +33,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets source metadata.
         /// </summary>
-        // TODO: Change to IDictionary<string, object>
-        public Hashtable Metadata { get; }
+        public IReadOnlyDictionary<string, object> Metadata { get; }
 
         /// <summary>
         /// Gets if the source is trusted.
@@ -47,18 +48,65 @@ namespace AnyPackage.Provider
         /// <param name="provider">Package provider.</param>
         /// <param name="trusted">If source is trusted.</param>
         /// <param name="metadata">Additional metadata about source.</param>
-        internal PackageSourceInfo(string name, string location, PackageProviderInfo provider, bool trusted, Hashtable? metadata)
+        internal PackageSourceInfo(string name,
+                                   string location,
+                                   PackageProviderInfo provider,
+                                   bool trusted,
+                                   IDictionary<string, object>? metadata) : this(name, location, provider, trusted)
+        {
+            if (metadata is not null)
+            {
+                Metadata = new ReadOnlyDictionary<string, object>(metadata);
+            }
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageSourceInfo</c> class.
+        /// </summary>
+        /// <remarks>
+        /// Metadata hashtable keys will be converted to strings.
+        /// </remarks>
+        /// <param name="name">Source name.</param>
+        /// <param name="location">Source location.</param>
+        /// <param name="provider">Package provider.</param>
+        /// <param name="trusted">If source is trusted.</param>
+        /// <param name="metadata">Additional metadata about source.</param>
+        internal PackageSourceInfo(string name,
+                                   string location,
+                                   PackageProviderInfo provider,
+                                   bool trusted,
+                                   Hashtable? metadata) : this(name, location, provider, trusted)
+        {
+            if (metadata is not null && metadata.Count > 0)
+            {
+                var dictionary = new Dictionary<string, object>();
+
+                foreach (var key in metadata.Keys)
+                {
+                    dictionary.Add(key.ToString(), metadata[key]);
+                }
+
+                Metadata = new ReadOnlyDictionary<string, object>(dictionary);
+            }
+        }
+
+        private PackageSourceInfo(string name, string location, PackageProviderInfo provider, bool trusted)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Name cannot be null or whitespace.");
+                throw new ArgumentException("Cannot be null or whitespace.", nameof(name));
             }
-            
+
+            if (string.IsNullOrWhiteSpace(location))
+            {
+                throw new ArgumentException("Cannot be null or whitespace.", nameof(location));
+            }
+
             Name = name;
             Location = location;
             Provider = provider;
             Trusted = trusted;
-            Metadata = metadata ?? new Hashtable();
+            Metadata = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>());
         }
 
         /// <summary>
