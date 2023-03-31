@@ -9,8 +9,6 @@ class PowerShellProvider : PackageProvider,
     IInstallPackage, IPublishPackage,
     ISavePackage, IUninstallPackage, IUpdatePackage,
     IGetSource, ISetSource {
-    PowerShellProvider() : base('89d76409-f1b0-46cb-a881-b012be54aef5') { }
-
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
         return [PowerShellProviderInfo]::new($providerInfo)
     }
@@ -227,10 +225,12 @@ class PowerShellProviderInfo : PackageProviderInfo {
     }
 }
 
-[PackageProviderManager]::RegisterProvider([PowerShellProvider], $MyInvocation.MyCommand.ScriptBlock.Module)
+[guid] $id = '89d76409-f1b0-46cb-a881-b012be54aef5'
+
+[PackageProviderManager]::RegisterProvider($id, [PowerShellProvider], $MyInvocation.MyCommand.ScriptBlock.Module)
 
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
-    [PackageProviderManager]::UnregisterProvider([PowerShellProvider])
+    [PackageProviderManager]::UnregisterProvider($id)
 }
 
 function Get-Latest {
