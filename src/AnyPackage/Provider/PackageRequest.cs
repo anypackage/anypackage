@@ -163,12 +163,6 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
-        /// Writes the packages to the pipeline.
-        /// </summary>
-        /// <param name="package">The packages.</param>
-        public void WritePackage(IEnumerable<PackageInfo> package) => WritePackage(package);
-
-        /// <summary>
         /// Writes the package to the pipeline.
         /// </summary>
         /// <param name="name">The package name.</param>
