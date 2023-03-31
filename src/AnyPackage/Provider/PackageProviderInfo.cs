@@ -45,28 +45,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the provider identifier.
         /// </summary>
-        public Guid Id
-        {
-            get
-            {
-                if (_id == Guid.Empty)
-                {
-                    _id = CreateInstance().Id;
-                }
-
-                return _id;
-            }
-
-            internal set
-            {
-                if (value == Guid.Empty)
-                {
-                    throw new ArgumentException("The value cannot be an empty GUID.");
-                }
-
-                _id = value;
-            }
-        }
+        public Guid Id { get; }
 
         /// <summary>
         /// Gets the package provider PowerShell module information.
@@ -149,7 +128,6 @@ namespace AnyPackage.Provider
         private string _name = string.Empty;
         private string? _moduleName;
         private PSModuleInfo? _module;
-        private Guid _id;
         private PackageProviderOperations _operations = PackageProviderOperations.None;
         private bool _operationsRead;
         private bool _nameRead;
@@ -159,6 +137,18 @@ namespace AnyPackage.Provider
         {
             ValidateType(type);
             ImplementingType = type;
+        }
+
+        internal PackageProviderInfo(Guid id, Type type)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("The value cannot be an empty GUID.", nameof(id));
+            }
+
+            ValidateType(type);
+            ImplementingType = type;
+            Id = id;
         }
 
         internal PackageProviderInfo(string name, PSModuleInfo module)
@@ -171,14 +161,14 @@ namespace AnyPackage.Provider
             ImplementingType = null!;
         }
 
-        internal PackageProviderInfo(Type type, PSModuleInfo module) : this(type)
+        internal PackageProviderInfo(Guid id, Type type, PSModuleInfo module) : this(id, type)
         {
             _module = module;
             _moduleName = module.Name;
             _moduleRead = true;
         }
 
-        internal PackageProviderInfo(Type type, string moduleName) : this(type)
+        internal PackageProviderInfo(Guid id, Type type, string moduleName) : this(id, type)
         {
             _moduleName = moduleName;
         }
@@ -191,7 +181,7 @@ namespace AnyPackage.Provider
         {
             ImplementingType = providerInfo.ImplementingType;
             Priority = providerInfo.Priority;
-            _id = providerInfo.Id;
+            Id = providerInfo.Id;
             _operations = providerInfo.Operations;
             _operationsRead = true;
             _name = providerInfo.Name;
