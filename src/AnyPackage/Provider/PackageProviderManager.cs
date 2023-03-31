@@ -33,52 +33,37 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Register a package provider.
         /// </summary>
-        /// <param name="type">The type implementing the package provider.</param>
-        public static void RegisterProvider(Type type)
-        {
-            var providerInfo = new PackageProviderInfo(type);
-
-            if (Providers.ContainsKey(providerInfo.Id))
-            {
-                return;
-            }
-
-            InitializeProvider(providerInfo);
-        }
-
-        /// <summary>
-        /// Register a package provider.
-        /// </summary>
+        /// <param name="id">The package provider ID.</param>
         /// <param name="type">The type implementing the package provider.</param>
         /// <param name="module">The module associated with the package provider.</param>
-        public static void RegisterProvider(Type type, PSModuleInfo module)
+        public static void RegisterProvider(Guid id, Type type, PSModuleInfo module)
         {
-            var providerInfo = new PackageProviderInfo(type, module);
-
-            if (Providers.ContainsKey(providerInfo.Id))
+            if (Providers.ContainsKey(id))
             {
                 return;
             }
 
+            var providerInfo = new PackageProviderInfo(id, type, module);
             InitializeProvider(providerInfo);
         }
 
         /// <summary>
         /// Register a package provider.
         /// </summary>
+        /// <param name="id">The package provider ID.</param>
         /// <param name="type">The type implementing the package provider.</param>
         /// <param name="moduleName">The module name associated with the package provider.</param>
-        public static void RegisterProvider(Type type, string moduleName)
+        public static void RegisterProvider(Guid id, Type type, string moduleName)
         {
-            var module = GetModuleInfo(moduleName);
-            var providerInfo = module is not null ?
-                new PackageProviderInfo(type, module) :
-                new PackageProviderInfo(type, moduleName);
-
-            if (Providers.ContainsKey(providerInfo.Id))
+            if (Providers.ContainsKey(id))
             {
                 return;
             }
+
+            var module = GetModuleInfo(moduleName);
+            var providerInfo = module is not null ?
+                new PackageProviderInfo(id, type, module) :
+                new PackageProviderInfo(id, type, moduleName);
 
             InitializeProvider(providerInfo);
         }
@@ -95,22 +80,6 @@ namespace AnyPackage.Provider
             }
 
             CleanProvider(Providers[id]);
-        }
-
-        /// <summary>
-        /// Unregister a package provider.
-        /// </summary>
-        /// <param name="type">The type implementing the package provider.</param>
-        public static void UnregisterProvider(Type type)
-        {
-            var providerInfo = new PackageProviderInfo(type);
-
-            if (!Providers.ContainsKey(providerInfo.Id))
-            {
-                return;
-            }
-
-            CleanProvider(Providers[providerInfo.Id]);
         }
 
         internal static PackageProviderInfo GetProvider(string name, PackageProviderOperations operations)
@@ -167,7 +136,7 @@ namespace AnyPackage.Provider
             var instance = provider.CreateInstance();
             instance.Initialize();
 
-            Providers.Add(instance.Id, instance.ProviderInfo);
+            Providers.Add(provider.Id, instance.ProviderInfo);
         }
 
         private static void CleanProvider(PackageProviderInfo provider)

@@ -12,11 +12,6 @@ namespace AnyPackage.Provider
     public abstract class PackageProvider
     {
         /// <summary>
-        /// Gets the package provider unique identifer.
-        /// </summary>
-        internal Guid Id { get; }
-
-        /// <summary>
         /// Gets the package provider information.
         /// </summary>
         /// <remarks>
@@ -38,20 +33,6 @@ namespace AnyPackage.Provider
         }
 
         private PackageProviderInfo? _providerInfo;
-
-        /// <summary>
-        /// Instantiates an instance of the package provider class.
-        /// </summary>
-        /// <param name="id">The package provider unique identifier.</param>
-        protected PackageProvider(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                throw new ArgumentException("The value cannot be an empty GUID.", nameof(id));
-            }
-
-            Id = id;
-        }
 
         /// <summary>
         /// Performs one time initialization for the package provider during registration.
