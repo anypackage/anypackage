@@ -17,6 +17,11 @@ namespace AnyPackage.Provider
         public object? DynamicParameters { get; internal set; }
 
         /// <summary>
+        /// Gets the parameter set name.
+        /// </summary>
+        public string ParameterSetName => Cmdlet.ParameterSetName;
+
+        /// <summary>
         /// Gets if the package provider has been requested to stop.
         /// </summary>
         public bool Stopping => Cmdlet.Stopping;
