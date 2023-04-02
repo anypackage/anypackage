@@ -3,6 +3,9 @@
 // terms of the MIT license.
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
@@ -22,6 +25,7 @@ namespace AnyPackage.Commands
         /// Gets or sets the name(s).
         /// </summary>
         [Parameter(Position = 0,
+            ParameterSetName = Constants.NameParameterSet,
             ValueFromPipeline = true,
             ValueFromPipelineByPropertyName = true)]
         [SupportsWildcards]
@@ -34,14 +38,16 @@ namespace AnyPackage.Commands
         /// <remarks>
         /// Accepts NuGet version range syntax.
         /// </remarks>
-        [Parameter(Position = 1)]
+        [Parameter(Position = 1,
+            ParameterSetName = Constants.NameParameterSet)]
         [ValidateNotNullOrEmpty]
         public PackageVersionRange Version { get; set; } = new PackageVersionRange();
 
         /// <summary>
         /// Gets or sets the source.
         /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Parameter(ValueFromPipelineByPropertyName = true,
+            ParameterSetName = Constants.NameParameterSet)]
         [ValidateNotNullOrEmpty]
         [ValidateNoWildcards]
         [ArgumentCompleter(typeof(SourceArgumentCompleter))]
@@ -51,7 +57,7 @@ namespace AnyPackage.Commands
         /// <summary>
         /// Gets or sets if prerelease versions should be included.
         /// </summary>
-        [Parameter]
+        [Parameter(ParameterSetName = Constants.NameParameterSet)]
         public SwitchParameter Prerelease { get; set; }
 
         /// <summary>
@@ -62,6 +68,14 @@ namespace AnyPackage.Commands
         [ValidateProvider(Find)]
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
         public override string Provider { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the package path(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.PathParameterSet)]
+        [ValidateNotNullOrEmpty]
+        public string[] Path { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Instances the <c>FindPackageCommand</c> class.
@@ -86,44 +100,22 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            var instances = GetInstances(Provider);
-
-            PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
-            string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
-
-            foreach (var name in Name)
+            if (ParameterSetName == Constants.NameParameterSet)
             {
-                WriteVerbose($"Finding '{name}' package.");
+                var instances = GetInstances(Provider);
 
-                SetRequest(name, version, source);
+                PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+                string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
 
-                foreach (var instance in instances)
+                foreach (var name in Name)
                 {
-                    WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-                    Request.ProviderInfo = instance.ProviderInfo;
-
-                    try
-                    {
-                        instance.FindPackage(Request);
-                    }
-                    catch (PipelineStoppedException)
-                    {
-                        throw;
-                    }
-                    catch (Exception e)
-                    {
-                        var ex = new PackageProviderException(e.Message, e);
-                        var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, name);
-                        WriteError(er);
-                    }
+                    SetRequest(name, version, source);
+                    FindPackage(name, instances);
                 }
-
-                if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(name))
-                {
-                    var ex = new PackageNotFoundException(name);
-                    var er = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, name);
-                    WriteError(er);
-                }
+            }
+            else if (ParameterSetName == Constants.PathParameterSet)
+            {
+                ProcessPath();
             }
         }
 
@@ -135,6 +127,113 @@ namespace AnyPackage.Commands
             base.SetRequest();
             Request.PassThru = true;
             Request.Prerelease = Prerelease;
+        }
+
+        private void ProcessPath()
+        {
+            foreach (var path in Path)
+            {
+                try
+                {
+                    var pathInfos = SessionState.Path.GetResolvedPSPathFromPSPath(path);
+                    foreach (var pathInfo in pathInfos)
+                    {
+                        if (!ValidatePath(pathInfo))
+                        {
+                            continue;
+                        }
+
+                        var instances = GetInstances(pathInfo);
+                        SetRequest(pathInfo);
+                        FindPackage(pathInfo.Path, instances);
+                    }
+                }
+                catch (ItemNotFoundException e)
+                {
+                    var ex = new PackageProviderException(e.Message, e);
+                    var er = new ErrorRecord(ex, "PathNotFound", ErrorCategory.ObjectNotFound, path);
+                    WriteError(er);
+                }
+            }
+        }
+
+        private bool ValidatePath(PathInfo path)
+        {
+            if (path.Provider.Name != "FileSystem")
+            {
+                var ex = new InvalidOperationException($"Path '{path}' is not a file system path.");
+                var er = new ErrorRecord(ex, "PathNotFileSystemProvider", ErrorCategory.InvalidArgument, path);
+                WriteError(er);
+                return false;
+            }
+
+            if (!File.Exists(path.ProviderPath))
+            {
+                var ex = new InvalidOperationException($"Path '{path}' is not a file.");
+                var er = new ErrorRecord(ex, "PathNotFile", ErrorCategory.InvalidArgument, path);
+                WriteError(er);
+                return false;
+            }
+
+            return true;
+        }
+
+        private List<PackageProvider> GetInstances(PathInfo pathInfo)
+        {
+            var extension = System.IO.Path.GetExtension(pathInfo.ProviderPath);
+            var instances = GetInstances(Provider).Where(x => x.SupportedFileExtension(extension)).ToList();
+
+            if (instances.Count == 0)
+            {
+                string message;
+                if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
+                {
+                    message = $"Package provider '{Provider}' does not support '{extension}' extension.";
+                }
+                else
+                {
+                    message = $"No package providers support '{extension}' extension.";
+                }
+
+                var ex = new InvalidOperationException(message);
+                var er = new ErrorRecord(ex, "PackageProviderExtensionNotSupported", ErrorCategory.InvalidOperation, pathInfo);
+                WriteError(er);
+            }
+
+            return instances;
+        }
+
+        private void FindPackage(string package, IEnumerable<PackageProvider> instances)
+        {
+            WriteVerbose($"Finding '{package}' package.");
+
+            foreach (var instance in instances)
+            {
+                WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
+                Request.ProviderInfo = instance.ProviderInfo;
+
+                try
+                {
+                    instance.FindPackage(Request);
+                }
+                catch (PipelineStoppedException)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    var ex = new PackageProviderException(e.Message, e);
+                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
+                    WriteError(er);
+                }
+            }
+
+            if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(package))
+            {
+                var ex = new PackageNotFoundException(package);
+                var er = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
+                WriteError(er);
+            }
         }
     }
 }

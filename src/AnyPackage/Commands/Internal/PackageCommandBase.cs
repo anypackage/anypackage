@@ -2,6 +2,7 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
+using System.Management.Automation;
 using AnyPackage.Provider;
 
 namespace AnyPackage.Commands.Internal
@@ -68,6 +69,16 @@ namespace AnyPackage.Commands.Internal
             Request.ProviderInfo = package.Provider;
             Request.TrustSource = trustSource;
             Request.Version = PackageVersionRange.Parse($"[{package.Version}]");
+        }
+
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
+        /// <param name="path">Specifies the path.</param>
+        protected virtual void SetRequest(PathInfo path)
+        {
+            SetRequest();
+            Request.Path = path.ProviderPath;
         }
     }
 }

@@ -3,6 +3,8 @@
 // terms of the MIT license.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AnyPackage.Provider
 {
@@ -69,6 +71,26 @@ namespace AnyPackage.Provider
         protected internal virtual object? GetDynamicParameters(string commandName)
         {
             return null;
+        }
+
+        /// <summary>
+        /// Gets supported package file extensions.
+        /// </summary>
+        /// <remarks>
+        /// If the package provider supports operations by using a file
+        /// then override this method and return the supported extensions.
+        /// </remarks>
+        /// <returns>
+        /// Returns supported package file extensions.
+        /// </returns>
+        protected internal virtual IEnumerable<string> GetFileExtensions()
+        {
+            return Array.Empty<string>();
+        }
+
+        internal bool SupportedFileExtension(string extension)
+        {
+            return GetFileExtensions().Any(x => x.Equals(extension, StringComparison.OrdinalIgnoreCase));
         }
 
         internal void FindPackage(PackageRequest request)
