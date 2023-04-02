@@ -157,7 +157,11 @@ namespace AnyPackage.Provider
             : this(name, version, description, provider)
         {
             Source = source;
-            _dependencies = new List<PackageDependency>(dependencies);
+            
+            if (dependencies is not null)
+            {
+                _dependencies = new List<PackageDependency>(dependencies);
+            }
         }
 
         /// <summary>
