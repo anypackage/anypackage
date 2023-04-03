@@ -2,6 +2,10 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using AnyPackage.Provider;
 
@@ -79,6 +83,60 @@ namespace AnyPackage.Commands.Internal
         {
             SetRequest();
             Request.Path = path.ProviderPath;
+        }
+
+        /// <summary>
+        /// Gets instances for a given path.
+        /// </summary>
+        /// <param name="pathInfo">The PS path.</param>
+        protected List<PackageProvider> GetInstances(PathInfo pathInfo)
+        {
+            var extension = Path.GetExtension(pathInfo.ProviderPath);
+            var instances = GetInstances(Provider).Where(x => x.IsSupportedFileExtension(extension)).ToList();
+
+            if (instances.Count == 0)
+            {
+                string message;
+                if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
+                {
+                    message = $"Package provider '{Provider}' does not support '{extension}' extension.";
+                }
+                else
+                {
+                    message = $"No package providers support '{extension}' extension.";
+                }
+
+                var ex = new InvalidOperationException(message);
+                var er = new ErrorRecord(ex, "PackageProviderExtensionNotSupported", ErrorCategory.InvalidOperation, pathInfo);
+                WriteError(er);
+            }
+
+            return instances;
+        }
+
+        /// <summary>
+        /// Validates the PS path is a file path.
+        /// </summary>
+        /// <param name="path">The PS path.</param>
+        protected bool ValidateFile(PathInfo path)
+        {
+            if (path.Provider.Name != "FileSystem")
+            {
+                var ex = new InvalidOperationException($"Path '{path}' is not a file system path.");
+                var er = new ErrorRecord(ex, "PathNotFileSystemProvider", ErrorCategory.InvalidArgument, path);
+                WriteError(er);
+                return false;
+            }
+
+            if (!File.Exists(path.ProviderPath))
+            {
+                var ex = new InvalidOperationException($"Path '{path}' is not a file.");
+                var er = new ErrorRecord(ex, "PathNotFile", ErrorCategory.InvalidArgument, path);
+                WriteError(er);
+                return false;
+            }
+
+            return true;
         }
     }
 }

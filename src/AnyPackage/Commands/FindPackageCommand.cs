@@ -4,8 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
@@ -138,7 +136,7 @@ namespace AnyPackage.Commands
                     var pathInfos = SessionState.Path.GetResolvedPSPathFromPSPath(path);
                     foreach (var pathInfo in pathInfos)
                     {
-                        if (!ValidatePath(pathInfo))
+                        if (!ValidateFile(pathInfo))
                         {
                             continue;
                         }
@@ -155,52 +153,6 @@ namespace AnyPackage.Commands
                     WriteError(er);
                 }
             }
-        }
-
-        private bool ValidatePath(PathInfo path)
-        {
-            if (path.Provider.Name != "FileSystem")
-            {
-                var ex = new InvalidOperationException($"Path '{path}' is not a file system path.");
-                var er = new ErrorRecord(ex, "PathNotFileSystemProvider", ErrorCategory.InvalidArgument, path);
-                WriteError(er);
-                return false;
-            }
-
-            if (!File.Exists(path.ProviderPath))
-            {
-                var ex = new InvalidOperationException($"Path '{path}' is not a file.");
-                var er = new ErrorRecord(ex, "PathNotFile", ErrorCategory.InvalidArgument, path);
-                WriteError(er);
-                return false;
-            }
-
-            return true;
-        }
-
-        private List<PackageProvider> GetInstances(PathInfo pathInfo)
-        {
-            var extension = System.IO.Path.GetExtension(pathInfo.ProviderPath);
-            var instances = GetInstances(Provider).Where(x => x.IsSupportedFileExtension(extension)).ToList();
-
-            if (instances.Count == 0)
-            {
-                string message;
-                if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
-                {
-                    message = $"Package provider '{Provider}' does not support '{extension}' extension.";
-                }
-                else
-                {
-                    message = $"No package providers support '{extension}' extension.";
-                }
-
-                var ex = new InvalidOperationException(message);
-                var er = new ErrorRecord(ex, "PackageProviderExtensionNotSupported", ErrorCategory.InvalidOperation, pathInfo);
-                WriteError(er);
-            }
-
-            return instances;
         }
 
         private void FindPackage(string package, IEnumerable<PackageProvider> instances)
