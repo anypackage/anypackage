@@ -3,7 +3,6 @@
 // terms of the MIT license.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Management.Automation;
 
@@ -41,10 +40,9 @@ namespace AnyPackage.Provider
         public PackageInfo? Package { get; internal set; }
 
         /// <summary>
-        /// Gets the destination path for Save-Package
-        /// and package path for Publish-Package.
+        /// Gets the path parameter.
         /// </summary>
-        public string? Path { get; internal set; }
+        public string Path { get; internal set; } = string.Empty;
 
         internal bool PassThru { get; set; }
         internal bool TrustSource { get; set; }
