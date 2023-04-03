@@ -181,7 +181,7 @@ namespace AnyPackage.Commands
         private List<PackageProvider> GetInstances(PathInfo pathInfo)
         {
             var extension = System.IO.Path.GetExtension(pathInfo.ProviderPath);
-            var instances = GetInstances(Provider).Where(x => x.SupportedFileExtension(extension)).ToList();
+            var instances = GetInstances(Provider).Where(x => x.IsSupportedFileExtension(extension)).ToList();
 
             if (instances.Count == 0)
             {

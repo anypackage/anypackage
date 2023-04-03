@@ -3,6 +3,8 @@
 // terms of the MIT license.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 using static AnyPackage.Provider.PackageProviderManager;
@@ -17,25 +19,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the name of a provider.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                if (!_nameRead)
-                {
-                    var attrs = ImplementingType.GetCustomAttributes(typeof(PackageProviderAttribute), false);
-                    var packageProviderAttribute = attrs as PackageProviderAttribute[];
-
-                    if (packageProviderAttribute?.Length == 1)
-                    {
-                        _name = packageProviderAttribute[0].Name;
-                        _nameRead = true;
-                    }
-                }
-
-                return _name;
-            }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Gets the provider type.
@@ -89,33 +73,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the package operations the provider supports.
         /// </summary>
-        public PackageProviderOperations Operations
-        {
-            get
-            {
-                if (!_operationsRead)
-                {
-                    Type type = this.ImplementingType;
-                    var interfaces = type.GetInterfaces();
-
-                    foreach (var @interface in interfaces)
-                    {
-                        // Take interface name (IInstallPackage) and remove 'I' and 'Package' to return Install.
-                        var name = Regex.Replace(@interface.Name.Substring(1), $"Package", "");
-                        var operation = PackageProviderOperations.None;
-
-                        if (Enum.TryParse(name, out operation))
-                        {
-                            _operations |= operation;
-                        }
-                    }
-
-                    _operationsRead = true;
-                }
-
-                return _operations;
-            }
-        }
+        public PackageProviderOperations Operations { get; }
 
         /// <summary>
         /// Gets and sets the package provider priority.
@@ -125,36 +83,58 @@ namespace AnyPackage.Provider
         /// </remarks>
         public byte Priority { get; set; } = 100;
 
-        private string _name = string.Empty;
+        /// <summary>
+        /// Gets if the package provider supports package by name parameter set.
+        /// </summary>
+        /// <remarks>
+        /// If <c>false</c> package provider doesn't support
+        /// <c>Name</c> parameter set for the following cmdlets:
+        /// Find-Package, Install-Package, Update-Package
+        /// </remarks>
+        public bool PackageByName { get; }
+
+        /// <summary>
+        /// Gets if the package provider supports package by path parameter set.
+        /// </summary>
+        public bool PackageByFile => _fileExtensions.Count > 0;
+
+        /// <summary>
+        /// Gets supported file extensions.
+        /// </summary>
+        public IEnumerable<string> FileExtensions => _fileExtensions;
+
+        private HashSet<string> _fileExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private string? _moduleName;
         private PSModuleInfo? _module;
-        private PackageProviderOperations _operations = PackageProviderOperations.None;
-        private bool _operationsRead;
-        private bool _nameRead;
         private bool _moduleRead;
 
         internal PackageProviderInfo(Type type)
         {
-            ValidateType(type);
+            if (!type.IsSubclassOf(typeof(PackageProvider)))
+            {
+                throw new ArgumentException($"Type '{type}' does not derive from '{nameof(PackageProvider)}' class.", nameof(type));
+            }
+
             ImplementingType = type;
+            Name = GetProviderName();
+            Operations = GetOperations();
+            PackageByName = GetPackageByName();
+            SetFileExtensions();
         }
 
-        internal PackageProviderInfo(Guid id, Type type)
+        internal PackageProviderInfo(Guid id, Type type) : this(type)
         {
             if (id == Guid.Empty)
             {
                 throw new ArgumentException("The value cannot be an empty GUID.", nameof(id));
             }
 
-            ValidateType(type);
-            ImplementingType = type;
             Id = id;
         }
 
         internal PackageProviderInfo(string name, PSModuleInfo module)
         {
-            _name = name;
-            _nameRead = true;
+            Name = name;
             _module = module;
             _moduleName = module.Name;
             _moduleRead = true;
@@ -182,13 +162,12 @@ namespace AnyPackage.Provider
             ImplementingType = providerInfo.ImplementingType;
             Priority = providerInfo.Priority;
             Id = providerInfo.Id;
-            _operations = providerInfo.Operations;
-            _operationsRead = true;
-            _name = providerInfo.Name;
-            _nameRead = true;
+            Operations = providerInfo.Operations;
+            Name = providerInfo.Name;
             _module = providerInfo.Module;
             _moduleRead = true;
             _moduleName = providerInfo.ModuleName;
+            _fileExtensions = new HashSet<string>(providerInfo.FileExtensions);
         }
 
         /// <summary>
@@ -221,18 +200,55 @@ namespace AnyPackage.Provider
             return wildcard.IsMatch(FullName) || wildcard.IsMatch(Name);
         }
 
-        private void ValidateType(Type type)
+        private string GetProviderName()
         {
-            if (!type.IsSubclassOf(typeof(PackageProvider)))
+            var attrs = ImplementingType.GetCustomAttributes(typeof(PackageProviderAttribute), false);
+            var packageProviderAttribute = attrs as PackageProviderAttribute[];
+
+            if (packageProviderAttribute?.Length != 1)
             {
-                throw new ArgumentException($"Type '{type}' does not derive from '{nameof(PackageProvider)}' class.", nameof(type));
+                throw new InvalidOperationException("Package provider attribute not present.");
             }
 
-            var attrs = type.GetCustomAttributes(typeof(PackageProviderAttribute), false);
+            return packageProviderAttribute[0].Name;
+        }
 
-            if (attrs.Length != 1)
+        private PackageProviderOperations GetOperations()
+        {
+            var interfaces = ImplementingType.GetInterfaces();
+            var operations = PackageProviderOperations.None;
+
+            foreach (var @interface in interfaces)
             {
-                throw new ArgumentException($"Type '{type}' does not have '{nameof(PackageProviderAttribute)}' attribute.", nameof(type));
+                // Take interface name (IInstallPackage) and remove 'I' and 'Package' to return Install.
+                var name = Regex.Replace(@interface.Name.Substring(1), $"Package", "");
+
+                if (Enum.TryParse(name, out PackageProviderOperations operation))
+                {
+                    operations |= operation;
+                }
+            }
+
+            return operations;
+        }
+
+        private bool GetPackageByName()
+        {
+            var attrs = ImplementingType.GetCustomAttributes(typeof(NoPackageByNameAttribute), false);
+            var names = attrs as NoPackageByNameAttribute[];
+            return names?.Length > 0 ? false : true;
+        }
+
+        private void SetFileExtensions()
+        {
+            var attrs = ImplementingType.GetCustomAttributes(typeof(PackageByFileAttribute), false);
+
+            if (attrs is PackageByFileAttribute[] files)
+            {
+                foreach (var file in files)
+                {
+                    _fileExtensions.Add(file.Extension.ToLower());
+                }
             }
         }
     }
