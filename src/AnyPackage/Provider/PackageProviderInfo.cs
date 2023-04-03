@@ -116,10 +116,11 @@ namespace AnyPackage.Provider
             }
 
             ImplementingType = type;
-            Name = GetProviderName();
             Operations = GetOperations();
-            PackageByName = GetPackageByName();
-            SetFileExtensions();
+            var attr = GetProviderAttribute();
+            Name = attr.Name;
+            PackageByName = attr.PackageByName;
+            _fileExtensions = new HashSet<string>(attr.FileExtensions);
         }
 
         internal PackageProviderInfo(Guid id, Type type) : this(type)
@@ -200,7 +201,7 @@ namespace AnyPackage.Provider
             return wildcard.IsMatch(FullName) || wildcard.IsMatch(Name);
         }
 
-        private string GetProviderName()
+        private PackageProviderAttribute GetProviderAttribute()
         {
             var attrs = ImplementingType.GetCustomAttributes(typeof(PackageProviderAttribute), false);
             var packageProviderAttribute = attrs as PackageProviderAttribute[];
@@ -210,7 +211,7 @@ namespace AnyPackage.Provider
                 throw new InvalidOperationException("Package provider attribute not present.");
             }
 
-            return packageProviderAttribute[0].Name;
+            return packageProviderAttribute[0];
         }
 
         private PackageProviderOperations GetOperations()
@@ -230,26 +231,6 @@ namespace AnyPackage.Provider
             }
 
             return operations;
-        }
-
-        private bool GetPackageByName()
-        {
-            var attrs = ImplementingType.GetCustomAttributes(typeof(NoPackageByNameAttribute), false);
-            var names = attrs as NoPackageByNameAttribute[];
-            return names?.Length > 0 ? false : true;
-        }
-
-        private void SetFileExtensions()
-        {
-            var attrs = ImplementingType.GetCustomAttributes(typeof(PackageByFileAttribute), false);
-
-            if (attrs is PackageByFileAttribute[] files)
-            {
-                foreach (var file in files)
-                {
-                    _fileExtensions.Add(file.Extension.ToLower());
-                }
-            }
         }
     }
 }
