@@ -89,7 +89,7 @@ namespace AnyPackage.Commands.Internal
         /// Gets instances for a given path.
         /// </summary>
         /// <param name="pathInfo">The PS path.</param>
-        protected List<PackageProvider> GetInstances(PathInfo pathInfo)
+        protected IEnumerable<PackageProvider> GetInstances(PathInfo pathInfo)
         {
             var extension = Path.GetExtension(pathInfo.ProviderPath);
             var instances = GetInstances(Provider).Where(x => x.IsSupportedFileExtension(extension)).ToList();

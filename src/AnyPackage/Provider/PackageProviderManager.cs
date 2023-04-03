@@ -17,7 +17,7 @@ namespace AnyPackage.Provider
         [ThreadStatic]
         private static Dictionary<Guid, PackageProviderInfo>? t_providers;
 
-        private static Dictionary<Guid, PackageProviderInfo> Providers
+        internal static Dictionary<Guid, PackageProviderInfo> Providers
         {
             get
             {
