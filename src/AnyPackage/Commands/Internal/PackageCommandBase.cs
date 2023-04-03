@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -79,29 +80,21 @@ namespace AnyPackage.Commands.Internal
         /// Sets the request property.
         /// </summary>
         /// <param name="path">Specifies the path.</param>
-        protected virtual void SetRequest(PathInfo path)
+        protected virtual void SetPathRequest(string path)
         {
             SetRequest();
-            Request.Path = path.ProviderPath;
+            Request.Path = path;
         }
 
         /// <summary>
         /// Gets provider instances.
         /// </summary>
         /// <param name="name">Name of the provider.</param>
-        /// <param name="packageByName">Filter providers that support name parameter set.</param>
-        protected IEnumerable<PackageProvider> GetInstances(string name, bool packageByName)
+        protected List<PackageProvider> GetNameInstances(string name)
         {
-            var instances = GetInstances(Provider);
+            var instances = GetInstances(Provider).Where(x => x.ProviderInfo.PackageByName).ToList();
 
-            if (!packageByName)
-            {
-                return instances;
-            }
-            
-            var nameInstances = instances.Where(x => x.ProviderInfo.PackageByName).ToList();
-
-            if (nameInstances.Count == 0)
+            if (instances.Count == 0)
             {
                 string message;
                 if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
@@ -113,21 +106,19 @@ namespace AnyPackage.Commands.Internal
                     message = $"No package providers support package by name.";
                 }
 
-                var ex = new InvalidOperationException(message);
-                var er = new ErrorRecord(ex, "PackageProviderNameNotSupported", ErrorCategory.InvalidOperation, Provider);
-                WriteError(er);
+                throw new InvalidOperationException(message);
             }
 
-            return nameInstances;
+            return instances;
         }
 
         /// <summary>
-        /// Gets instances for a given path.
+        /// Gets provider instances for a given path.
         /// </summary>
-        /// <param name="pathInfo">The PS path.</param>
-        protected IEnumerable<PackageProvider> GetInstances(PathInfo pathInfo)
+        /// <param name="path">The path.</param>
+        protected List<PackageProvider> GetPathInstances(string path)
         {
-            var extension = Path.GetExtension(pathInfo.ProviderPath);
+            var extension = Path.GetExtension(path);
             var instances = GetInstances(Provider).Where(x => x.IsSupportedFileExtension(extension)).ToList();
 
             if (instances.Count == 0)
@@ -143,7 +134,7 @@ namespace AnyPackage.Commands.Internal
                 }
 
                 var ex = new InvalidOperationException(message);
-                var er = new ErrorRecord(ex, "PackageProviderExtensionNotSupported", ErrorCategory.InvalidOperation, pathInfo);
+                var er = new ErrorRecord(ex, "PackageProviderExtensionNotSupported", ErrorCategory.InvalidOperation, path);
                 WriteError(er);
             }
 
@@ -151,12 +142,78 @@ namespace AnyPackage.Commands.Internal
         }
 
         /// <summary>
-        /// Validates the PS path is a file path.
+        /// Gets normalized paths.
         /// </summary>
-        /// <param name="path">The PS path.</param>
-        protected bool ValidateFile(PathInfo path)
+        /// <param name="paths">The paths to normalize.</param>
+        /// <param name="expandWildcards">If wildcards should be expanded.</param>
+        protected IEnumerable<string> GetPaths(IEnumerable<string> paths, bool expandWildcards)
         {
-            if (path.Provider.Name != "FileSystem")
+            var filePaths = new List<string>();
+
+            if (expandWildcards)
+            {
+                foreach (var path in paths)
+                {
+                    Collection<string> resolvedPaths;
+                    ProviderInfo provider;
+
+                    try
+                    {
+                        resolvedPaths = SessionState.Path.GetResolvedProviderPathFromPSPath(path, out provider);
+                    }
+                    catch (ItemNotFoundException e)
+                    {
+                        var er = new ErrorRecord(e, "PathNotFound", ErrorCategory.ObjectNotFound, path);
+                        WriteError(er);
+                        continue;
+                    }
+
+                    foreach (var resolved in resolvedPaths)
+                    {
+                        if (ValidateFile(resolved, provider))
+                        {
+                            filePaths.Add(resolved);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var path in paths)
+                {
+                    string filePath;
+                    ProviderInfo provider;
+                    PSDriveInfo drive;
+
+                    try
+                    {
+                        filePath = SessionState.Path.GetUnresolvedProviderPathFromPSPath(path, out provider, out drive);
+                    }
+                    catch (System.Management.Automation.DriveNotFoundException e)
+                    {
+                        var er = new ErrorRecord(e, "DriveNotFound", ErrorCategory.ObjectNotFound, path);
+                        WriteError(er);
+                        continue;
+                    }
+                    
+                    if (ValidateFile(filePath, provider))
+                    {
+                        filePaths.Add(filePath);
+                    }
+                }
+            }
+
+            return filePaths;
+        }
+
+        /// <summary>
+        /// Validates that the path is a file.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="provider">The PS provider.</param>
+        protected bool ValidateFile(string path, ProviderInfo provider)
+        {
+            if (provider.Name != "FileSystem")
             {
                 var ex = new InvalidOperationException($"Path '{path}' is not a file system path.");
                 var er = new ErrorRecord(ex, "PathNotFileSystemProvider", ErrorCategory.InvalidArgument, path);
@@ -164,7 +221,7 @@ namespace AnyPackage.Commands.Internal
                 return false;
             }
 
-            if (!File.Exists(path.ProviderPath))
+            if (!File.Exists(path))
             {
                 var ex = new InvalidOperationException($"Path '{path}' is not a file.");
                 var er = new ErrorRecord(ex, "PathNotFile", ErrorCategory.InvalidArgument, path);

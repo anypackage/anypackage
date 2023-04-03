@@ -72,6 +72,7 @@ namespace AnyPackage.Commands
         /// </summary>
         [Parameter(Mandatory = true,
             ParameterSetName = Constants.PathParameterSet)]
+        [SupportsWildcards]
         [ValidateNotNullOrEmpty]
         public string[] Path { get; set; } = Array.Empty<string>();
 
@@ -102,7 +103,7 @@ namespace AnyPackage.Commands
             {
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
-                var instances = GetInstances(Provider, true);
+                var instances = GetNameInstances(Provider);
 
                 foreach (var name in Name)
                 {
@@ -112,7 +113,16 @@ namespace AnyPackage.Commands
             }
             else if (ParameterSetName == Constants.PathParameterSet)
             {
-                ProcessPath();
+                foreach (var path in GetPaths(Path, true))
+                {
+                    var instances = GetPathInstances(path);
+                    
+                    if (instances.Count > 0)
+                    {
+                        SetPathRequest(path);
+                        FindPackage(path, instances);
+                    }
+                }
             }
         }
 
@@ -124,34 +134,6 @@ namespace AnyPackage.Commands
             base.SetRequest();
             Request.PassThru = true;
             Request.Prerelease = Prerelease;
-        }
-
-        private void ProcessPath()
-        {
-            foreach (var path in Path)
-            {
-                try
-                {
-                    var pathInfos = SessionState.Path.GetResolvedPSPathFromPSPath(path);
-                    foreach (var pathInfo in pathInfos)
-                    {
-                        if (!ValidateFile(pathInfo))
-                        {
-                            continue;
-                        }
-
-                        var instances = GetInstances(pathInfo);
-                        SetRequest(pathInfo);
-                        FindPackage(pathInfo.Path, instances);
-                    }
-                }
-                catch (ItemNotFoundException e)
-                {
-                    var ex = new PackageProviderException(e.Message, e);
-                    var er = new ErrorRecord(ex, "PathNotFound", ErrorCategory.ObjectNotFound, path);
-                    WriteError(er);
-                }
-            }
         }
 
         private void FindPackage(string package, IEnumerable<PackageProvider> instances)
@@ -179,7 +161,7 @@ namespace AnyPackage.Commands
                 }
             }
 
-            if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(package))
+            if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name))
             {
                 var ex = new PackageNotFoundException(package);
                 var er = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
