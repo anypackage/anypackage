@@ -101,27 +101,9 @@ namespace AnyPackage.Commands
         {
             if (ParameterSetName == Constants.NameParameterSet)
             {
-                var instances = GetInstances(Provider).Where(x => x.ProviderInfo.PackageByName).ToList();
-
-                if (instances.Count == 0)
-                {
-                    string message;
-                    if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
-                    {
-                        message = $"Package provider '{Provider}' does not support package by name.";
-                    }
-                    else
-                    {
-                        message = $"No package providers support package by name.";
-                    }
-
-                    var ex = new InvalidOperationException(message);
-                    var er = new ErrorRecord(ex, "PackageProviderNameNotSupported", ErrorCategory.InvalidOperation, Provider);
-                    WriteError(er);
-                }
-
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+                var instances = GetInstances(Provider, true);
 
                 foreach (var name in Name)
                 {

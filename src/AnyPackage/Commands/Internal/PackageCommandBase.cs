@@ -86,6 +86,42 @@ namespace AnyPackage.Commands.Internal
         }
 
         /// <summary>
+        /// Gets provider instances.
+        /// </summary>
+        /// <param name="name">Name of the provider.</param>
+        /// <param name="packageByName">Filter providers that support name parameter set.</param>
+        protected IEnumerable<PackageProvider> GetInstances(string name, bool packageByName)
+        {
+            var instances = GetInstances(Provider);
+
+            if (!packageByName)
+            {
+                return instances;
+            }
+            
+            var nameInstances = instances.Where(x => x.ProviderInfo.PackageByName).ToList();
+
+            if (nameInstances.Count == 0)
+            {
+                string message;
+                if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
+                {
+                    message = $"Package provider '{Provider}' does not support package by name.";
+                }
+                else
+                {
+                    message = $"No package providers support package by name.";
+                }
+
+                var ex = new InvalidOperationException(message);
+                var er = new ErrorRecord(ex, "PackageProviderNameNotSupported", ErrorCategory.InvalidOperation, Provider);
+                WriteError(er);
+            }
+
+            return nameInstances;
+        }
+
+        /// <summary>
         /// Gets instances for a given path.
         /// </summary>
         /// <param name="pathInfo">The PS path.</param>
@@ -137,6 +173,26 @@ namespace AnyPackage.Commands.Internal
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Validates that the package provider supports the operation.
+        /// </summary>
+        /// <param name="package">Package to validate.</param>
+        /// <param name="operation">Operation to validate.</param>
+        protected bool ValidateOperation(PackageInfo package, PackageProviderOperations operation)
+        {
+            if (package.Provider.Operations.HasFlag(operation))
+            {
+                return true;
+            }
+            else
+            {
+                var ex = new InvalidOperationException($"Package provider '{package.Provider.Name}' does not support this operation.");
+                var er = new ErrorRecord(ex, "PackageProviderOperationNotSupported", ErrorCategory.InvalidOperation, Request.Name);
+                WriteError(er);
+                return false;
+            }
         }
     }
 }
