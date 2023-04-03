@@ -74,7 +74,17 @@ namespace AnyPackage.Commands
             ParameterSetName = Constants.PathParameterSet)]
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
+        [Alias("FilePath")]
         public string[] Path { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets or sets the package path(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.LiteralPathParameterSet)]
+        [ValidateNotNullOrEmpty]
+        [Alias("PSPath")]
+        public string[] LiteralPath { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Instances the <c>FindPackageCommand</c> class.
@@ -114,6 +124,19 @@ namespace AnyPackage.Commands
             else if (ParameterSetName == Constants.PathParameterSet)
             {
                 foreach (var path in GetPaths(Path, true))
+                {
+                    var instances = GetPathInstances(path);
+                    
+                    if (instances.Count > 0)
+                    {
+                        SetPathRequest(path);
+                        FindPackage(path, instances);
+                    }
+                }
+            }
+            else if (ParameterSetName == Constants.LiteralPathParameterSet)
+            {
+                foreach (var path in GetPaths(LiteralPath, false))
                 {
                     var instances = GetPathInstances(path);
                     

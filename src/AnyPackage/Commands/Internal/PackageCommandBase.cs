@@ -161,6 +161,12 @@ namespace AnyPackage.Commands.Internal
                     {
                         resolvedPaths = SessionState.Path.GetResolvedProviderPathFromPSPath(path, out provider);
                     }
+                    catch (System.Management.Automation.DriveNotFoundException e)
+                    {
+                        var er = new ErrorRecord(e, "DriveNotFound", ErrorCategory.ObjectNotFound, path);
+                        WriteError(er);
+                        continue;
+                    }
                     catch (ItemNotFoundException e)
                     {
                         var er = new ErrorRecord(e, "PathNotFound", ErrorCategory.ObjectNotFound, path);
@@ -195,7 +201,7 @@ namespace AnyPackage.Commands.Internal
                         WriteError(er);
                         continue;
                     }
-                    
+
                     if (ValidateFile(filePath, provider))
                     {
                         filePaths.Add(filePath);
