@@ -21,6 +21,7 @@ namespace AnyPackage.Commands
     public sealed class InstallPackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Install = PackageProviderOperations.Install;
+        private const string Installing = "Installing";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -132,11 +133,12 @@ namespace AnyPackage.Commands
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
                 var instances = GetNameInstances(Provider);
+                var invoke = GetInvoke(instances);
 
                 foreach (var name in Name)
                 {
                     SetRequest(name, version, source, TrustSource);
-                    InstallPackage(name, instances);
+                    Invoke(name, Installing, invoke, true, true);
                 }
             }
             else if (ParameterSetName == Constants.InputObjectParameterSet)
@@ -149,34 +151,32 @@ namespace AnyPackage.Commands
                     }
 
                     var instances = GetInstances(package.Provider.FullName);
+                    var invoke = GetInvoke(instances);
                     SetRequest(package, TrustSource);
-                    InstallPackage(package.Name, instances);
+                    Invoke(package.Name, Installing, invoke, true, true);
                 }
             }
-            else if (ParameterSetName == Constants.PathParameterSet)
+            else if (ParameterSetName == Constants.PathParameterSet
+                     || ParameterSetName == Constants.LiteralPathParameterSet)
             {
-                foreach (var path in GetPaths(Path, true))
-                {
-                    var instances = GetPathInstances(path);
+                IEnumerable<string> paths;
 
-                    if (instances.Count > 0)
-                    {
-                        SetPathRequest(path);
-                        InstallPackage(path, instances);
-                    }
+                if (ParameterSetName == Constants.PathParameterSet)
+                {
+                    paths = GetPaths(Path, true);
                 }
-            }
-            else if (ParameterSetName == Constants.LiteralPathParameterSet)
-            {
-                foreach (var path in GetPaths(LiteralPath, false))
+                else
+                {
+                    paths = GetPaths(LiteralPath, false);
+                }
+
+                foreach (var path in paths)
                 {
                     var instances = GetPathInstances(path);
-                    
-                    if (instances.Count > 0)
-                    {
-                        SetPathRequest(path);
-                        InstallPackage(path, instances);
-                    }
+                    var invoke = GetInvoke(instances);
+
+                    SetPathRequest(path);
+                    Invoke(path, Installing, invoke, true, true);
                 }
             }
         }
@@ -191,48 +191,16 @@ namespace AnyPackage.Commands
             Request.Prerelease = Prerelease;
         }
 
-        private void InstallPackage(string package, IEnumerable<PackageProvider> instances)
+        private IDictionary<PackageProvider, InvokePackage> GetInvoke(IEnumerable<PackageProvider> instances)
         {
-            if (!ShouldProcess(package))
-            {
-                return;
-            }
-
-            WriteVerbose($"Installing '{package}' package.");
+            var dictionary = new Dictionary<PackageProvider, InvokePackage>();
 
             foreach (var instance in instances)
             {
-                WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-                Request.ProviderInfo = instance.ProviderInfo;
-
-                try
-                {
-                    instance.InstallPackage(Request);
-                }
-                catch (PipelineStoppedException)
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    var ex = new PackageProviderException(e.Message, e);
-                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
-                    WriteError(er);
-                }
-
-                // Only install first package found.
-                if (Request.HasWriteObject)
-                {
-                    break;
-                }
+                dictionary.Add(instance, instance.InstallPackage);
             }
 
-            if (!Request.HasWriteObject)
-            {
-                var ex = new PackageNotFoundException(package);
-                var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
-                WriteError(err);
-            }
+            return dictionary;
         }
     }
 }

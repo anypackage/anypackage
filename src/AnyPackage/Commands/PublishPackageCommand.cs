@@ -2,8 +2,7 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
-using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
@@ -70,42 +69,12 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            if (!ShouldProcess(Path))
-            {
-                return;
-            }
-
-            var instance = GetInstances(Provider).First();
-
-            WriteVerbose($"Publishing '{Path}' package.");
-
             string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+            var instance = GetInstances(Provider);
+            var invoke = GetInvoke(instance);
+
             SetRequest(Path, source);
-
-            WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-            Request.ProviderInfo = instance.ProviderInfo;
-
-            try
-            {
-                instance.PublishPackage(Request);
-            }
-            catch (PipelineStoppedException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                var ex = new PackageProviderException(e.Message, e);
-                var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, Path);
-                WriteError(er);
-            }
-
-            if (!Request.HasWriteObject)
-            {
-                var ex = new PackageProviderException("Package provider did not publish package.");
-                var err = new ErrorRecord(ex, "PackageNotPublished", ErrorCategory.NotSpecified, Path);
-                WriteError(err);
-            }
+            Invoke(Path, "Publishing", invoke, true);
         }
 
         private void SetRequest(string path, string? source)
@@ -114,6 +83,18 @@ namespace AnyPackage.Commands
             Request.Path = path;
             Request.Source = source;
             Request.PassThru = PassThru;
+        }
+
+        private IDictionary<PackageProvider, InvokePackage> GetInvoke(IEnumerable<PackageProvider> instances)
+        {
+            var dictionary = new Dictionary<PackageProvider, InvokePackage>();
+
+            foreach (var instance in instances)
+            {
+                dictionary.Add(instance, instance.PublishPackage);
+            }
+
+            return dictionary;
         }
     }
 }

@@ -18,6 +18,12 @@ namespace AnyPackage.Commands.Internal
     public abstract class PackageCommandBase : CommandBase
     {
         /// <summary>
+        /// Invokes a package operation.
+        /// </summary>
+        /// <param name="request">The package request.</param>
+        protected delegate void InvokePackage(PackageRequest request);
+
+        /// <summary>
         /// Gets or sets the package request.
         /// </summary>
         protected PackageRequest Request
@@ -255,6 +261,72 @@ namespace AnyPackage.Commands.Internal
                 var er = new ErrorRecord(ex, "PackageProviderOperationNotSupported", ErrorCategory.InvalidOperation, Request.Name);
                 WriteError(er);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Invokes the package operation on multiple package instances.
+        /// </summary>
+        /// <param name="package">The package label.</param>
+        /// <param name="verb">The package operation.</param>
+        /// <param name="instances">The package instance and operation.</param>
+        /// <param name="shouldProcess">If should call ShouldProcess.</param>
+        /// <param name="first">If should only process first provider.</param>
+        protected void Invoke(string package,
+                              string verb,
+                              IDictionary<PackageProvider, InvokePackage> instances,
+                              bool shouldProcess = false,
+                              bool first = false)
+        {
+            if (instances.Count == 0)
+            {
+                return;
+            }
+
+            if (shouldProcess && !ShouldProcess(package))
+            {
+                return;
+            }
+            
+            WriteVerbose($"{verb} '{package}' package.");
+
+            foreach (var instance in instances.Keys)
+            {
+                InvokePackage invoke = instances[instance];
+                Invoke(package, instance, invoke);
+
+                if (first && Request.HasWriteObject)
+                {
+                    break;
+                }
+            }
+
+            if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name))
+            {
+                var ex = new PackageNotFoundException(package);
+                var er = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
+                WriteError(er);
+            }
+        }
+
+        private void Invoke(string package, PackageProvider instance, InvokePackage operation)
+        {
+            WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
+            Request.ProviderInfo = instance.ProviderInfo;
+
+            try
+            {
+                operation(Request);
+            }
+            catch (PipelineStoppedException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                var ex = new PackageProviderException(e.Message, e);
+                var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
+                WriteError(er);
             }
         }
     }
