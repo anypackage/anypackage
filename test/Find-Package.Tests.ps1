@@ -143,8 +143,8 @@ Describe Find-Package {
         }
 
         It 'should not return wildcard' {
-            Find-Package -LiteralPath $PSScriptRoot\packages\*.json |
-            Should -BeNullOrEmpty
+            { Find-Package -LiteralPath $PSScriptRoot\packages\*.json -ErrorAction Stop } |
+            Should -Throw
         }
     }
 }

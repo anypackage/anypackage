@@ -14,7 +14,7 @@ class PowerShellProvider : PackageProvider,
     }
 
     [void] FindPackage([PackageRequest] $request) {
-        if ($request.ParameterSetName -eq 'Path') {
+        if ($request.Path) {
             $this.FindPackageByFile($request)
             return
         }
@@ -54,7 +54,7 @@ class PowerShellProvider : PackageProvider,
     }
 
     [void] InstallPackage([PackageRequest] $request) {
-        if ($request.ParameterSetName -eq 'Path') {
+        if ($request.Path) {
             $this.InstallPackageByFile($request)
             return
         }
@@ -152,7 +152,7 @@ class PowerShellProvider : PackageProvider,
     }
 
     [void] UpdatePackage([PackageRequest] $request) {
-        if ($request.ParameterSetName -eq 'Path') {
+        if ($request.Path) {
             $this.UpdatePackageByFile($request)
             return
         }

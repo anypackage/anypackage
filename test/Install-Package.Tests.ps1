@@ -103,4 +103,28 @@ Describe Install-Package {
             $results | Should -HaveCount @($_).Length
         }
     }
+
+    Context 'with -Path parameter' {
+        It 'should return results' {
+            Install-Package -Path $PSScriptRoot\packages\apple-1.0.json -PassThru |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should return wildcard' {
+            @(Install-Package -Path $PSScriptRoot\packages\*.json -PassThru).Count -gt 1 |
+            Should -BeTrue
+        }
+    }
+
+    Context 'with -LiteralPath parameter' {
+        It 'should return results' {
+            Install-Package -LiteralPath $PSScriptRoot\packages\apple-1.0.json |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should not return wildcard' {
+            Install-Package -LiteralPath $PSScriptRoot\packages\*.json |
+            Should -BeNullOrEmpty
+        }
+    }
 }
