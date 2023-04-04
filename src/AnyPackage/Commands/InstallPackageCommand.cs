@@ -138,7 +138,7 @@ namespace AnyPackage.Commands
                 foreach (var name in Name)
                 {
                     SetRequest(name, version, source, TrustSource);
-                    Invoke(name, Installing, invoke, true);
+                    Invoke(name, Installing, invoke, true, true);
                 }
             }
             else if (ParameterSetName == Constants.InputObjectParameterSet)
@@ -153,7 +153,7 @@ namespace AnyPackage.Commands
                     var instances = GetInstances(package.Provider.FullName);
                     var invoke = GetInvoke(instances);
                     SetRequest(package, TrustSource);
-                    Invoke(package.Name, Installing, invoke, true);
+                    Invoke(package.Name, Installing, invoke, true, true);
                 }
             }
             else if (ParameterSetName == Constants.PathParameterSet
@@ -176,7 +176,7 @@ namespace AnyPackage.Commands
                     var invoke = GetInvoke(instances);
 
                     SetPathRequest(path);
-                    Invoke(path, Installing, invoke, true);
+                    Invoke(path, Installing, invoke, true, true);
                 }
             }
         }

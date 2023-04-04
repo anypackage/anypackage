@@ -271,7 +271,12 @@ namespace AnyPackage.Commands.Internal
         /// <param name="verb">The package operation.</param>
         /// <param name="instances">The package instance and operation.</param>
         /// <param name="shouldProcess">If should call ShouldProcess.</param>
-        protected void Invoke(string package, string verb, IDictionary<PackageProvider, InvokePackage> instances, bool shouldProcess = false)
+        /// /// <param name="first">If should only process first provider.</param>
+        protected void Invoke(string package,
+                              string verb,
+                              IDictionary<PackageProvider, InvokePackage> instances,
+                              bool shouldProcess = false,
+                              bool first = false)
         {
             if (instances.Count == 0)
             {
@@ -289,6 +294,11 @@ namespace AnyPackage.Commands.Internal
             {
                 InvokePackage invoke = instances[instance];
                 Invoke(package, instance, invoke);
+
+                if (first && Request.HasWriteObject)
+                {
+                    break;
+                }
             }
 
             if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name))
