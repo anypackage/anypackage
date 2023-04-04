@@ -270,9 +270,15 @@ namespace AnyPackage.Commands.Internal
         /// <param name="package">The package label.</param>
         /// <param name="verb">The package operation.</param>
         /// <param name="instances">The package instance and operation.</param>
-        protected void Invoke(string package, string verb, IDictionary<PackageProvider, InvokePackage> instances)
+        /// <param name="shouldProcess">If should call ShouldProcess.</param>
+        protected void Invoke(string package, string verb, IDictionary<PackageProvider, InvokePackage> instances, bool shouldProcess = false)
         {
             if (instances.Count == 0)
+            {
+                return;
+            }
+
+            if (shouldProcess && !ShouldProcess(package))
             {
                 return;
             }
