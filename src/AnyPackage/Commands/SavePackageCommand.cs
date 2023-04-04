@@ -22,6 +22,7 @@ namespace AnyPackage.Commands
     public sealed class SavePackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Save = PackageProviderOperations.Save;
+        private const string Saving = "Saving";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -130,15 +131,15 @@ namespace AnyPackage.Commands
         {
             if (ParameterSetName == Constants.NameParameterSet)
             {
-                var instances = GetInstances(Provider);
-
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+                var instances = GetInstances(Provider);
+                var invoke = GetInvoke(instances);
 
                 foreach (var name in Name)
                 {
                     SetRequest(name, version, source, TrustSource);
-                    SavePackage(instances);
+                    Invoke(name, Saving, invoke, true, true);
                 }
             }
             else if (ParameterSetName == Constants.InputObjectParameterSet)
@@ -151,8 +152,9 @@ namespace AnyPackage.Commands
                     }
 
                     var instances = GetInstances(package.Provider.FullName);
+                    var invoke = GetInvoke(instances);
                     SetRequest(package, TrustSource);
-                    SavePackage(instances);
+                    Invoke(package.Name, Saving, invoke, true, true);
                 }
             }
         }
@@ -168,48 +170,16 @@ namespace AnyPackage.Commands
             Request.Path = Path;
         }
 
-        private void SavePackage(IEnumerable<PackageProvider> instances)
+        private IDictionary<PackageProvider, InvokePackage> GetInvoke(IEnumerable<PackageProvider> instances)
         {
-            if (!ShouldProcess(Request.Name))
-            {
-                return;
-            }
-
-            WriteVerbose($"Saving '{Request.Name}' package.");
+            var dictionary = new Dictionary<PackageProvider, InvokePackage>();
 
             foreach (var instance in instances)
             {
-                WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-                Request.ProviderInfo = instance.ProviderInfo;
-
-                try
-                {
-                    instance.SavePackage(Request);
-                }
-                catch (PipelineStoppedException)
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    var ex = new PackageProviderException(e.Message, e);
-                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, Request.Name);
-                    WriteError(er);
-                }
-
-                // Only save first package found.
-                if (Request.HasWriteObject)
-                {
-                    break;
-                }
+                dictionary.Add(instance, instance.SavePackage);
             }
 
-            if (!Request.HasWriteObject)
-            {
-                var ex = new PackageNotFoundException(Request.Name);
-                var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, Request.Name);
-                WriteError(err);
-            }
+            return dictionary;
         }
     }
 }
