@@ -21,6 +21,7 @@ namespace AnyPackage.Commands
     public sealed class UninstallPackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Uninstall = PackageProviderOperations.Uninstall;
+        private const string Uninstalling = "Uninstalling";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -84,14 +85,14 @@ namespace AnyPackage.Commands
         {
             if (ParameterSetName == Constants.NameParameterSet)
             {
-                var instances = GetInstances(Provider);
-
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+                var instances = GetInstances(Provider);
+                var invoke = GetInvoke(instances);
 
                 foreach (var name in Name)
                 {
                     SetRequest(name, version);
-                    UninstallPackage(instances);
+                    Invoke(name, Uninstalling, invoke, true, true);
                 }
             }
             else if (ParameterSetName == Constants.InputObjectParameterSet)
@@ -104,8 +105,9 @@ namespace AnyPackage.Commands
                     }
 
                     var instances = GetInstances(package.Provider.FullName);
+                    var invoke = GetInvoke(instances);
                     SetRequest(package);
-                    UninstallPackage(instances);
+                    Invoke(package.Name, Uninstalling, invoke, true, true);
                 }
             }
         }
@@ -120,48 +122,16 @@ namespace AnyPackage.Commands
             Request.Prerelease = true;
         }
 
-        private void UninstallPackage(IEnumerable<PackageProvider> instances)
+        private IDictionary<PackageProvider, InvokePackage> GetInvoke(IEnumerable<PackageProvider> instances)
         {
-            if (!ShouldProcess(Request.Name))
-            {
-                return;
-            }
-
-            WriteVerbose($"Uninstalling '{Request.Name}' package.");
+            var dictionary = new Dictionary<PackageProvider, InvokePackage>();
 
             foreach (var instance in instances)
             {
-                WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-                Request.ProviderInfo = instance.ProviderInfo;
-
-                try
-                {
-                    instance.UninstallPackage(Request);
-                }
-                catch (PipelineStoppedException)
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    var ex = new PackageProviderException(e.Message, e);
-                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, Request.Name);
-                    WriteError(er);
-                }
-
-                // Only uninstall first package found.
-                if (Request.HasWriteObject)
-                {
-                    break;
-                }
+                dictionary.Add(instance, instance.UninstallPackage);
             }
 
-            if (!Request.HasWriteObject)
-            {
-                var ex = new PackageNotFoundException(Request.Name);
-                var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, Request.Name);
-                WriteError(err);
-            }
+            return dictionary;
         }
     }
 }
