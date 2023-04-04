@@ -3,6 +3,7 @@
 // terms of the MIT license.
 
 using System;
+using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
@@ -22,6 +23,7 @@ namespace AnyPackage.Commands
         /// Gets or sets the name(s).
         /// </summary>
         [Parameter(Position = 0,
+            ParameterSetName = Constants.NameParameterSet,
             ValueFromPipeline = true,
             ValueFromPipelineByPropertyName = true)]
         [SupportsWildcards]
@@ -34,14 +36,16 @@ namespace AnyPackage.Commands
         /// <remarks>
         /// Accepts NuGet version range syntax.
         /// </remarks>
-        [Parameter(Position = 1)]
+        [Parameter(Position = 1,
+            ParameterSetName = Constants.NameParameterSet)]
         [ValidateNotNullOrEmpty]
         public PackageVersionRange Version { get; set; } = new PackageVersionRange();
 
         /// <summary>
         /// Gets or sets the source.
         /// </summary>
-        [Parameter(ValueFromPipelineByPropertyName = true)]
+        [Parameter(ValueFromPipelineByPropertyName = true,
+            ParameterSetName = Constants.NameParameterSet)]
         [ValidateNotNullOrEmpty]
         [ValidateNoWildcards]
         [ArgumentCompleter(typeof(SourceArgumentCompleter))]
@@ -51,7 +55,7 @@ namespace AnyPackage.Commands
         /// <summary>
         /// Gets or sets if prerelease versions should be included.
         /// </summary>
-        [Parameter]
+        [Parameter(ParameterSetName = Constants.NameParameterSet)]
         public SwitchParameter Prerelease { get; set; }
 
         /// <summary>
@@ -62,6 +66,25 @@ namespace AnyPackage.Commands
         [ValidateProvider(Find)]
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
         public override string Provider { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the package path(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.PathParameterSet)]
+        [SupportsWildcards]
+        [ValidateNotNullOrEmpty]
+        [Alias("FilePath")]
+        public string[] Path { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets or sets the package path(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.LiteralPathParameterSet)]
+        [ValidateNotNullOrEmpty]
+        [Alias("PSPath")]
+        public string[] LiteralPath { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Instances the <c>FindPackageCommand</c> class.
@@ -86,43 +109,42 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            var instances = GetInstances(Provider);
-
-            PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
-            string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
-
-            foreach (var name in Name)
+            if (ParameterSetName == Constants.NameParameterSet)
             {
-                WriteVerbose($"Finding '{name}' package.");
+                PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+                string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+                var instances = GetNameInstances(Provider);
 
-                SetRequest(name, version, source);
-
-                foreach (var instance in instances)
+                foreach (var name in Name)
                 {
-                    WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-                    Request.ProviderInfo = instance.ProviderInfo;
-
-                    try
+                    SetRequest(name, version, source);
+                    FindPackage(name, instances);
+                }
+            }
+            else if (ParameterSetName == Constants.PathParameterSet)
+            {
+                foreach (var path in GetPaths(Path, true))
+                {
+                    var instances = GetPathInstances(path);
+                    
+                    if (instances.Count > 0)
                     {
-                        instance.FindPackage(Request);
-                    }
-                    catch (PipelineStoppedException)
-                    {
-                        throw;
-                    }
-                    catch (Exception e)
-                    {
-                        var ex = new PackageProviderException(e.Message, e);
-                        var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, name);
-                        WriteError(er);
+                        SetPathRequest(path);
+                        FindPackage(path, instances);
                     }
                 }
-
-                if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(name))
+            }
+            else if (ParameterSetName == Constants.LiteralPathParameterSet)
+            {
+                foreach (var path in GetPaths(LiteralPath, false))
                 {
-                    var ex = new PackageNotFoundException(name);
-                    var er = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, name);
-                    WriteError(er);
+                    var instances = GetPathInstances(path);
+                    
+                    if (instances.Count > 0)
+                    {
+                        SetPathRequest(path);
+                        FindPackage(path, instances);
+                    }
                 }
             }
         }
@@ -135,6 +157,39 @@ namespace AnyPackage.Commands
             base.SetRequest();
             Request.PassThru = true;
             Request.Prerelease = Prerelease;
+        }
+
+        private void FindPackage(string package, IEnumerable<PackageProvider> instances)
+        {
+            WriteVerbose($"Finding '{package}' package.");
+
+            foreach (var instance in instances)
+            {
+                WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
+                Request.ProviderInfo = instance.ProviderInfo;
+
+                try
+                {
+                    instance.FindPackage(Request);
+                }
+                catch (PipelineStoppedException)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    var ex = new PackageProviderException(e.Message, e);
+                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
+                    WriteError(er);
+                }
+            }
+
+            if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name))
+            {
+                var ex = new PackageNotFoundException(package);
+                var er = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
+                WriteError(er);
+            }
         }
     }
 }

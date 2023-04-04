@@ -123,4 +123,28 @@ Describe Find-Package {
             Should -HaveCount ($_ * 5)
         }
     }
+
+    Context 'with -Path parameter' {
+        It 'should return results' {
+            Find-Package -Path $PSScriptRoot\packages\apple-1.0.json |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should return wildcard' {
+            @(Find-Package -Path $PSScriptRoot\packages\*.json).Count -gt 1 |
+            Should -BeTrue
+        }
+    }
+
+    Context 'with -LiteralPath parameter' {
+        It 'should return results' {
+            Find-Package -LiteralPath $PSScriptRoot\packages\apple-1.0.json |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should not return wildcard' {
+            { Find-Package -LiteralPath $PSScriptRoot\packages\*.json -ErrorAction Stop } |
+            Should -Throw
+        }
+    }
 }

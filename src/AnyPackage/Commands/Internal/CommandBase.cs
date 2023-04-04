@@ -59,6 +59,11 @@ namespace AnyPackage.Commands.Internal
         /// </summary>
         protected override void BeginProcessing()
         {
+            if (Providers.Count == 0)
+            {
+                throw new InvalidOperationException("No package providers available.");
+            }
+            
             var providers = GetProviders(Operation);
             var noProvider = true;
 

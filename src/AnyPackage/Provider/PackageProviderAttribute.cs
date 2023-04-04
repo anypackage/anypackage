@@ -17,6 +17,21 @@ namespace AnyPackage.Provider
         /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Gets or sets the supported file extensions.
+        /// </summary>
+        public string[] FileExtensions { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets if the provider supports the <c>Name</c> parameter set.
+        /// </summary>
+        /// <remarks>
+        /// Used for providers that use <c>Path</c> parameter set.
+        /// Used for the following cmdlets:
+        /// Find-Package, Install-Package, Update-Package
+        /// </remarks>
+        public bool PackageByName { get; set; } = true;
+
         private char[] _invalidCharacters = new char[] { ':', '\\', '[', ']', '?', '*' };
 
         /// <summary>

@@ -19,5 +19,7 @@ namespace AnyPackage
         internal const string UnregisterPackageSource = "Unregister-PackageSource";
         internal const string NameParameterSet = "Name";
         internal const string InputObjectParameterSet = "InputObject";
+        internal const string PathParameterSet = "Path";
+        internal const string LiteralPathParameterSet = "LiteralPath";
     }
 }
