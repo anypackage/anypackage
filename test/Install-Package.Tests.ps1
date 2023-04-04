@@ -131,7 +131,7 @@ Describe Install-Package {
     Context 'with -Uri parameter' {
         It 'should return results' {
             [uri]$uri = "file://$PSScriptRoot/packages/apple-1.0.json"
-            Install-Package -Uri $uri |
+            Install-Package -Uri $uri -PassThru |
             Should -Not -BeNullOrEmpty
         }
     }
