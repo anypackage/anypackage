@@ -45,6 +45,8 @@ Describe Get-PackageProvider {
             $result.PackageByName | Should -BeTrue
             $result.PackageByFile | Should -BeTrue
             $result.PackageByUri | Should -BeTrue
+            $result.FileExtensions | Should -Be @('.json')
+            $result.UriSchemes | Should -Be @('file')
         }
     }
 
