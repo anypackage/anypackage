@@ -150,7 +150,8 @@ Describe Find-Package {
 
     Context 'with -Uri parameter' {
         It 'should return results' {
-            Find-Package -Uri $PSScriptRoot\packages\apple-1.0.json |
+            [uri]$uri = "file://$PSScriptRoot/packages/apple-1.0.json"
+            Find-Package -Uri $uri |
             Should -Not -BeNullOrEmpty
         }
     }

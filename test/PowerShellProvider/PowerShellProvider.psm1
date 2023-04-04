@@ -49,7 +49,7 @@ class PowerShellProvider : PackageProvider,
     }
 
     [void] FindPackageByUri([PackageRequest] $request) {
-        Get-Content -LiteralPath $request.Uri.AbsolutePath |
+        Get-Content -LiteralPath $request.Uri.LocalPath |
         ConvertFrom-Json |
         Write-Package -Request $request -Provider $this.ProviderInfo
     }
