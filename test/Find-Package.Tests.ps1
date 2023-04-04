@@ -154,5 +154,10 @@ Describe Find-Package {
             Find-Package -Uri $uri |
             Should -Not -BeNullOrEmpty
         }
+
+        It 'should error with invalid scheme' {
+            { Find-Package -Uri 'http://google.com' -ErrorAction Stop } |
+            Should -Throw
+        }
     }
 }
