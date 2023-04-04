@@ -21,6 +21,7 @@ namespace AnyPackage.Commands
     public sealed class UpdatePackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Update = PackageProviderOperations.Update;
+        private const string Updating = "Updating";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -128,11 +129,12 @@ namespace AnyPackage.Commands
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
                 var instances = GetInstances(Provider);
+                var invoke = GetInvoke(instances);
 
                 foreach (var name in Name)
                 {
                     SetRequest(name, version, source, TrustSource);
-                    UpdatePackage(name, instances);
+                    Invoke(name, Updating, invoke, true);
                 }
             }
             else if (ParameterSetName == Constants.InputObjectParameterSet)
@@ -145,34 +147,32 @@ namespace AnyPackage.Commands
                     }
 
                     var instances = GetInstances(package.Provider.FullName);
+                    var invoke = GetInvoke(instances);
                     SetRequest(package, TrustSource);
-                    UpdatePackage(package.Name, instances);
+                    Invoke(package.Name, Updating, invoke, true);
                 }
             }
-            else if (ParameterSetName == Constants.PathParameterSet)
+            else if (ParameterSetName == Constants.PathParameterSet
+                     || ParameterSetName == Constants.LiteralPathParameterSet)
             {
-                foreach (var path in GetPaths(Path, true))
-                {
-                    var instances = GetPathInstances(path);
+                IEnumerable<string> paths;
 
-                    if (instances.Count > 0)
-                    {
-                        SetPathRequest(path);
-                        UpdatePackage(path, instances);
-                    }
+                if (ParameterSetName == Constants.PathParameterSet)
+                {
+                    paths = GetPaths(Path, true);
                 }
-            }
-            else if (ParameterSetName == Constants.LiteralPathParameterSet)
-            {
-                foreach (var path in GetPaths(LiteralPath, false))
+                else
+                {
+                    paths = GetPaths(LiteralPath, false);
+                }
+
+                foreach (var path in paths)
                 {
                     var instances = GetPathInstances(path);
-                    
-                    if (instances.Count > 0)
-                    {
-                        SetPathRequest(path);
-                        UpdatePackage(path, instances);
-                    }
+                    var invoke = GetInvoke(instances);
+
+                    SetPathRequest(path);
+                    Invoke(path, Updating, invoke, true);
                 }
             }
         }
@@ -187,42 +187,16 @@ namespace AnyPackage.Commands
             Request.Prerelease = Prerelease;
         }
 
-        private void UpdatePackage(string package, IEnumerable<PackageProvider> instances)
+        private IDictionary<PackageProvider, InvokePackage> GetInvoke(IEnumerable<PackageProvider> instances)
         {
-            if (!ShouldProcess(package))
-            {
-                return;
-            }
-
-            WriteVerbose($"Updating '{package}' package.");
+            var dictionary = new Dictionary<PackageProvider, InvokePackage>();
 
             foreach (var instance in instances)
             {
-                WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-                Request.ProviderInfo = instance.ProviderInfo;
-
-                try
-                {
-                    instance.UpdatePackage(Request);
-                }
-                catch (PipelineStoppedException)
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    var ex = new PackageProviderException(e.Message, e);
-                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
-                    WriteError(er);
-                }
+                dictionary.Add(instance, instance.UpdatePackage);
             }
 
-            if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name)) 
-            {
-                var ex = new PackageNotFoundException(Request.Name);
-                var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
-                WriteError(err);
-            }
+            return dictionary;
         }
     }
 }
