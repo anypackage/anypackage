@@ -29,7 +29,7 @@ namespace AnyPackage.Commands
         [ValidateNotNullOrEmpty]
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
         [Alias("Provider")]
-        public string[] Name { get; set; } = Array.Empty<string>();
+        public string[] Name { get; set; } = new string[] { "*" };
 
         /// <summary>
         /// Gets or sets if available providers are returned. 
@@ -55,46 +55,36 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            if (Name.Length > 0)
-            {
-                List<PackageProviderInfo> provider;
+            List<PackageProviderInfo> provider;
 
-                foreach (var name in Name)
+            foreach (var name in Name)
+            {
+                if (ListAvailable)
+                {
+                    provider = _availableProviders.Where(x => x.IsMatch(name)).ToList();
+                }
+                else
+                {
+                    provider = GetProviders(name).ToList();
+                }
+
+                if (provider.Count > 0)
                 {
                     if (ListAvailable)
                     {
-                        provider = _availableProviders.Where(x => x.IsMatch(name)).ToList();
+                        WriteAvailable(provider);
                     }
-                    else {
-                        provider = GetProviders(name).ToList();
-                    }
-
-                    if (provider.Count > 0)
+                    else
                     {
-                        if (ListAvailable)
-                        {
-                            WriteAvailable(provider);
-                        }
-                        else
-                        {
-                            WriteObject(provider, true);
-                        }
-                    }
-                    else if (!WildcardPattern.ContainsWildcardCharacters(name))
-                    {
-                        var e = new PackageProviderNotFoundException(name);
-                        var err = new ErrorRecord(e, "PackageProviderNotFoundError", ErrorCategory.ObjectNotFound, name);
-                        WriteError(err);
+                        WriteObject(provider, true);
                     }
                 }
-            }
-            else if (ListAvailable)
-            {
-                WriteAvailable(_availableProviders);
-            }
-            else
-            {
-                WriteObject(GetProviders(), true);
+                else if (!WildcardPattern.ContainsWildcardCharacters(name))
+                {
+                    var e = new PackageProviderNotFoundException(name);
+                    var err = new ErrorRecord(e, "PackageProviderNotFoundError", ErrorCategory.ObjectNotFound, name);
+                    WriteError(err);
+                }
             }
         }
 
@@ -113,7 +103,7 @@ namespace AnyPackage.Commands
                 var privateData = module.PrivateData as Hashtable;
 
                 if (privateData is null) { continue; }
-                
+
                 if (privateData.ContainsKey("AnyPackage"))
                 {
                     var anyPackage = privateData["AnyPackage"] as Hashtable;
@@ -123,7 +113,7 @@ namespace AnyPackage.Commands
                     if (anyPackage.ContainsKey("Providers"))
                     {
                         IEnumerable? providers = null;
-                        
+
                         if (anyPackage["Providers"] is string)
                         {
                             providers = new object[] { anyPackage["Providers"] };
