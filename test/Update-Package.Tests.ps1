@@ -115,4 +115,28 @@ Describe Update-Package {
             Should -HaveCount @($_).Length
         }
     }
+
+    Context 'with -Path parameter' {
+        It 'should return results' {
+            Update-Package -Path $PSScriptRoot\packages\apple-2.0.json -PassThru |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should return wildcard' {
+            @(Update-Package -Path $PSScriptRoot\packages\*2.0.json -PassThru).Count -gt 1 |
+            Should -BeTrue
+        }
+    }
+
+    Context 'with -LiteralPath parameter' {
+        It 'should return results' {
+            Update-Package -LiteralPath $PSScriptRoot\packages\apple-2.0.json -PassThru |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should not return wildcard' {
+            { Update-Package -LiteralPath $PSScriptRoot\packages\*.json -ErrorAction Stop } |
+            Should -Throw
+        }
+    }
 }
