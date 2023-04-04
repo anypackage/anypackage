@@ -147,4 +147,11 @@ Describe Find-Package {
             Should -Throw
         }
     }
+
+    Context 'with -Uri parameter' {
+        It 'should return results' {
+            Find-Package -Uri $PSScriptRoot\packages\apple-1.0.json |
+            Should -Not -BeNullOrEmpty
+        }
+    }
 }

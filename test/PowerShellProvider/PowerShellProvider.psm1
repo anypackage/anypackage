@@ -3,7 +3,7 @@
 using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
 
-[PackageProvider('PowerShell', FileExtensions = ('.json'))]
+[PackageProvider('PowerShell', FileExtensions = ('.json'), UriSchemes = ('file'))]
 class PowerShellProvider : PackageProvider,
     IFindPackage, IGetPackage,
     IInstallPackage, IPublishPackage,
@@ -17,6 +17,9 @@ class PowerShellProvider : PackageProvider,
         if ($request.Path) {
             $this.FindPackageByFile($request)
             return
+        }
+        elseif ($request.Uri) {
+            $this.FindPackageByUri($request)
         }
         
         if ($request.Source) {
@@ -41,6 +44,12 @@ class PowerShellProvider : PackageProvider,
 
     [void] FindPackageByFile([PackageRequest] $request) {
         Get-Content -LiteralPath $request.Path |
+        ConvertFrom-Json |
+        Write-Package -Request $request -Provider $this.ProviderInfo
+    }
+
+    [void] FindPackageByUri([PackageRequest] $request) {
+        Get-Content -LiteralPath $request.Uri.AbsolutePath |
         ConvertFrom-Json |
         Write-Package -Request $request -Provider $this.ProviderInfo
     }

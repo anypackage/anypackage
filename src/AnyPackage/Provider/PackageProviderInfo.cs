@@ -103,7 +103,13 @@ namespace AnyPackage.Provider
         /// </summary>
         public IEnumerable<string> FileExtensions => _fileExtensions;
 
+        /// <summary>
+        /// Gets supported Uri schemes.
+        /// </summary>
+        public IEnumerable<string> UriSchemes => _uriSchemes;
+
         private HashSet<string> _fileExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private HashSet<string> _uriSchemes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private string? _moduleName;
         private PSModuleInfo? _module;
         private bool _moduleRead;
@@ -121,6 +127,7 @@ namespace AnyPackage.Provider
             Name = attr.Name;
             PackageByName = attr.PackageByName;
             _fileExtensions = new HashSet<string>(attr.FileExtensions);
+            _uriSchemes = new HashSet<string>(attr.UriSchemes);
         }
 
         internal PackageProviderInfo(Guid id, Type type) : this(type)
@@ -170,6 +177,7 @@ namespace AnyPackage.Provider
             _moduleRead = true;
             _moduleName = providerInfo.ModuleName;
             _fileExtensions = new HashSet<string>(providerInfo.FileExtensions);
+            _uriSchemes = new HashSet<string>(providerInfo.UriSchemes);
         }
 
         /// <summary>

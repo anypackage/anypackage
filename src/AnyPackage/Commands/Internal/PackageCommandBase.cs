@@ -85,6 +85,16 @@ namespace AnyPackage.Commands.Internal
         /// <summary>
         /// Sets the request property.
         /// </summary>
+        /// <param name="uri">Specifies the package uri.</param>
+        protected virtual void SetRequest(Uri uri)
+        {
+            SetRequest();
+            Request.Uri = uri;
+        }
+
+        /// <summary>
+        /// Sets the request property.
+        /// </summary>
         /// <param name="path">Specifies the path.</param>
         protected virtual void SetPathRequest(string path)
         {
@@ -96,7 +106,7 @@ namespace AnyPackage.Commands.Internal
         /// Gets provider instances.
         /// </summary>
         /// <param name="name">Name of the provider.</param>
-        protected List<PackageProvider> GetNameInstances(string name)
+        protected IEnumerable<PackageProvider> GetNameInstances(string name)
         {
             var instances = GetInstances(Provider).Where(x => x.ProviderInfo.PackageByName).ToList();
 
@@ -122,7 +132,7 @@ namespace AnyPackage.Commands.Internal
         /// Gets provider instances for a given path.
         /// </summary>
         /// <param name="path">The path.</param>
-        protected List<PackageProvider> GetPathInstances(string path)
+        protected IEnumerable<PackageProvider> GetPathInstances(string path)
         {
             var extension = Path.GetExtension(path);
             var instances = GetInstances(Provider).Where(x => x.IsSupportedFileExtension(extension)).ToList();
@@ -141,6 +151,34 @@ namespace AnyPackage.Commands.Internal
 
                 var ex = new InvalidOperationException(message);
                 var er = new ErrorRecord(ex, "PackageProviderExtensionNotSupported", ErrorCategory.InvalidOperation, path);
+                WriteError(er);
+            }
+
+            return instances;
+        }
+
+        /// <summary>
+        /// Get provider instances for a given Uri.
+        /// </summary>
+        /// <param name="uri">The Uri.</param>
+        protected IEnumerable<PackageProvider> GetUriInstances(Uri uri)
+        {
+            var instances = GetInstances(Provider).Where(x => x.IsSupportedUriScheme(uri.Scheme)).ToList();
+
+            if (instances.Count == 0)
+            {
+                string message;
+                if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
+                {
+                    message = $"Package provider '{Provider}' does not support '{uri.Scheme}' scheme.";
+                }
+                else
+                {
+                    message = $"No package providers support '{uri.Scheme}' scheme.";
+                }
+
+                var ex = new InvalidOperationException(message);
+                var er = new ErrorRecord(ex, "PackageProviderSchemeNotSupported", ErrorCategory.InvalidOperation, uri);
                 WriteError(er);
             }
 

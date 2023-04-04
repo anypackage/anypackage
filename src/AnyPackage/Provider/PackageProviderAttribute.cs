@@ -23,6 +23,11 @@ namespace AnyPackage.Provider
         public string[] FileExtensions { get; set; } = Array.Empty<string>();
 
         /// <summary>
+        /// Gets or sets the supported Uri schemes.
+        /// </summary>
+        public string[] UriSchemes { get; set; } = Array.Empty<string>();
+
+        /// <summary>
         /// Gets if the provider supports the <c>Name</c> parameter set.
         /// </summary>
         /// <remarks>

@@ -88,6 +88,14 @@ namespace AnyPackage.Commands
         public string[] LiteralPath { get; set; } = Array.Empty<string>();
 
         /// <summary>
+        /// Gets or sets the package Uri(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.UriParameterSet)]
+        [ValidateNotNullOrEmpty]
+        public Uri[] Uri { get; set; } = Array.Empty<Uri>();
+
+        /// <summary>
         /// Instances the <c>FindPackageCommand</c> class.
         /// </summary>
         public FindPackageCommand()
@@ -134,6 +142,17 @@ namespace AnyPackage.Commands
 
                     SetPathRequest(path);
                     Invoke(path, Finding, invoke);
+                }
+            }
+            else if (ParameterSetName == Constants.UriParameterSet)
+            {
+                foreach (var uri in Uri)
+                {
+                    var instances = GetUriInstances(uri);
+                    var invoke = GetInvoke(instances);
+
+                    SetRequest(uri);
+                    Invoke(uri.ToString(), Finding, invoke);
                 }
             }
         }

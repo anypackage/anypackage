@@ -78,6 +78,11 @@ namespace AnyPackage.Provider
             return ProviderInfo.FileExtensions.Any(x => x.Equals(extension, StringComparison.OrdinalIgnoreCase));
         }
 
+        internal bool IsSupportedUriScheme(string extension)
+        {
+            return ProviderInfo.UriSchemes.Any(x => x.Equals(extension, StringComparison.OrdinalIgnoreCase));
+        }
+
         internal void FindPackage(PackageRequest request)
         {
             IFindPackage? findPackage = this as IFindPackage;
