@@ -96,16 +96,6 @@ namespace AnyPackage.Commands
         }
 
         /// <summary>
-        /// Initializes the command.
-        /// </summary>
-        protected override void BeginProcessing()
-        {
-            base.BeginProcessing();
-            Request.DynamicParameters = DynamicParameters;
-            Request.PassThru = true;
-        }
-
-        /// <summary>
         /// Processes input.
         /// </summary>
         protected override void ProcessRecord()
