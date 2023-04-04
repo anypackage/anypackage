@@ -67,6 +67,9 @@ class PowerShellProvider : PackageProvider,
             $this.InstallPackageByFile($request)
             return
         }
+        elseif ($request.Uri) {
+            $this.InstallPackageByUri($request)
+        }
         
         $params = @{
             Name = $request.Name
@@ -93,6 +96,14 @@ class PowerShellProvider : PackageProvider,
 
     [void] InstallPackageByFile([PackageRequest] $request) {
         Find-Package -LiteralPath $request.Path |
+        ForEach-Object {
+            $this.ProviderInfo.Packages += $_
+            $_ | Write-Package -Request $request -Provider $this.ProviderInfo
+        }
+    }
+
+    [void] InstallPackageByUri([PackageRequest] $request) {
+        Find-Package -Uri $request.Uri |
         ForEach-Object {
             $this.ProviderInfo.Packages += $_
             $_ | Write-Package -Request $request -Provider $this.ProviderInfo
