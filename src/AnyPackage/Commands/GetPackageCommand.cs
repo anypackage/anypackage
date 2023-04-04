@@ -3,6 +3,7 @@
 // terms of the MIT license.
 
 using System;
+using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
@@ -60,43 +61,14 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            var instances = GetInstances(Provider);
-
             PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+            var instances = GetInstances(Provider);
+            var invoke = GetInvoke(instances);
 
             foreach (var name in Name)
             {
-                WriteVerbose($"Getting '{name}' package.");
-
                 SetRequest(name, version);
-
-                foreach (var instance in instances)
-                {
-                    WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-                    Request.ProviderInfo = instance.ProviderInfo;
-
-                    try
-                    {
-                        instance.GetPackage(Request);
-                    }
-                    catch (PipelineStoppedException)
-                    {
-                        throw;
-                    }
-                    catch (Exception e)
-                    {
-                        var ex = new PackageProviderException(e.Message, e);
-                        var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, name);
-                        WriteError(er);
-                    }
-                }
-
-                if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(name))
-                {
-                    var ex = new PackageNotFoundException(name);
-                    var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, name);
-                    WriteError(err);
-                }
+                Invoke(name, "Getting", invoke);
             }
         }
 
@@ -108,6 +80,18 @@ namespace AnyPackage.Commands
             base.SetRequest();
             Request.PassThru = true;
             Request.Prerelease = true;
+        }
+
+        private IDictionary<PackageProvider, InvokePackage> GetInvoke(IEnumerable<PackageProvider> instances)
+        {
+            var dictionary = new Dictionary<PackageProvider, InvokePackage>();
+
+            foreach (var instance in instances)
+            {
+                dictionary.Add(instance, instance.GetPackage);
+            }
+
+            return dictionary;
         }
     }
 }
