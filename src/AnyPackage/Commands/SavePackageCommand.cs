@@ -119,7 +119,7 @@ namespace AnyPackage.Commands
 
             if (!MyInvocation.BoundParameters.ContainsKey(nameof(Path)))
             {
-                Path = SessionState.Path.CurrentFileSystemLocation.Path;
+                Path = SessionState.Path.CurrentFileSystemLocation.ProviderPath;
             }
         }
 
