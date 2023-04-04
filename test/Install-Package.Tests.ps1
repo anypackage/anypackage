@@ -118,13 +118,13 @@ Describe Install-Package {
 
     Context 'with -LiteralPath parameter' {
         It 'should return results' {
-            Install-Package -LiteralPath $PSScriptRoot\packages\apple-1.0.json |
+            Install-Package -LiteralPath $PSScriptRoot\packages\apple-1.0.json -PassThru |
             Should -Not -BeNullOrEmpty
         }
 
         It 'should not return wildcard' {
-            Install-Package -LiteralPath $PSScriptRoot\packages\*.json |
-            Should -BeNullOrEmpty
+            { Install-Package -LiteralPath $PSScriptRoot\packages\*.json -ErrorAction Stop } |
+            Should -Throw
         }
     }
 }
