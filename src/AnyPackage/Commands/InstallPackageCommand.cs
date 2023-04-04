@@ -69,7 +69,8 @@ namespace AnyPackage.Commands
         /// <summary>
         /// Gets or sets an untrusted source to trusted for this execution.
         /// </summary>
-        [Parameter]
+        [Parameter(ParameterSetName = Constants.NameParameterSet)]
+        [Parameter(ParameterSetName = Constants.InputObjectParameterSet)]
         [Alias("TrustRepository")]
         public SwitchParameter TrustSource { get; set; }
 
@@ -77,6 +78,8 @@ namespace AnyPackage.Commands
         /// Gets or sets the provider.
         /// </summary>
         [Parameter(ParameterSetName = Constants.NameParameterSet)]
+        [Parameter(ParameterSetName = Constants.PathParameterSet)]
+        [Parameter(ParameterSetName = Constants.LiteralPathParameterSet)]
         [ValidateNotNullOrEmpty]
         [ValidateProvider(Install)]
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
@@ -93,6 +96,25 @@ namespace AnyPackage.Commands
         public PackageInfo[] InputObject { get; set; } = Array.Empty<PackageInfo>();
 
         /// <summary>
+        /// Gets or sets the package path(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.PathParameterSet)]
+        [SupportsWildcards]
+        [ValidateNotNullOrEmpty]
+        [Alias("FilePath")]
+        public string[] Path { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets or sets the package path(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.LiteralPathParameterSet)]
+        [ValidateNotNullOrEmpty]
+        [Alias("PSPath")]
+        public string[] LiteralPath { get; set; } = Array.Empty<string>();
+
+        /// <summary>
         /// Instantiates the <c>InstallPackageCommand</c> class.
         /// </summary>
         public InstallPackageCommand()
@@ -107,32 +129,54 @@ namespace AnyPackage.Commands
         {
             if (ParameterSetName == Constants.NameParameterSet)
             {
-                var instances = GetInstances(Provider);
-
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+                var instances = GetNameInstances(Provider);
 
                 foreach (var name in Name)
                 {
                     SetRequest(name, version, source, TrustSource);
-                    InstallPackage(instances);
+                    InstallPackage(name, instances);
                 }
             }
             else if (ParameterSetName == Constants.InputObjectParameterSet)
             {
                 foreach (var package in InputObject)
                 {
-                    if (!package.Provider.Operations.HasFlag(PackageProviderOperations.Install))
+                    if (ValidateOperation(package, PackageProviderOperations.Install))
                     {
-                        var ex = new InvalidOperationException($"Package provider '{package.Provider.Name}' does not support this operation.");
-                        var er = new ErrorRecord(ex, "PackageProviderOperationNotSupported", ErrorCategory.InvalidOperation, Request.Name);
-                        WriteError(er);
-                        return;
+                        continue;
                     }
 
                     var instances = GetInstances(package.Provider.FullName);
                     SetRequest(package, TrustSource);
-                    InstallPackage(instances);
+                    InstallPackage(package.Name, instances);
+                }
+            }
+            else if (ParameterSetName == Constants.PathParameterSet)
+            {
+                foreach (var path in GetPaths(Path, true))
+                {
+                    var instances = GetPathInstances(path);
+
+                    if (instances.Count > 0)
+                    {
+                        SetPathRequest(path);
+                        InstallPackage(path, instances);
+                    }
+                }
+            }
+            else if (ParameterSetName == Constants.LiteralPathParameterSet)
+            {
+                foreach (var path in GetPaths(LiteralPath, false))
+                {
+                    var instances = GetPathInstances(path);
+                    
+                    if (instances.Count > 0)
+                    {
+                        SetPathRequest(path);
+                        InstallPackage(path, instances);
+                    }
                 }
             }
         }
@@ -147,14 +191,14 @@ namespace AnyPackage.Commands
             Request.Prerelease = Prerelease;
         }
 
-        private void InstallPackage(IEnumerable<PackageProvider> instances)
+        private void InstallPackage(string package, IEnumerable<PackageProvider> instances)
         {
-            if (!ShouldProcess(Request.Name))
+            if (!ShouldProcess(package))
             {
                 return;
             }
 
-            WriteVerbose($"Installing '{Request.Name}' package.");
+            WriteVerbose($"Installing '{package}' package.");
 
             foreach (var instance in instances)
             {
@@ -172,7 +216,7 @@ namespace AnyPackage.Commands
                 catch (Exception e)
                 {
                     var ex = new PackageProviderException(e.Message, e);
-                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, Request.Name);
+                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
                     WriteError(er);
                 }
 
@@ -185,8 +229,8 @@ namespace AnyPackage.Commands
 
             if (!Request.HasWriteObject)
             {
-                var ex = new PackageNotFoundException(Request.Name);
-                var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, Request.Name);
+                var ex = new PackageNotFoundException(package);
+                var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
                 WriteError(err);
             }
         }

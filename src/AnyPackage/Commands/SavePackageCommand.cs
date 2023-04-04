@@ -145,12 +145,9 @@ namespace AnyPackage.Commands
             {
                 foreach (var package in InputObject)
                 {
-                    if (!package.Provider.Operations.HasFlag(PackageProviderOperations.Save))
+                    if (ValidateOperation(package, PackageProviderOperations.Save))
                     {
-                        var ex = new InvalidOperationException($"Package provider '{package.Provider.Name}' does not support this operation.");
-                        var er = new ErrorRecord(ex, "PackageProviderOperationNotSupported", ErrorCategory.InvalidOperation, Request.Name);
-                        WriteError(er);
-                        return;
+                        continue;
                     }
 
                     var instances = GetInstances(package.Provider.FullName);

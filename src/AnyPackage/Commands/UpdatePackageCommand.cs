@@ -92,6 +92,25 @@ namespace AnyPackage.Commands
         public PackageInfo[] InputObject { get; set; } = Array.Empty<PackageInfo>();
 
         /// <summary>
+        /// Gets or sets the package path(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.PathParameterSet)]
+        [SupportsWildcards]
+        [ValidateNotNullOrEmpty]
+        [Alias("FilePath")]
+        public string[] Path { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets or sets the package path(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.LiteralPathParameterSet)]
+        [ValidateNotNullOrEmpty]
+        [Alias("PSPath")]
+        public string[] LiteralPath { get; set; } = Array.Empty<string>();
+
+        /// <summary>
         /// Instantiates the <c>UpdatePackageCommand</c> class.
         /// </summary>
         public UpdatePackageCommand()
@@ -106,32 +125,54 @@ namespace AnyPackage.Commands
         {
             if (ParameterSetName == Constants.NameParameterSet)
             {
-                var instances = GetInstances(Provider);
-
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+                var instances = GetInstances(Provider);
 
                 foreach (var name in Name)
                 {
                     SetRequest(name, version, source, TrustSource);
-                    UpdatePackage(instances);
+                    UpdatePackage(name, instances);
                 }
             }
             else if (ParameterSetName == Constants.InputObjectParameterSet)
             {
                 foreach (var package in InputObject)
                 {
-                    if (!package.Provider.Operations.HasFlag(PackageProviderOperations.Update))
+                    if (ValidateOperation(package, PackageProviderOperations.Update))
                     {
-                        var ex = new InvalidOperationException($"Package provider '{package.Provider.Name}' does not support this operation.");
-                        var er = new ErrorRecord(ex, "PackageProviderOperationNotSupported", ErrorCategory.InvalidOperation, Request.Name);
-                        WriteError(er);
-                        return;
+                        continue;
                     }
 
                     var instances = GetInstances(package.Provider.FullName);
                     SetRequest(package, TrustSource);
-                    UpdatePackage(instances);
+                    UpdatePackage(package.Name, instances);
+                }
+            }
+            else if (ParameterSetName == Constants.PathParameterSet)
+            {
+                foreach (var path in GetPaths(Path, true))
+                {
+                    var instances = GetPathInstances(path);
+
+                    if (instances.Count > 0)
+                    {
+                        SetPathRequest(path);
+                        UpdatePackage(path, instances);
+                    }
+                }
+            }
+            else if (ParameterSetName == Constants.LiteralPathParameterSet)
+            {
+                foreach (var path in GetPaths(LiteralPath, false))
+                {
+                    var instances = GetPathInstances(path);
+                    
+                    if (instances.Count > 0)
+                    {
+                        SetPathRequest(path);
+                        UpdatePackage(path, instances);
+                    }
                 }
             }
         }
@@ -146,14 +187,14 @@ namespace AnyPackage.Commands
             Request.Prerelease = Prerelease;
         }
 
-        private void UpdatePackage(IEnumerable<PackageProvider> instances)
+        private void UpdatePackage(string package, IEnumerable<PackageProvider> instances)
         {
-            if (!ShouldProcess(Request.Name))
+            if (!ShouldProcess(package))
             {
                 return;
             }
 
-            WriteVerbose($"Updating '{Request.Name}' package.");
+            WriteVerbose($"Updating '{package}' package.");
 
             foreach (var instance in instances)
             {
@@ -171,7 +212,7 @@ namespace AnyPackage.Commands
                 catch (Exception e)
                 {
                     var ex = new PackageProviderException(e.Message, e);
-                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, Request.Name);
+                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
                     WriteError(er);
                 }
             }
@@ -179,7 +220,7 @@ namespace AnyPackage.Commands
             if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name)) 
             {
                 var ex = new PackageNotFoundException(Request.Name);
-                var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, Request.Name);
+                var err = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
                 WriteError(err);
             }
         }
