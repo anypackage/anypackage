@@ -165,6 +165,7 @@ namespace AnyPackage.Provider
             Id = providerInfo.Id;
             Operations = providerInfo.Operations;
             Name = providerInfo.Name;
+            PackageByName = providerInfo.PackageByName;
             _module = providerInfo.Module;
             _moduleRead = true;
             _moduleName = providerInfo.ModuleName;
