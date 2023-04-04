@@ -143,7 +143,7 @@ namespace AnyPackage.Commands
             {
                 foreach (var package in InputObject)
                 {
-                    if (ValidateOperation(package, PackageProviderOperations.Install))
+                    if (!ValidateOperation(package, PackageProviderOperations.Install))
                     {
                         continue;
                     }

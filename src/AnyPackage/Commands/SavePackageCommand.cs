@@ -145,7 +145,7 @@ namespace AnyPackage.Commands
             {
                 foreach (var package in InputObject)
                 {
-                    if (ValidateOperation(package, PackageProviderOperations.Save))
+                    if (!ValidateOperation(package, PackageProviderOperations.Save))
                     {
                         continue;
                     }

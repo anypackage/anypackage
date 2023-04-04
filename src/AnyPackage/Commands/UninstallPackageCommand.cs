@@ -98,7 +98,7 @@ namespace AnyPackage.Commands
             {
                 foreach (var package in InputObject)
                 {
-                    if (ValidateOperation(package, PackageProviderOperations.Uninstall))
+                    if (!ValidateOperation(package, PackageProviderOperations.Uninstall))
                     {
                         continue;
                     }

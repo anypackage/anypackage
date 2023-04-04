@@ -139,7 +139,7 @@ namespace AnyPackage.Commands
             {
                 foreach (var package in InputObject)
                 {
-                    if (ValidateOperation(package, PackageProviderOperations.Update))
+                    if (!ValidateOperation(package, PackageProviderOperations.Update))
                     {
                         continue;
                     }
