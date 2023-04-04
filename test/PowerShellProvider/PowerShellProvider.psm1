@@ -3,7 +3,7 @@
 using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
 
-[PackageProvider('PowerShell')]
+[PackageProvider('PowerShell', FileExtensions = ('.json'))]
 class PowerShellProvider : PackageProvider,
     IFindPackage, IGetPackage,
     IInstallPackage, IPublishPackage,
@@ -14,6 +14,11 @@ class PowerShellProvider : PackageProvider,
     }
 
     [void] FindPackage([PackageRequest] $request) {
+        if ($request.ParameterSetName -eq 'Path') {
+            $this.FindPackageByFile($request)
+            return
+        }
+        
         if ($request.Source) {
             $sources = $this.ProviderInfo.Sources |
             Where-Object Name -eq $request.Source
@@ -34,6 +39,12 @@ class PowerShellProvider : PackageProvider,
         }
     }
 
+    [void] FindPackageByFile([PackageRequest] $request) {
+        Get-Content -LiteralPath $request.Path |
+        ConvertFrom-Json |
+        Write-Package -Request $request -Provider $this.ProviderInfo
+    }
+
     [void] GetPackage([PackageRequest] $request) {
         $this.ProviderInfo.Packages |
         Where-Object { $request.IsMatch($_.Name, $_.version) } |
@@ -43,6 +54,11 @@ class PowerShellProvider : PackageProvider,
     }
 
     [void] InstallPackage([PackageRequest] $request) {
+        if ($request.ParameterSetName -eq 'Path') {
+            $this.InstallPackageByFile($request)
+            return
+        }
+        
         $params = @{
             Name = $request.Name
             Prerelease = $request.Prerelease
@@ -63,6 +79,14 @@ class PowerShellProvider : PackageProvider,
         ForEach-Object {
             $this.ProviderInfo.Packages += $_
             $_ | Write-Package -Request $request -Source $_.Source -Provider $this.ProviderInfo
+        }
+    }
+
+    [void] InstallPackageByFile([PackageRequest] $request) {
+        Find-Package -LiteralPath $request.Path |
+        ForEach-Object {
+            $this.ProviderInfo.Packages += $_
+            $_ | Write-Package -Request $request -Provider $this.ProviderInfo
         }
     }
 
@@ -128,6 +152,11 @@ class PowerShellProvider : PackageProvider,
     }
 
     [void] UpdatePackage([PackageRequest] $request) {
+        if ($request.ParameterSetName -eq 'Path') {
+            $this.UpdatePackageByFile($request)
+            return
+        }
+        
         $getPackageParams = @{
             Name = $request.Name
             Provider = 'PowerShell'
@@ -155,6 +184,14 @@ class PowerShellProvider : PackageProvider,
             $this.ProviderInfo.Packages += $_
 
             $_ | Write-Package -Request $request -Source $_.Source -Provider $this.ProviderInfo
+        }
+    }
+
+    [void] UpdatePackageByFile([PackageRequest] $request) {
+        Find-Package -LiteralPath $request.Path |
+        ForEach-Object {
+            $this.ProviderInfo.Packages += $_
+            $_ | Write-Package -Request $request -Provider $this.ProviderInfo
         }
     }
 
