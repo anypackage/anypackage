@@ -131,7 +131,7 @@ namespace AnyPackage.Commands
                 {
                     var instances = GetPathInstances(path);
                     var invoke = GetInvoke(instances);
-                    
+
                     SetPathRequest(path);
                     Invoke(path, Finding, invoke);
                 }
