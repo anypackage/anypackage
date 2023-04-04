@@ -42,6 +42,9 @@ Describe Get-PackageProvider {
             $result.ModuleName | Should -Be $Module
             $result.FullName | Should -Be "$Module\$Provider"
             $result.ImplementingType.Name | Should -Be $Type
+            $result.PackageByName | Should -BeTrue
+            $result.PackageByFile | Should -BeTrue
+            $result.PackageByUri | Should -BeTrue
         }
     }
 

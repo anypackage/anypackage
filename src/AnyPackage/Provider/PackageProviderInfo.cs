@@ -99,6 +99,11 @@ namespace AnyPackage.Provider
         public bool PackageByFile => _fileExtensions.Count > 0;
 
         /// <summary>
+        /// Gets if the package provider support package by uri parameter set.
+        /// </summary>
+        public bool PackageByUri => _uriSchemes.Count > 0;
+
+        /// <summary>
         /// Gets supported file extensions.
         /// </summary>
         public IEnumerable<string> FileExtensions => _fileExtensions;
