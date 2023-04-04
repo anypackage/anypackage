@@ -18,6 +18,7 @@ namespace AnyPackage.Commands
     public sealed class FindPackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Find = PackageProviderOperations.Find;
+        private const string Finding = "Finding";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -114,37 +115,35 @@ namespace AnyPackage.Commands
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
                 var instances = GetNameInstances(Provider);
+                var invoke = GetInvoke(instances);
 
                 foreach (var name in Name)
                 {
                     SetRequest(name, version, source);
-                    FindPackage(name, instances);
+                    Invoke(name, Finding, invoke);
                 }
             }
-            else if (ParameterSetName == Constants.PathParameterSet)
+            else if (ParameterSetName == Constants.PathParameterSet
+                     || ParameterSetName == Constants.LiteralPathParameterSet)
             {
-                foreach (var path in GetPaths(Path, true))
+                IEnumerable<string> paths;
+
+                if (ParameterSetName == Constants.PathParameterSet)
                 {
-                    var instances = GetPathInstances(path);
-                    
-                    if (instances.Count > 0)
-                    {
-                        SetPathRequest(path);
-                        FindPackage(path, instances);
-                    }
+                    paths = GetPaths(Path, true);
                 }
-            }
-            else if (ParameterSetName == Constants.LiteralPathParameterSet)
-            {
-                foreach (var path in GetPaths(LiteralPath, false))
+                else
+                {
+                    paths = GetPaths(LiteralPath, false);
+                }
+
+                foreach (var path in paths)
                 {
                     var instances = GetPathInstances(path);
+                    var invoke = GetInvoke(instances);
                     
-                    if (instances.Count > 0)
-                    {
-                        SetPathRequest(path);
-                        FindPackage(path, instances);
-                    }
+                    SetPathRequest(path);
+                    Invoke(path, Finding, invoke);
                 }
             }
         }
@@ -159,37 +158,16 @@ namespace AnyPackage.Commands
             Request.Prerelease = Prerelease;
         }
 
-        private void FindPackage(string package, IEnumerable<PackageProvider> instances)
+        private IDictionary<PackageProvider, InvokePackage> GetInvoke(IEnumerable<PackageProvider> instances)
         {
-            WriteVerbose($"Finding '{package}' package.");
+            var dictionary = new Dictionary<PackageProvider, InvokePackage>();
 
             foreach (var instance in instances)
             {
-                WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
-                Request.ProviderInfo = instance.ProviderInfo;
-
-                try
-                {
-                    instance.FindPackage(Request);
-                }
-                catch (PipelineStoppedException)
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    var ex = new PackageProviderException(e.Message, e);
-                    var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
-                    WriteError(er);
-                }
+                dictionary.Add(instance, instance.FindPackage);
             }
 
-            if (!Request.HasWriteObject && !WildcardPattern.ContainsWildcardCharacters(Request.Name))
-            {
-                var ex = new PackageNotFoundException(package);
-                var er = new ErrorRecord(ex, "PackageNotFound", ErrorCategory.ObjectNotFound, package);
-                WriteError(er);
-            }
+            return dictionary;
         }
     }
 }
