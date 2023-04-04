@@ -271,7 +271,7 @@ namespace AnyPackage.Commands.Internal
         /// <param name="verb">The package operation.</param>
         /// <param name="instances">The package instance and operation.</param>
         /// <param name="shouldProcess">If should call ShouldProcess.</param>
-        /// /// <param name="first">If should only process first provider.</param>
+        /// <param name="first">If should only process first provider.</param>
         protected void Invoke(string package,
                               string verb,
                               IDictionary<PackageProvider, InvokePackage> instances,
