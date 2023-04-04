@@ -55,10 +55,10 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            List<PackageProviderInfo> provider;
-
             foreach (var name in Name)
             {
+                List<PackageProviderInfo> provider;
+                
                 if (ListAvailable)
                 {
                     provider = _availableProviders.Where(x => x.IsMatch(name)).ToList();
