@@ -2,8 +2,10 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Language;
 using AnyPackage.Provider;
@@ -25,25 +27,27 @@ namespace AnyPackage.Commands
         {
             var operations = GetOperation(commandName);
             var providers = GetProviders();
-
-            bool nameMatch;
-            bool operationMatch;
+            var completions = new List<CompletionResult>();
 
             foreach (var provider in providers)
             {
-                nameMatch = provider.IsMatch(wordToComplete + "*");
-                operationMatch = provider.HasOperation(operations);
+                var nameMatch = provider.IsMatch(wordToComplete + "*");
+                var operationMatch = provider.HasOperation(operations);
 
                 if ((operations == PackageProviderOperations.None && nameMatch) ||
                    (operationMatch && nameMatch))
                 {
                     // TODO: Return full name if multiple providers with same name.
-                    yield return new CompletionResult(provider.Name,
-                                                      provider.Name,
-                                                      CompletionResultType.ParameterValue,
-                                                      provider.FullName);
+                    var completion = new CompletionResult(provider.Name,
+                                                          provider.Name,
+                                                          CompletionResultType.ParameterValue,
+                                                          provider.FullName);
+
+                    completions.Add(completion);
                 }
             }
+
+            return completions.OrderBy(x => x.CompletionText, StringComparer.OrdinalIgnoreCase);
         }
 
         private PackageProviderOperations GetOperation(string commandName)
