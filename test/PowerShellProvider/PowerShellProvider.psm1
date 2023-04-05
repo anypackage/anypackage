@@ -20,6 +20,7 @@ class PowerShellProvider : PackageProvider,
         }
         elseif ($request.Uri) {
             $this.FindPackageByUri($request)
+            return
         }
         
         if ($request.Source) {
@@ -69,6 +70,7 @@ class PowerShellProvider : PackageProvider,
         }
         elseif ($request.Uri) {
             $this.InstallPackageByUri($request)
+            return
         }
         
         $params = @{
@@ -176,6 +178,11 @@ class PowerShellProvider : PackageProvider,
             $this.UpdatePackageByFile($request)
             return
         }
+        elseif ($request.Uri)
+        {
+            $this.UpdatePackageByUri($request)
+            return
+        }
         
         $getPackageParams = @{
             Name = $request.Name
@@ -209,6 +216,14 @@ class PowerShellProvider : PackageProvider,
 
     [void] UpdatePackageByFile([PackageRequest] $request) {
         Find-Package -LiteralPath $request.Path |
+        ForEach-Object {
+            $this.ProviderInfo.Packages += $_
+            $_ | Write-Package -Request $request -Provider $this.ProviderInfo
+        }
+    }
+
+    [void] UpdatePackageByUri([PackageRequest] $request) {
+        Find-Package -Uri $request.Uri |
         ForEach-Object {
             $this.ProviderInfo.Packages += $_
             $_ | Write-Package -Request $request -Provider $this.ProviderInfo
