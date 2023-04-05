@@ -1,6 +1,6 @@
 @{
     RootModule = 'AnyPackage.dll'
-    ModuleVersion = '0.4.2'
+    ModuleVersion = '0.5.0'
     CompatiblePSEditions = @('Desktop', 'Core')
     GUID = '19cd4cdd-6766-4e47-be1c-76c33cea7392'
     Author = 'Thomas Nieto'
