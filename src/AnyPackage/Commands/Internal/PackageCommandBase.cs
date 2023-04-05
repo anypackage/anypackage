@@ -257,6 +257,33 @@ namespace AnyPackage.Commands.Internal
         }
 
         /// <summary>
+        /// Filters package providers by the source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="providers">The providers.</param>
+        protected IEnumerable<PackageProvider> FilterSource(string source, IEnumerable<PackageProvider> providers)
+        {
+            var instances = providers.Where(x => x.IsSource(source)).ToList();
+
+            if (instances.Count == 0)
+            {
+                string message;
+                if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
+                {
+                    message = $"Package provider '{Provider}' does not support '{source}' source.";
+                }
+                else
+                {
+                    message = $"No package providers support '{source}' source.";
+                }
+
+                throw new InvalidOperationException(message);
+            }
+
+            return instances;
+        }
+
+        /// <summary>
         /// Validates that the path is a file.
         /// </summary>
         /// <param name="path">The path.</param>

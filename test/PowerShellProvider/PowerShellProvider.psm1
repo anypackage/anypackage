@@ -13,6 +13,15 @@ class PowerShellProvider : PackageProvider,
         return [PowerShellProviderInfo]::new($providerInfo)
     }
 
+    [bool] IsSource([string] $source) {
+        if ($source -eq 'broke') {
+            return $false
+        }
+        else {
+            return $true
+        }
+    }
+
     [void] FindPackage([PackageRequest] $request) {
         if ($request.Path) {
             $this.FindPackageByFile($request)

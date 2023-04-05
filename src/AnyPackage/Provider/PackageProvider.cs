@@ -73,6 +73,19 @@ namespace AnyPackage.Provider
             return null;
         }
 
+        /// <summary>
+        /// Gets if the source is supported by the provider.
+        /// </summary>
+        /// <remarks>
+        /// The default implementation returns <c>true</c>. 
+        /// </remarks>
+        /// <param name="source">The source parameter from cmdlets.</param>
+        /// <returns>Returns <c>true</c> if source is supported.</returns>
+        protected internal virtual bool IsSource(string source)
+        {
+            return true;
+        }
+
         internal bool IsSupportedFileExtension(string extension)
         {
             return ProviderInfo.FileExtensions.Any(x => x.Equals(extension, StringComparison.OrdinalIgnoreCase));

@@ -80,6 +80,11 @@ Describe Find-Package {
             { Find-Package -Source $_ } |
             Should -Throw -ExpectedMessage "Cannot validate argument on parameter 'Source'. The parameter does not support wildcards."
         }
+
+        It 'should throw with non-existent source' {
+            { Find-Package -Source 'broke' } |
+            Should -Throw 
+        }
     }
 
     Context 'with -Prerelease parameter' {

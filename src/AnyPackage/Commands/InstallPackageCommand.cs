@@ -142,6 +142,12 @@ namespace AnyPackage.Commands
                 PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
                 string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
                 var instances = GetNameInstances(Provider);
+
+                if (source is not null)
+                {
+                    instances = FilterSource(source, instances);
+                }
+
                 var invoke = GetInvoke(instances);
 
                 foreach (var name in Name)
