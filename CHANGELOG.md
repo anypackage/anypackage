@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2023-04-05
+
+### Added
+
+- Add IsSource provider method (#107)
+- Add Uri parameter (#105)
+- Add Path and LiteralPath parameter (#101)
+- Add implicit cast from string to PackageVersion (#89)
+
+### Changed
+
+- Change Id to be passed during registration (#96)
+- Change metadata to IReadOnlyDictionary (#95)
+- Change package version to nullable (#91)
+
+### Fixed
+
+- Fix provider completion results order (#106)
+- Fix save path to use provider path (#103)
+- Fix directory validation for PSPath (#102)
+- Fix provider parameter set (#97)
+
+### Removed
+
+- Remove WriteSource overload (#94)
+- Remove WritePackage overload (#90)
+
 ## [0.4.2] - 2023-03-16
 
 ### Fixed
@@ -87,7 +114,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[Unreleased]: https://github.com/AnyPackage/AnyPackage/compare/v0.4.2...HEAD
+[Unreleased]: https://github.com/AnyPackage/AnyPackage/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.5.0
 [0.4.2]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.4.2
 [0.4.1]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.4.1
 [0.4.0]: https://github.com/AnyPackage/AnyPackage/releases/tag/v0.4.0
