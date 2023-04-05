@@ -78,9 +78,9 @@ namespace AnyPackage.Commands
         /// Gets or sets the provider.
         /// </summary>
         [Parameter(ParameterSetName = Constants.NameParameterSet)]
-        [Parameter(ParameterSetName = Constants.NameParameterSet)]
-        [Parameter(ParameterSetName = Constants.NameParameterSet)]
-        [Parameter(ParameterSetName = Constants.NameParameterSet)]
+        [Parameter(ParameterSetName = Constants.PathParameterSet)]
+        [Parameter(ParameterSetName = Constants.LiteralPathParameterSet)]
+        [Parameter(ParameterSetName = Constants.UriParameterSet)]
         [ValidateNotNullOrEmpty]
         [ValidateProvider(Update)]
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
