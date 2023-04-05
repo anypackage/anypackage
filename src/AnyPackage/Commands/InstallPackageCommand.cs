@@ -81,6 +81,7 @@ namespace AnyPackage.Commands
         [Parameter(ParameterSetName = Constants.NameParameterSet)]
         [Parameter(ParameterSetName = Constants.PathParameterSet)]
         [Parameter(ParameterSetName = Constants.LiteralPathParameterSet)]
+        [Parameter(ParameterSetName = Constants.UriParameterSet)]
         [ValidateNotNullOrEmpty]
         [ValidateProvider(Install)]
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
@@ -114,6 +115,14 @@ namespace AnyPackage.Commands
         [ValidateNotNullOrEmpty]
         [Alias("PSPath")]
         public string[] LiteralPath { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets or sets the package Uri(s).
+        /// </summary>
+        [Parameter(Mandatory = true,
+            ParameterSetName = Constants.UriParameterSet)]
+        [ValidateNotNullOrEmpty]
+        public Uri[] Uri { get; set; } = Array.Empty<Uri>();
 
         /// <summary>
         /// Instantiates the <c>InstallPackageCommand</c> class.
@@ -177,6 +186,17 @@ namespace AnyPackage.Commands
 
                     SetPathRequest(path);
                     Invoke(path, Installing, invoke, true, true);
+                }
+            }
+            else if (ParameterSetName == Constants.UriParameterSet)
+            {
+                foreach (var uri in Uri)
+                {
+                    var instances = GetUriInstances(uri);
+                    var invoke = GetInvoke(instances);
+
+                    SetRequest(uri);
+                    Invoke(uri.ToString(), Installing, invoke, true, true);
                 }
             }
         }

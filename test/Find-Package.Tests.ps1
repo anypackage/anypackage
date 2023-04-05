@@ -147,4 +147,17 @@ Describe Find-Package {
             Should -Throw
         }
     }
+
+    Context 'with -Uri parameter' {
+        It 'should return results' {
+            [uri]$uri = "file://$PSScriptRoot/packages/apple-1.0.json"
+            Find-Package -Uri $uri |
+            Should -Not -BeNullOrEmpty
+        }
+
+        It 'should error with invalid scheme' {
+            { Find-Package -Uri 'http://google.com' -ErrorAction Stop } |
+            Should -Throw
+        }
+    }
 }

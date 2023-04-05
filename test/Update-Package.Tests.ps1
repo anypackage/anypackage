@@ -139,4 +139,12 @@ Describe Update-Package {
             Should -Throw
         }
     }
+
+    Context 'with -Uri parameter' {
+        It 'should return results' {
+            [uri]$uri = "file://$PSScriptRoot/packages/apple-2.0.json"
+            Update-Package -Uri $uri -PassThru |
+            Should -Not -BeNullOrEmpty
+        }
+    }
 }

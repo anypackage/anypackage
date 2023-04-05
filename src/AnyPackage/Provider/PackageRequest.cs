@@ -44,6 +44,11 @@ namespace AnyPackage.Provider
         /// </summary>
         public string Path { get; internal set; } = string.Empty;
 
+        /// <summary>
+        /// Gets Uri parameter.
+        /// </summary>
+        public Uri? Uri { get; internal set; }
+
         internal bool PassThru { get; set; }
         internal bool TrustSource { get; set; }
 

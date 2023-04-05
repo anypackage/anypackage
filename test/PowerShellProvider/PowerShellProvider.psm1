@@ -3,7 +3,7 @@
 using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
 
-[PackageProvider('PowerShell', FileExtensions = ('.json'))]
+[PackageProvider('PowerShell', FileExtensions = ('.json'), UriSchemes = ('file'))]
 class PowerShellProvider : PackageProvider,
     IFindPackage, IGetPackage,
     IInstallPackage, IPublishPackage,
@@ -16,6 +16,10 @@ class PowerShellProvider : PackageProvider,
     [void] FindPackage([PackageRequest] $request) {
         if ($request.Path) {
             $this.FindPackageByFile($request)
+            return
+        }
+        elseif ($request.Uri) {
+            $this.FindPackageByUri($request)
             return
         }
         
@@ -45,6 +49,12 @@ class PowerShellProvider : PackageProvider,
         Write-Package -Request $request -Provider $this.ProviderInfo
     }
 
+    [void] FindPackageByUri([PackageRequest] $request) {
+        Get-Content -LiteralPath $request.Uri.LocalPath |
+        ConvertFrom-Json |
+        Write-Package -Request $request -Provider $this.ProviderInfo
+    }
+
     [void] GetPackage([PackageRequest] $request) {
         $this.ProviderInfo.Packages |
         Where-Object { $request.IsMatch($_.Name, $_.version) } |
@@ -56,6 +66,10 @@ class PowerShellProvider : PackageProvider,
     [void] InstallPackage([PackageRequest] $request) {
         if ($request.Path) {
             $this.InstallPackageByFile($request)
+            return
+        }
+        elseif ($request.Uri) {
+            $this.InstallPackageByUri($request)
             return
         }
         
@@ -84,6 +98,14 @@ class PowerShellProvider : PackageProvider,
 
     [void] InstallPackageByFile([PackageRequest] $request) {
         Find-Package -LiteralPath $request.Path |
+        ForEach-Object {
+            $this.ProviderInfo.Packages += $_
+            $_ | Write-Package -Request $request -Provider $this.ProviderInfo
+        }
+    }
+
+    [void] InstallPackageByUri([PackageRequest] $request) {
+        Find-Package -Uri $request.Uri |
         ForEach-Object {
             $this.ProviderInfo.Packages += $_
             $_ | Write-Package -Request $request -Provider $this.ProviderInfo
@@ -156,6 +178,11 @@ class PowerShellProvider : PackageProvider,
             $this.UpdatePackageByFile($request)
             return
         }
+        elseif ($request.Uri)
+        {
+            $this.UpdatePackageByUri($request)
+            return
+        }
         
         $getPackageParams = @{
             Name = $request.Name
@@ -189,6 +216,14 @@ class PowerShellProvider : PackageProvider,
 
     [void] UpdatePackageByFile([PackageRequest] $request) {
         Find-Package -LiteralPath $request.Path |
+        ForEach-Object {
+            $this.ProviderInfo.Packages += $_
+            $_ | Write-Package -Request $request -Provider $this.ProviderInfo
+        }
+    }
+
+    [void] UpdatePackageByUri([PackageRequest] $request) {
+        Find-Package -Uri $request.Uri |
         ForEach-Object {
             $this.ProviderInfo.Packages += $_
             $_ | Write-Package -Request $request -Provider $this.ProviderInfo
