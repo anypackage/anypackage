@@ -26,8 +26,13 @@ namespace AnyPackage.Provider
         /// </summary>
         public bool Stopping => Cmdlet.Stopping;
 
+        /// <summary>
+        /// Gets the package provider information.
+        /// </summary>
+        public PackageProviderInfo? ProviderInfo { get; internal set; }
+
         internal bool HasWriteObject { get; set; }
-        internal PackageProviderInfo? ProviderInfo { get; set; }
+
         internal PSCmdlet Cmdlet { get; }
 
         internal Request(PSCmdlet command)
