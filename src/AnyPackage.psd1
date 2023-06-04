@@ -17,8 +17,8 @@
     PrivateData = @{
         PSData = @{
             Tags = @('Package', 'Manager', 'Windows', 'Linux', 'MacOS')
-            LicenseUri = 'https://github.com/AnyPackage/AnyPackage/blob/main/LICENSE'
-            ProjectUri = 'https://github.com/AnyPackage/AnyPackage'
+            LicenseUri = 'https://github.com/anypackage/anypackage/blob/main/LICENSE'
+            ProjectUri = 'https://github.com/anypackage/anypackage'
         }
     }
     HelpInfoUri = 'https://go.anypackage.dev/help'
