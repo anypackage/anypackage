@@ -97,6 +97,29 @@ namespace AnyPackage.Provider
         }
 
         /// <summary>
+        /// Checks if the version satisfies the request.
+        /// </summary>
+        /// <param name="version">Specifies the version.</param>
+        /// <param name="comparer">Specifies the version comparer.</param>
+        /// <returns>
+        /// Returns true if the version satisfies the version range requirements.
+        /// </returns>
+        public bool IsMatch(PackageVersion version, IComparer<PackageVersion> comparer)
+        {
+            if (version.IsPrerelease && !Prerelease)
+            {
+                return false;
+            }
+
+            if (Version is null)
+            {
+                return true;
+            }
+
+            return Version.Satisfies(version, comparer);
+        }
+
+        /// <summary>
         /// Checks if the package name and version satisfies the request.
         /// </summary>
         /// <param name="name">Specifies the name.</param>
