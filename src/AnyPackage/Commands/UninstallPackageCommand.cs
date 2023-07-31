@@ -83,32 +83,15 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            if (ParameterSetName == Constants.NameParameterSet)
+            switch (ParameterSetName)
             {
-                PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
-                var instances = GetInstances(Provider);
-                var invoke = GetInvoke(instances);
+                case Constants.NameParameterSet:
+                    InvokeByName();
+                    break;
 
-                foreach (var name in Name)
-                {
-                    SetRequest(name, version);
-                    Invoke(name, Uninstalling, invoke, true, true);
-                }
-            }
-            else if (ParameterSetName == Constants.InputObjectParameterSet)
-            {
-                foreach (var package in InputObject)
-                {
-                    if (!ValidateOperation(package, PackageProviderOperations.Uninstall))
-                    {
-                        continue;
-                    }
-
-                    var instances = GetInstances(package.Provider.FullName);
-                    var invoke = GetInvoke(instances);
-                    SetRequest(package);
-                    Invoke(package.Name, Uninstalling, invoke, true, true);
-                }
+                case Constants.InputObjectParameterSet:
+                    InvokeByInputObject();
+                    break;
             }
         }
 
@@ -132,6 +115,35 @@ namespace AnyPackage.Commands
             }
 
             return dictionary;
+        }
+
+        private void InvokeByName()
+        {
+            PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+            var instances = GetInstances(Provider);
+            var invoke = GetInvoke(instances);
+
+            foreach (var name in Name)
+            {
+                SetRequest(name, version);
+                Invoke(name, Uninstalling, invoke, true, true);
+            }
+        }
+
+        private void InvokeByInputObject()
+        {
+            foreach (var package in InputObject)
+            {
+                if (!ValidateOperation(package, PackageProviderOperations.Uninstall))
+                {
+                    continue;
+                }
+
+                var instances = GetInstances(package.Provider.FullName);
+                var invoke = GetInvoke(instances);
+                SetRequest(package);
+                Invoke(package.Name, Uninstalling, invoke, true, true);
+            }
         }
     }
 }

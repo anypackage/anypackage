@@ -137,73 +137,24 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            if (ParameterSetName == Constants.NameParameterSet)
+            switch (ParameterSetName)
             {
-                PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
-                string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
-                var instances = GetNameInstances(Provider);
+                case Constants.NameParameterSet:
+                    InvokeByName();
+                    break;
 
-                if (source is not null)
-                {
-                    instances = FilterSource(source, instances);
-                }
+                case Constants.InputObjectParameterSet:
+                    InvokeByInputObject();
+                    break;
 
-                var invoke = GetInvoke(instances);
+                case Constants.PathParameterSet:
+                case Constants.LiteralPathParameterSet:
+                    InvokeByName();
+                    break;
 
-                foreach (var name in Name)
-                {
-                    SetRequest(name, version, source, TrustSource);
-                    Invoke(name, Installing, invoke, true, true);
-                }
-            }
-            else if (ParameterSetName == Constants.InputObjectParameterSet)
-            {
-                foreach (var package in InputObject)
-                {
-                    if (!ValidateOperation(package, PackageProviderOperations.Install))
-                    {
-                        continue;
-                    }
-
-                    var instances = GetInstances(package.Provider.FullName);
-                    var invoke = GetInvoke(instances);
-                    SetRequest(package, TrustSource);
-                    Invoke(package.Name, Installing, invoke, true, true);
-                }
-            }
-            else if (ParameterSetName == Constants.PathParameterSet
-                     || ParameterSetName == Constants.LiteralPathParameterSet)
-            {
-                IEnumerable<string> paths;
-
-                if (ParameterSetName == Constants.PathParameterSet)
-                {
-                    paths = GetPaths(Path, true);
-                }
-                else
-                {
-                    paths = GetPaths(LiteralPath, false);
-                }
-
-                foreach (var path in paths)
-                {
-                    var instances = GetPathInstances(path);
-                    var invoke = GetInvoke(instances);
-
-                    SetPathRequest(path);
-                    Invoke(path, Installing, invoke, true, true);
-                }
-            }
-            else if (ParameterSetName == Constants.UriParameterSet)
-            {
-                foreach (var uri in Uri)
-                {
-                    var instances = GetUriInstances(uri);
-                    var invoke = GetInvoke(instances);
-
-                    SetRequest(uri);
-                    Invoke(uri.ToString(), Installing, invoke, true, true);
-                }
+                case Constants.UriParameterSet:
+                    InvokeByUri();
+                    break;
             }
         }
 
@@ -227,6 +178,77 @@ namespace AnyPackage.Commands
             }
 
             return dictionary;
+        }
+
+        private void InvokeByName()
+        {
+            PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+            string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+            var instances = GetNameInstances(Provider);
+
+            if (source is not null)
+            {
+                instances = FilterSource(source, instances);
+            }
+
+            var invoke = GetInvoke(instances);
+
+            foreach (var name in Name)
+            {
+                SetRequest(name, version, source, TrustSource);
+                Invoke(name, Installing, invoke, true, true);
+            }
+        }
+
+        private void InvokeByInputObject()
+        {
+            foreach (var package in InputObject)
+            {
+                if (!ValidateOperation(package, PackageProviderOperations.Install))
+                {
+                    continue;
+                }
+
+                var instances = GetInstances(package.Provider.FullName);
+                var invoke = GetInvoke(instances);
+                SetRequest(package, TrustSource);
+                Invoke(package.Name, Installing, invoke, true, true);
+            }
+        }
+
+        private void InvokeByPath()
+        {
+            IEnumerable<string> paths;
+
+            if (ParameterSetName == Constants.PathParameterSet)
+            {
+                paths = GetPaths(Path, true);
+            }
+            else
+            {
+                paths = GetPaths(LiteralPath, false);
+            }
+
+            foreach (var path in paths)
+            {
+                var instances = GetPathInstances(path);
+                var invoke = GetInvoke(instances);
+
+                SetPathRequest(path);
+                Invoke(path, Installing, invoke, true, true);
+            }
+        }
+
+        private void InvokeByUri()
+        {
+            foreach (var uri in Uri)
+            {
+                var instances = GetUriInstances(uri);
+                var invoke = GetInvoke(instances);
+
+                SetRequest(uri);
+                Invoke(uri.ToString(), Installing, invoke, true, true);
+            }
         }
     }
 }
