@@ -148,7 +148,7 @@ namespace AnyPackage.Commands
 
                 case Constants.PathParameterSet:
                 case Constants.LiteralPathParameterSet:
-                    InvokeByName();
+                    InvokeByPath();
                     break;
 
                 case Constants.UriParameterSet:
