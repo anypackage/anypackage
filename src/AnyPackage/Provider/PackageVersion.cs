@@ -484,6 +484,7 @@ namespace AnyPackage.Provider
                 if (a != b)
                 {
                     result = a.CompareTo(b);
+                    return true;
                 }
             }
 
