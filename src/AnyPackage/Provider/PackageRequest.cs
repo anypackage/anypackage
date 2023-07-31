@@ -49,6 +49,17 @@ namespace AnyPackage.Provider
         /// </summary>
         public Uri? Uri { get; internal set; }
 
+        /// <summary>
+        /// Gets if Version is filtered.
+        /// </summary>
+        public bool IsVersionFiltered
+        {
+            get
+            {
+                return !(Version is null || Version.ToString() == "*");
+            }
+        }
+
         internal bool PassThru { get; set; }
         internal bool TrustSource { get; set; }
 
