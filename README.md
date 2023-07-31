@@ -1,10 +1,19 @@
 
 # AnyPackage
 
-![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/AnyPackage?logo=powershell)
-![NuGet](https://img.shields.io/nuget/dt/AnyPackage?logo=nuget)
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/anypackage/anypackage/ci.yml)
-![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/anypackage/anypackage)
+[![gallery-image]][gallery-site]
+[![nuget-image]][nuget-site]
+[![build-image]][build-site]
+[![cf-image]][cf-site]
+
+[gallery-image]: https://img.shields.io/powershellgallery/dt/AnyPackage?logo=powershell
+[nuget-image]: https://img.shields.io/nuget/dt/AnyPackage?logo=nuget
+[build-image]: https://img.shields.io/github/actions/workflow/status/anypackage/anypackage/ci.yml
+[cf-image]: https://img.shields.io/codefactor/grade/github/anypackage/anypackage
+[gallery-site]: https://www.powershellgallery.com/packages/AnyPackage
+[nuget-site]: https://www.nuget.org/packages/AnyPackage
+[build-site]: https://github.com/anypackage/anypackage/actions/workflows/ci.yml
+[cf-site]: https://www.codefactor.io/repository/github/anypackage/anypackage
 
 `AnyPackage` is a cross-platform PowerShell unified package management interface.
 Manage multiple package managers from a single set of commands.
