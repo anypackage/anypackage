@@ -434,29 +434,11 @@ namespace AnyPackage.Provider
             }
             else if (MinVersion is not null && MaxVersion is null)
             {
-                if (IsMinInclusive && shortNotation)
-                {
-                    return MinVersion.ToString();
-                }
-                else if (IsMinInclusive)
-                {
-                    return string.Format("[{0},)", MinVersion);
-                }
-                else
-                {
-                    return string.Format("({0},)", MinVersion);
-                }
+                return GetMinVersion(shortNotation);
             }
             else if (MinVersion is null && MaxVersion is not null)
             {
-                if (IsMaxInclusive)
-                {
-                    return string.Format("(,{0}]", MaxVersion);
-                }
-                else
-                {
-                    return string.Format("(,{0})", MaxVersion);
-                }
+                return GetMaxVersion();
             }
             else if (MinVersion is not null
                      && MaxVersion is not null
@@ -470,6 +452,34 @@ namespace AnyPackage.Provider
                 var rhs = IsMaxInclusive ? ']' : ')';
 
                 return string.Format("{0}{1},{2}{3}", lhs, MinVersion, MaxVersion, rhs);
+            }
+        }
+
+        private string GetMinVersion(bool shortNotation)
+        {
+            if (IsMinInclusive && shortNotation)
+            {
+                return MinVersion!.ToString();
+            }
+            else if (IsMinInclusive)
+            {
+                return string.Format("[{0},)", MinVersion);
+            }
+            else
+            {
+                return string.Format("({0},)", MinVersion);
+            }
+        }
+
+        private string GetMaxVersion()
+        {
+            if (IsMaxInclusive)
+            {
+                return string.Format("(,{0}]", MaxVersion);
+            }
+            else
+            {
+                return string.Format("(,{0})", MaxVersion);
             }
         }
     }
