@@ -1,19 +1,42 @@
 # AnyPackage
 
-`AnyPackage` is a spiritual successor to `PackageManagement` also known as `OneGet`.
+`AnyPackage` is a cross-platform PowerShell unified package management interface.
+Manage multiple package managers from a single set of commands.
 
-`AnyPackage` provides the ability to use multiple package management systems through a single set of commands.
+This project is a spiritual successor to `PackageManagement` also known as `OneGet`.
+`AnyPackage` is not a fork of `PackageManagement` as such does not support any `PackageManagement` providers.
 
 For more information on what `AnyPackage` is and how to use it refer to [about_AnyPackage](https://anypackage.dev/docs/reference/about_AnyPackage).
 
-## PackageManagement
+## Features
 
-`AnyPackage` is not a fork of `PackageManagement` as such does not support any `PackageManagement` providers.
+- PowerShell 5.1+
+- Cross-platform Windows, MacOS, Linux
+- Simple PowerShell cmdlets
+- Manage package lifecycle
+- Manage package sources
+- PowerShell or C# package providers
+- Simple and concise package provider authoring experience
+- Package provider dynamic parameters
+- Updatable help
+- Argument completers
+- DSC resources
+
+## Install AnyPackage
+
+```powershell
+# PowerShellGet
+Install-Module AnyPackage
+
+# PSResourceGet
+Install-PSResource AnyPackage
+
+```
 
 ## Package Providers
 
 `AnyPackage` uses a provider model.
-Each package management system creates a package provider which implements the `AnyPackage` interface.
+Each package manager creates a package provider which implements the `AnyPackage` interface.
 Package providers are shipped in a PowerShell module. For more information on how to use a provider refer to [about_Package_Providers](https://anypackage.dev/docs/reference/about_Package_Providers).
 
 ### Provider Catalog
