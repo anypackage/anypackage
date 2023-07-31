@@ -129,39 +129,15 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            if (ParameterSetName == Constants.NameParameterSet)
+            switch (ParameterSetName)
             {
-                PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
-                string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
-                var instances = GetInstances(Provider);
+                case Constants.NameParameterSet:
+                    InvokeByName();
+                    break;
 
-                if (source is not null)
-                {
-                    instances = FilterSource(source, instances);
-                }
-
-                var invoke = GetInvoke(instances);
-
-                foreach (var name in Name)
-                {
-                    SetRequest(name, version, source, TrustSource);
-                    Invoke(name, Saving, invoke, true, true);
-                }
-            }
-            else if (ParameterSetName == Constants.InputObjectParameterSet)
-            {
-                foreach (var package in InputObject)
-                {
-                    if (!ValidateOperation(package, PackageProviderOperations.Save))
-                    {
-                        continue;
-                    }
-
-                    var instances = GetInstances(package.Provider.FullName);
-                    var invoke = GetInvoke(instances);
-                    SetRequest(package, TrustSource);
-                    Invoke(package.Name, Saving, invoke, true, true);
-                }
+                case Constants.InputObjectParameterSet:
+                    InvokeByInputObject();
+                    break;
             }
         }
 
@@ -186,6 +162,42 @@ namespace AnyPackage.Commands
             }
 
             return dictionary;
+        }
+
+        private void InvokeByName()
+        {
+            PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+            string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+            var instances = GetInstances(Provider);
+
+            if (source is not null)
+            {
+                instances = FilterSource(source, instances);
+            }
+
+            var invoke = GetInvoke(instances);
+
+            foreach (var name in Name)
+            {
+                SetRequest(name, version, source, TrustSource);
+                Invoke(name, Saving, invoke, true, true);
+            }
+        }
+
+        private void InvokeByInputObject()
+        {
+            foreach (var package in InputObject)
+            {
+                if (!ValidateOperation(package, PackageProviderOperations.Save))
+                {
+                    continue;
+                }
+
+                var instances = GetInstances(package.Provider.FullName);
+                var invoke = GetInvoke(instances);
+                SetRequest(package, TrustSource);
+                Invoke(package.Name, Saving, invoke, true, true);
+            }
         }
     }
 }

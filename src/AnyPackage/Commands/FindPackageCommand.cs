@@ -108,58 +108,20 @@ namespace AnyPackage.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            if (ParameterSetName == Constants.NameParameterSet)
+            switch (ParameterSetName)
             {
-                PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
-                string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
-                var instances = GetNameInstances(Provider);
+                case Constants.NameParameterSet:
+                    InvokeByName();
+                    break;
 
-                if (source is not null)
-                {
-                    instances = FilterSource(source, instances);
-                }
+                case Constants.PathParameterSet:
+                case Constants.LiteralPathParameterSet:
+                    InvokeByPath();
+                    break;
 
-                var invoke = GetInvoke(instances);
-
-                foreach (var name in Name)
-                {
-                    SetRequest(name, version, source);
-                    Invoke(name, Finding, invoke);
-                }
-            }
-            else if (ParameterSetName == Constants.PathParameterSet
-                     || ParameterSetName == Constants.LiteralPathParameterSet)
-            {
-                IEnumerable<string> paths;
-
-                if (ParameterSetName == Constants.PathParameterSet)
-                {
-                    paths = GetPaths(Path, true);
-                }
-                else
-                {
-                    paths = GetPaths(LiteralPath, false);
-                }
-
-                foreach (var path in paths)
-                {
-                    var instances = GetPathInstances(path);
-                    var invoke = GetInvoke(instances);
-
-                    SetPathRequest(path);
-                    Invoke(path, Finding, invoke);
-                }
-            }
-            else if (ParameterSetName == Constants.UriParameterSet)
-            {
-                foreach (var uri in Uri)
-                {
-                    var instances = GetUriInstances(uri);
-                    var invoke = GetInvoke(instances);
-
-                    SetRequest(uri);
-                    Invoke(uri.ToString(), Finding, invoke);
-                }
+                case Constants.UriParameterSet:
+                    InvokeByUri();
+                    break;
             }
         }
 
@@ -183,6 +145,61 @@ namespace AnyPackage.Commands
             }
 
             return dictionary;
+        }
+
+        private void InvokeByName()
+        {
+            PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
+            string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
+            var instances = GetNameInstances(Provider);
+
+            if (source is not null)
+            {
+                instances = FilterSource(source, instances);
+            }
+
+            var invoke = GetInvoke(instances);
+
+            foreach (var name in Name)
+            {
+                SetRequest(name, version, source);
+                Invoke(name, Finding, invoke);
+            }
+        }
+
+        private void InvokeByPath()
+        {
+            IEnumerable<string> paths;
+
+            if (ParameterSetName == Constants.PathParameterSet)
+            {
+                paths = GetPaths(Path, true);
+            }
+            else
+            {
+                paths = GetPaths(LiteralPath, false);
+            }
+
+            foreach (var path in paths)
+            {
+                var instances = GetPathInstances(path);
+                var invoke = GetInvoke(instances);
+
+                SetPathRequest(path);
+                Invoke(path, Finding, invoke);
+            }
+        }
+
+        private void InvokeByUri()
+        {
+            foreach (var uri in Uri)
+            {
+                var instances = GetUriInstances(uri);
+                var invoke = GetInvoke(instances);
+
+                SetRequest(uri);
+                Invoke(uri.ToString(), Finding, invoke);
+            }
         }
     }
 }
