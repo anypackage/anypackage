@@ -391,69 +391,26 @@ namespace AnyPackage.Provider
         {
             if (other is null) { return 1; }
 
-            if (Scheme == PackageVersionScheme.AlphaNumeric && other.Scheme == PackageVersionScheme.AlphaNumeric)
+            int result;
+
+            if (CompareToScheme(other, out result))
             {
-                return Version.CompareTo(other.Version);
-            }
-            else if (Scheme == PackageVersionScheme.AlphaNumeric)
-            {
-                return 1;
-            }
-            else if (other.Scheme == PackageVersionScheme.AlphaNumeric)
-            {
-                return -1;
+                return result;
             }
 
-            var count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
-            ulong a, b;
-
-            for (var i = 0; i < count; i++)
+            if (CompareToParts(other, out result))
             {
-                a = i < _parts.Count ? _parts[i] : 0;
-                b = i < other._parts.Count ? other._parts[i] : 0;
-
-                if (a != b)
-                {
-                    return a.CompareTo(b);
-                }
+                return result;
             }
 
-            if (Suffix is not null && other.Suffix is not null)
+            if (CompareToSuffix(other, out result))
             {
-                return Suffix.CompareTo(other.Suffix);
-            }
-            else if (Suffix is not null)
-            {
-                return 1;
-            }
-            else if (other.Suffix is not null)
-            {
-                return -1;
+                return result;
             }
 
-            if (IsPrerelease && other.IsPrerelease)
+            if (CompareToPrerelease(other, out result))
             {
-                count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
-                string x, y;
-
-                for (var i = 0; i < count; i++)
-                {
-                    x = i < _prerelease.Count ? _prerelease[i] : "";
-                    y = i < other._prerelease.Count ? other._prerelease[i] : "";
-
-                    if (x != y)
-                    {
-                        return x.CompareTo(y);
-                    }
-                }
-            }
-            else if (IsPrerelease)
-            {
-                return -1;
-            }
-            else if (other.IsPrerelease)
-            {
-                return 1;
+                return result;
             }
 
             return 0;
@@ -491,6 +448,105 @@ namespace AnyPackage.Provider
         /// </summary>
         /// <returns>Returns the Version property.</returns>
         public override string ToString() => Version;
+
+        private bool CompareToScheme(PackageVersion other, out int result)
+        {
+            if (Scheme == PackageVersionScheme.AlphaNumeric && other.Scheme == PackageVersionScheme.AlphaNumeric)
+            {
+                result = Version.CompareTo(other.Version);
+                return true;
+            }
+            else if (Scheme == PackageVersionScheme.AlphaNumeric)
+            {
+                result = 1;
+                return true;
+            }
+            else if (other.Scheme == PackageVersionScheme.AlphaNumeric)
+            {
+                result = -1;
+                return true;
+            }
+
+            result = int.MinValue;
+            return false;
+        }
+
+        private bool CompareToParts(PackageVersion other, out int result)
+        {
+            var count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
+            ulong a, b;
+
+            for (var i = 0; i < count; i++)
+            {
+                a = i < _parts.Count ? _parts[i] : 0;
+                b = i < other._parts.Count ? other._parts[i] : 0;
+
+                if (a != b)
+                {
+                    result = a.CompareTo(b);
+                    return true;
+                }
+            }
+
+            result = int.MinValue;
+            return false;
+        }
+
+        private bool CompareToSuffix(PackageVersion other, out int result)
+        {
+            if (Suffix is not null && other.Suffix is not null)
+            {
+                result = Suffix.CompareTo(other.Suffix);
+                return true;
+            }
+            else if (Suffix is not null)
+            {
+                result = 1;
+                return true;
+            }
+            else if (other.Suffix is not null)
+            {
+                result = -1;
+                return true;
+            }
+
+            result = int.MinValue;
+            return false;
+        }
+
+        private bool CompareToPrerelease(PackageVersion other, out int result)
+        {
+            if (IsPrerelease && other.IsPrerelease)
+            {
+                var count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
+                string x, y;
+
+                for (var i = 0; i < count; i++)
+                {
+                    x = i < _prerelease.Count ? _prerelease[i] : "";
+                    y = i < other._prerelease.Count ? other._prerelease[i] : "";
+
+                    if (x != y)
+                    {
+                        result = x.CompareTo(y);
+                        return true;
+                    }
+                }
+            }
+            else if (IsPrerelease)
+            {
+                result = -1;
+                return true;
+            }
+            else if (other.IsPrerelease)
+            {
+                result = 1;
+                return true;
+            }
+
+            result = int.MinValue;
+            return false;
+        }
 
         private void SetParts(string input)
         {
