@@ -3,7 +3,6 @@
 // terms of the MIT license.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace AnyPackage.Provider
