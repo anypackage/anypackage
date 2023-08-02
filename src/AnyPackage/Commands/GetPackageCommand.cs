@@ -2,7 +2,6 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
-using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
