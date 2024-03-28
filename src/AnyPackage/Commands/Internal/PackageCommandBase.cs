@@ -389,8 +389,7 @@ namespace AnyPackage.Commands.Internal
             }
             catch (Exception e)
             {
-                var ex = new PackageProviderException(e.Message, e);
-                var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, package);
+                var er = new ErrorRecord(e, "PackageProviderError", ErrorCategory.NotSpecified, package);
                 WriteError(er);
             }
         }
