@@ -74,8 +74,7 @@ namespace AnyPackage.Commands
                     }
                     catch (Exception e)
                     {
-                        var ex = new PackageProviderException(e.Message, e);
-                        var er = new ErrorRecord(ex, "PackageProviderError", ErrorCategory.NotSpecified, name);
+                        var er = new ErrorRecord(e, "PackageProviderError", ErrorCategory.NotSpecified, name);
                         WriteError(er);
                     }
                 }
