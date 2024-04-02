@@ -37,8 +37,15 @@ namespace AnyPackage.Commands
                 if ((operations == PackageProviderOperations.None && nameMatch) ||
                    (operationMatch && nameMatch))
                 {
+                    string completionText = provider.Name;
+
+                    if (provider.Name.Contains(" "))
+                    {
+                        completionText = $"'{provider.Name}'";
+                    }
+                    
                     // TODO: Return full name if multiple providers with same name.
-                    var completion = new CompletionResult(provider.Name,
+                    var completion = new CompletionResult(completionText,
                                                           provider.Name,
                                                           CompletionResultType.ParameterValue,
                                                           provider.FullName);
