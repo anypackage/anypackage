@@ -17,7 +17,7 @@ namespace AnyPackage.Commands
     public sealed class SourceArgumentCompleter : IArgumentCompleter
     {
         private const string _provider = "Provider";
-        
+
         /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.iargumentcompleter.completeargument</see>
         public IEnumerable<CompletionResult> CompleteArgument(string commandName,
                                                               string parameterName,
@@ -40,7 +40,14 @@ namespace AnyPackage.Commands
             {
                 if (wildcard.IsMatch(name))
                 {
-                    yield return new CompletionResult(name,
+                    string completionText = name;
+
+                    if (name.Contains(" "))
+                    {
+                        completionText = string.Format("'{0}'", CodeGeneration.EscapeSingleQuotedStringContent(name));
+                    }
+
+                    yield return new CompletionResult(completionText,
                                                       name,
                                                       CompletionResultType.ParameterValue,
                                                       name);
