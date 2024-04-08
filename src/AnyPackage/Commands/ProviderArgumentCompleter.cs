@@ -27,6 +27,8 @@ namespace AnyPackage.Commands
         {
             var operations = GetOperation(commandName);
             var providers = GetProviders();
+            var duplicates = providers.GroupBy(x => x.Name).Where(g => g.Count() > 1).Select(y => y.Key);
+            var hashSet = new HashSet<string>(duplicates);
             var completions = new List<CompletionResult>();
 
             foreach (var provider in providers)
@@ -37,18 +39,17 @@ namespace AnyPackage.Commands
                 if ((operations == PackageProviderOperations.None && nameMatch) ||
                    (operationMatch && nameMatch))
                 {
-                    string completionText = provider.Name;
+                    string completionText = hashSet.Contains(provider.Name) ? provider.FullName : provider.Name;
 
                     if (provider.Name.Contains(" "))
                     {
-                        completionText = $"'{provider.Name}'";
+                        completionText = $"'{completionText}'";
                     }
-                    
-                    // TODO: Return full name if multiple providers with same name.
+
                     var completion = new CompletionResult(completionText,
-                                                          provider.Name,
+                                                          completionText,
                                                           CompletionResultType.ParameterValue,
-                                                          provider.FullName);
+                                                          completionText);
 
                     completions.Add(completion);
                 }
