@@ -58,6 +58,12 @@ namespace AnyPackage.Provider
         public void WriteDebug(string text) => Cmdlet.WriteDebug(text);
 
         /// <summary>
+        /// Write error record to the error stream.
+        /// </summary>
+        /// <param name="errorRecord">Error record.</param> 
+        public void WriteError(ErrorRecord errorRecord) => Cmdlet.WriteError(errorRecord);
+
+        /// <summary>
         /// Route information to the user or host.
         /// </summary>
         /// <param name="messageData">The object / message data to transmit to the hosting application.</param>
