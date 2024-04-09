@@ -39,17 +39,13 @@ namespace AnyPackage.Commands
                 if ((operations == PackageProviderOperations.None && nameMatch) ||
                    (operationMatch && nameMatch))
                 {
-                    string completionText = hashSet.Contains(provider.Name) ? provider.FullName : provider.Name;
-
-                    if (provider.Name.Contains(" "))
-                    {
-                        completionText = $"'{completionText}'";
-                    }
+                    var name = hashSet.Contains(provider.Name) ? provider.FullName : provider.Name;
+                    var completionText = provider.Name.Contains(" ") ? $"'{name}'" : name;
 
                     var completion = new CompletionResult(completionText,
-                                                          completionText,
+                                                          name,
                                                           CompletionResultType.ParameterValue,
-                                                          completionText);
+                                                          provider.FullName);
 
                     completions.Add(completion);
                 }
