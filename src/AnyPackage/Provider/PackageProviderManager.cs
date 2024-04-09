@@ -147,16 +147,6 @@ namespace AnyPackage.Provider
             Providers.Remove(provider.Id);
         }
 
-        private static EngineIntrinsics GetExecutionContext()
-        {
-            var engine = PowerShell.Create(RunspaceMode.CurrentRunspace)
-                                   .AddScript("$ExecutionContext")
-                                   .Invoke<EngineIntrinsics>()
-                                   .First();
-
-            return engine;
-        }
-
         internal static PSModuleInfo? GetModuleInfo(string? name)
         {
             var module = PowerShell.Create(RunspaceMode.CurrentRunspace)
