@@ -8,6 +8,13 @@ param()
 Describe Get-PackageProvider {
     BeforeAll {
         Import-Module (Join-Path -Path $PSScriptRoot -ChildPath PowerShellProvider)
+        Import-Module (Join-Path -Path $PSScriptRoot -ChildPath SpaceProvider)
+        Import-Module (Join-Path -Path $PSScriptRoot -ChildPath TestProviderA)
+        Import-Module (Join-Path -Path $PSScriptRoot -ChildPath TestProviderB)
+    }
+
+    AfterAll {
+        Remove-Module PowerShellProvider, SpaceProvider, TestProviderA, TestProviderB
     }
 
     Context 'with no additional parameters' {
@@ -109,8 +116,8 @@ Describe Get-PackageProvider {
 
         It 'should return <_> default priority' -ForEach 100 {
             Get-PackageProvider |
-            Select-Object -ExpandProperty Priority |
-            Should -Be 100
+            Select-Object -ExpandProperty Priority -Unique |
+            Should -Be $_
         }
 
         It 'should set <Provider> to <Priority> priority' -ForEach @{ Provider = 'PowerShell'; Priority = 50 } {
@@ -154,6 +161,41 @@ Describe Get-PackageProvider {
             Wait-Job |
             Receive-Job |
             Should -HaveCount $_
+        }
+    }
+
+    Context 'provider completer' {
+        BeforeDiscovery {
+            $completerTests = @(
+                @{ Completion = 'P'; Provider = 'PowerShell'; Name = 'PowerShell'; Count = 1 }    
+                @{ Completion = 'Space'; Provider = "'Space Provider'"; Name = 'Space Provider'; Count = 1 }
+                @{ Completion = 'So'; Provider = @('TestProviderA\Soda', 'TestProviderB\Soda'); Name = @('TestProviderA\Soda', 'TestProviderB\Soda'); Count = 2 }
+                @{ Completion = '*Provider'; Provider = @("'Space Provider'", 'PowerShell', 'TestProviderA\Soda', 'TestProviderB\Soda'); Name = @('Space Provider', 'PowerShell', 'TestProviderA\Soda', 'TestProviderB\Soda'); Count = 4 }
+            )
+        }
+        
+        It 'should return all imported providers' {
+            TabExpansion2 'Get-PackageProvider ' |
+            Select-Object -ExpandProperty CompletionMatches |
+            Measure-Object |
+            Select-Object -ExpandProperty Count |
+            Should -BeExactly 4
+        }
+
+        It 'should return correct completion properties for <Provider>' -ForEach $completerTests {
+            $results = TabExpansion2 "Get-PackageProvider -Name $($_.Completion)" |
+            Select-Object -ExpandProperty CompletionMatches
+
+            $results | 
+            Select-Object -ExpandProperty CompletionText |
+            Should -BeExactly $_.Provider
+
+            $results |
+            Select-Object -ExpandProperty ListItemText |
+            Should -BeExactly $_.Name
+
+            $results |
+            Should -HaveCount $_.Count
         }
     }
 }
