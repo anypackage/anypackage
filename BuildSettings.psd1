@@ -4,5 +4,5 @@
         './src/AnyPackage.format.ps1xml',
         './src/AnyPackage.psd1'
     )
-    Destination = './module'
+    Destination = './out/AnyPackage'
 }
