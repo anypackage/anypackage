@@ -89,15 +89,20 @@ jobs:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
           project-slug: AnyPackage
-          signing-policy-slug:  ${{ env.SIGNPATH_SIGNING_POLICY_SLUG }}
-          github-artifact-id:  ${{ needs.Build.outputs.artifact-id }}
+          signing-policy-slug: ${{ env.SIGNPATH_SIGNING_POLICY_SLUG }}
+          github-artifact-id: ${{ needs.Build.outputs.artifact-id }}
           wait-for-completion: true
           output-artifact-directory: signed-artifact
+
+      - name: Update module with signed artifact
+        run: |
+          Expand-Archive .\signed-artifact\AnyPackage*.nupkg
+          Copy-Item ./AnyPackage*/lib/netstandard2.0/AnyPackage.dll -Destination ./signed-artifact/AnyPackage
 
       - name: Upload signed artifact
         uses: actions/upload-artifact@v4
         with:
-          name: signed-artifact 
+          name: signed-artifact
           path: signed-artifact
           if-no-files-found: error
 
