@@ -17,6 +17,8 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -74,7 +76,7 @@ jobs:
           Invoke-Pester -Configuration $config
 
   Sign:
-    needs: Test
+    needs: [Build, Test]
     env:
       SIGNPATH_SIGNING_POLICY_SLUG: | 
         ${{ (github.event_name == 'release' && github.event.action == 'published') 
@@ -88,7 +90,7 @@ jobs:
           organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
           project-slug: AnyPackage
           signing-policy-slug:  ${{ env.SIGNPATH_SIGNING_POLICY_SLUG }}
-          github-artifact-id:  ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
+          github-artifact-id:  ${{ needs.Build.outputs.artifact-id }}
           wait-for-completion: true
           output-artifact-directory: signed-artifact
 
