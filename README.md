@@ -66,3 +66,11 @@ To learn how to create a package provider refer to [about_Creating_Package_Provi
 
 Documentation is located on the [anypackage.dev](https://anypackage.dev) website.
 The source is located in the [docs](https://github.com/anypackage/docs) repository.
+
+## Privacy Policy
+
+AnyPackage does not gather any user data.
+
+## Code Signing Policy
+
+Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
