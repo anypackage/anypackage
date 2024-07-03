@@ -28,12 +28,8 @@ jobs:
         id: version
         run: |
           $version = '${{ github.ref_type }}' -eq 'tag' -and '${{ github.ref_name }}' -like 'v*' ?
-            '${{ github.ref_name }}'.SubString(1) : '0.0.1'
+            '${{ github.ref_name }}'.SubString(1) : '0.6.0'
           "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-
-      - name: Get version
-        run: |
-          echo ${{ steps.version.outputs.version }}
 
       - name: .NET Build
         run: dotnet pack --output out -p:Version=${{ steps.version.outputs.version }}
