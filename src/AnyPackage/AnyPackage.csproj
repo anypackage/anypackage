@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.5.1</Version>
+    <Version>0.0.1</Version>
     <Authors>Thomas Nieto</Authors>
-    <Copyright>© 2023 Thomas Nieto. All rights reserved.</Copyright>
+    <Copyright>© 2024 Thomas Nieto. All rights reserved.</Copyright>
     <Description>A PowerShell universal package manager.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://anypackage.dev</PackageProjectUrl>

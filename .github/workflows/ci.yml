@@ -36,13 +36,22 @@ jobs:
           echo ${{ steps.version.outputs.version }}
 
       - name: .NET Build
-        run: dotnet pack --output out
+        run: dotnet pack --output out -p:Version=${{ steps.version.outputs.version }}
 
       - name: Create module
         run: |
           New-Item ./out/AnyPackage -ItemType Directory
           $settings = Import-PowerShellDataFile ./BuildSettings.psd1
           Copy-Item @settings
+
+      - name: Update module version
+        run: |
+          $path = './out/AnyPackage/AnyPackage.psd1'
+          Get-Content $path |
+          Foreach-Object {
+            $_ -replace '0\.0\.1', '${{ steps.version.outputs.version }}'
+          } |
+          Set-Content $path
 
       - name: Upload unsigned artifact
         id: upload-unsigned-artifact
