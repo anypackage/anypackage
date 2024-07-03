@@ -111,7 +111,7 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: signed-artifact
           parameters: |
-            version: ${{ needs.Build.outputs.version }}
+            version: ${{ toJSON(needs.Build.outputs.version) }}
 
       - name: Update module with signed artifact
         run: |
