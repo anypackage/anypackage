@@ -19,13 +19,21 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Get Version
+      - name: Determine version
+        id: version
         run: |
-          Write-Host ${{ github.ref_name }}
+          $version = '${{ github.ref_type }}' -eq 'tag' -and '${{ github.ref_name }}' -like 'v*' ?
+            '${{ github.ref_name }}'.SubString(1) : '0.0.1'
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Get version
+        run: |
+          echo ${{ steps.version.outputs.version }}
 
       - name: .NET Build
         run: dotnet pack --output out
