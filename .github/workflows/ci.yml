@@ -20,6 +20,7 @@ jobs:
     outputs:
       artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
       version: ${{ steps.version.outputs.version }}
+      product-version: ${{ steps.version.outputs.product-version }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -29,7 +30,9 @@ jobs:
         run: |
           $version = '${{ github.ref_type }}' -eq 'tag' -and '${{ github.ref_name }}' -like 'v*' ?
             '${{ github.ref_name }}'.SubString(1) : '0.6.0'
+          $productVersion = (Get-Item ./out/AnyPackage/AnyPackage.dll).VersionInfo.ProductVersion
           "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "product-version=$productVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: .NET Build
         run: dotnet pack --output out -p:Version=${{ steps.version.outputs.version }}
@@ -111,7 +114,7 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: signed-artifact
           parameters: |
-            version: ${{ toJSON(needs.Build.outputs.version) }}
+            version: ${{ toJSON(needs.Build.outputs.product-version) }}
 
       - name: Update module with signed artifact
         run: |
