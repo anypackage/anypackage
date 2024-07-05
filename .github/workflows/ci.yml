@@ -20,7 +20,7 @@ jobs:
     outputs:
       artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
       version: ${{ steps.version.outputs.version }}
-      product-version: ${{ steps.version.outputs.product-version }}
+      product-version: ${{ steps.product-version.outputs.product-version }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -42,6 +42,12 @@ jobs:
           New-Item ./out/AnyPackage -ItemType Directory
           $settings = Import-PowerShellDataFile ./BuildSettings.psd1
           Copy-Item @settings
+
+      - name: Get product version
+        id: product-version
+        run: |
+          $productVersion = (Get-Item ./out/AnyPackage/AnyPackage.dll).VersionInfo.ProductVersion
+          "product-version=$productVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Update module version
         run: |
