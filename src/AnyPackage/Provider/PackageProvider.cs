@@ -23,7 +23,7 @@ namespace AnyPackage.Provider
         {
             get
             {
-                _providerInfo ??= new PackageProviderInfo(this.GetType());
+                _providerInfo ??= new PackageProviderInfo(GetType());
                 return _providerInfo;
             }
 
