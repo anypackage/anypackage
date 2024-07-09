@@ -112,9 +112,9 @@ namespace AnyPackage.Provider
         /// </summary>
         public IEnumerable<string> UriSchemes => _uriSchemes;
 
-        private HashSet<string> _fileExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private HashSet<string> _uriSchemes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private string? _moduleName;
+        private readonly HashSet<string> _fileExtensions = new(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> _uriSchemes = new(StringComparer.OrdinalIgnoreCase);
+        private readonly string? _moduleName;
         private PSModuleInfo? _module;
         private bool _moduleRead;
 
@@ -191,9 +191,7 @@ namespace AnyPackage.Provider
 
         internal PackageProvider CreateInstance()
         {
-            var providerInstance = Activator.CreateInstance(ImplementingType) as PackageProvider;
-
-            if (providerInstance is null)
+            if (Activator.CreateInstance(ImplementingType) is not PackageProvider providerInstance)
             {
                 throw new InvalidOperationException();
             }
