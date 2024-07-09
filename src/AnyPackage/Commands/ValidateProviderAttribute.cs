@@ -12,19 +12,12 @@ namespace AnyPackage.Commands
     /// <summary>
     /// The provider parameter validator.
     /// </summary>
-    public sealed class ValidateProviderAttribute : ValidateArgumentsAttribute
+    /// <remarks>
+    /// Instantiates the <c>ValidateProviderAttribute</c> class.
+    /// </remarks>
+    /// <param name="operations">Specifies the package provider operation.</param>
+    public sealed class ValidateProviderAttribute(PackageProviderOperations operations) : ValidateArgumentsAttribute
     {
-        private PackageProviderOperations _operations;
-
-        /// <summary>
-        /// Instantiates the <c>ValidateProviderAttribute</c> class.
-        /// </summary>
-        /// <param name="operations">Specifies the package provider operation.</param>
-        public ValidateProviderAttribute(PackageProviderOperations operations)
-        {
-            _operations = operations;
-        }
-
         /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.validateargumentsattribute.validate</see>
         protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
         {
@@ -35,7 +28,7 @@ namespace AnyPackage.Commands
                 throw new ValidationMetadataException("Wildcard characters not supported.");
             }
 
-            var providers = GetProviders(provider, _operations).ToArray();
+            var providers = GetProviders(provider, operations).ToArray();
 
             if (providers.Length > 1)
             {

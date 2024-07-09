@@ -30,7 +30,7 @@ namespace AnyPackage.Commands.Internal
         {
             get
             {
-                _request = _request ?? new PackageRequest(this);
+                _request ??= new PackageRequest(this);
                 return _request;
             }
         }
@@ -105,8 +105,7 @@ namespace AnyPackage.Commands.Internal
         /// <summary>
         /// Gets provider instances.
         /// </summary>
-        /// <param name="name">Name of the provider.</param>
-        protected IEnumerable<PackageProvider> GetNameInstances(string name)
+        protected IEnumerable<PackageProvider> GetNameInstances()
         {
             var instances = GetInstances(Provider).Where(x => x.ProviderInfo.PackageByName).ToList();
 
@@ -231,24 +230,19 @@ namespace AnyPackage.Commands.Internal
             {
                 foreach (var path in paths)
                 {
-                    string filePath;
-                    ProviderInfo provider;
-                    PSDriveInfo drive;
-
                     try
                     {
-                        filePath = SessionState.Path.GetUnresolvedProviderPathFromPSPath(path, out provider, out drive);
+                        var filePath = SessionState.Path.GetUnresolvedProviderPathFromPSPath(path, out var provider, out var drive);
+
+                        if (ValidateFile(filePath, provider))
+                        {
+                            filePaths.Add(filePath);
+                        }
                     }
                     catch (System.Management.Automation.DriveNotFoundException e)
                     {
                         var er = new ErrorRecord(e, "DriveNotFound", ErrorCategory.ObjectNotFound, path);
                         WriteError(er);
-                        continue;
-                    }
-
-                    if (ValidateFile(filePath, provider))
-                    {
-                        filePaths.Add(filePath);
                     }
                 }
             }
@@ -352,7 +346,7 @@ namespace AnyPackage.Commands.Internal
             {
                 return;
             }
-            
+
             WriteVerbose($"{verb} '{package}' package.");
 
             foreach (var instance in instances.Keys)

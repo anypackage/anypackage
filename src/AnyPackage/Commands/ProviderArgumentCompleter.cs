@@ -56,44 +56,21 @@ namespace AnyPackage.Commands
 
         private PackageProviderOperations GetOperation(string commandName)
         {
-            switch (commandName)
+            return commandName switch
             {
-                case Constants.FindPackage:
-                    return PackageProviderOperations.Find;
-
-                case Constants.GetPackage:
-                    return PackageProviderOperations.Get;
-
-                case Constants.InstallPackage:
-                    return PackageProviderOperations.Install;
-
-                case Constants.PublishPackage:
-                    return PackageProviderOperations.Publish;
-
-                case Constants.SavePackage:
-                    return PackageProviderOperations.Save;
-
-                case Constants.UninstallPackage:
-                    return PackageProviderOperations.Uninstall;
-
-                case Constants.UpdatePackage:
-                    return PackageProviderOperations.Update;
-
-                case Constants.GetPackageSource:
-                    return PackageProviderOperations.GetSource;
-
-                case Constants.RegisterPackageSource:
-                    return PackageProviderOperations.SetSource;
-
-                case Constants.SetPackageSource:
-                    return PackageProviderOperations.SetSource;
-
-                case Constants.UnregisterPackageSource:
-                    return PackageProviderOperations.SetSource;
-
-                default:
-                    return PackageProviderOperations.None;
-            }
+                Constants.FindPackage => PackageProviderOperations.Find,
+                Constants.GetPackage => PackageProviderOperations.Get,
+                Constants.InstallPackage => PackageProviderOperations.Install,
+                Constants.PublishPackage => PackageProviderOperations.Publish,
+                Constants.SavePackage => PackageProviderOperations.Save,
+                Constants.UninstallPackage => PackageProviderOperations.Uninstall,
+                Constants.UpdatePackage => PackageProviderOperations.Update,
+                Constants.GetPackageSource => PackageProviderOperations.GetSource,
+                Constants.RegisterPackageSource => PackageProviderOperations.SetSource,
+                Constants.SetPackageSource => PackageProviderOperations.SetSource,
+                Constants.UnregisterPackageSource => PackageProviderOperations.SetSource,
+                _ => PackageProviderOperations.None,
+            };
         }
     }
 }

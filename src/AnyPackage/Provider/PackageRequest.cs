@@ -63,7 +63,7 @@ namespace AnyPackage.Provider
         internal bool PassThru { get; set; }
         internal bool TrustSource { get; set; }
 
-        private Dictionary<Guid, HashSet<string>> _trustedRepositories = new Dictionary<Guid, HashSet<string>>();
+        private readonly Dictionary<Guid, HashSet<string>> _trustedRepositories = [];
         private bool _yesToAll;
         private bool _noToAll;
 

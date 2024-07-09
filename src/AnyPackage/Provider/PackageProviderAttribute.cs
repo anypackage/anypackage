@@ -20,12 +20,12 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets or sets the supported file extensions.
         /// </summary>
-        public string[] FileExtensions { get; set; } = Array.Empty<string>();
+        public string[] FileExtensions { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the supported Uri schemes.
         /// </summary>
-        public string[] UriSchemes { get; set; } = Array.Empty<string>();
+        public string[] UriSchemes { get; set; } = [];
 
         /// <summary>
         /// Gets if the provider supports the <c>Name</c> parameter set.
@@ -37,7 +37,7 @@ namespace AnyPackage.Provider
         /// </remarks>
         public bool PackageByName { get; set; } = true;
 
-        private char[] _invalidCharacters = new char[] { ':', '\\', '[', ']', '?', '*' };
+        private readonly char[] _invalidCharacters = [':', '\\', '[', ']', '?', '*'];
 
         /// <summary>
         /// Constructor for the package provider attribute.

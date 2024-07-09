@@ -97,9 +97,7 @@ namespace AnyPackage.Provider
 
         internal void FindPackage(PackageRequest request)
         {
-            IFindPackage? findPackage = this as IFindPackage;
-
-            if (findPackage is null)
+            if (this is not IFindPackage findPackage)
             {
                 throw new InvalidOperationException();
             }
@@ -109,9 +107,7 @@ namespace AnyPackage.Provider
 
         internal void GetPackage(PackageRequest request)
         {
-            IGetPackage? getPackage = this as IGetPackage;
-
-            if (getPackage is null)
+            if (this is not IGetPackage getPackage)
             {
                 throw new InvalidOperationException($"Package provider '{ProviderInfo.Name}' does not support Get-Package.");
             }
@@ -121,9 +117,7 @@ namespace AnyPackage.Provider
 
         internal void InstallPackage(PackageRequest request)
         {
-            IInstallPackage? installPackage = this as IInstallPackage;
-
-            if (installPackage is null)
+            if (this is not IInstallPackage installPackage)
             {
                 throw new InvalidOperationException();
             }
@@ -133,9 +127,7 @@ namespace AnyPackage.Provider
 
         internal void SavePackage(PackageRequest request)
         {
-            ISavePackage? savePackage = this as ISavePackage;
-
-            if (savePackage is null)
+            if (this is not ISavePackage savePackage)
             {
                 throw new InvalidOperationException();
             }
@@ -145,9 +137,7 @@ namespace AnyPackage.Provider
 
         internal void PublishPackage(PackageRequest request)
         {
-            IPublishPackage? publishPackage = this as IPublishPackage;
-
-            if (publishPackage is null)
+            if (this is not IPublishPackage publishPackage)
             {
                 throw new InvalidOperationException();
             }
@@ -157,9 +147,7 @@ namespace AnyPackage.Provider
 
         internal void UninstallPackage(PackageRequest request)
         {
-            IUninstallPackage? uninstallPackage = this as IUninstallPackage;
-
-            if (uninstallPackage is null)
+            if (this is not IUninstallPackage uninstallPackage)
             {
                 throw new InvalidOperationException();
             }
@@ -169,9 +157,7 @@ namespace AnyPackage.Provider
 
         internal void UpdatePackage(PackageRequest request)
         {
-            IUpdatePackage? updatePackage = this as IUpdatePackage;
-
-            if (updatePackage is null)
+            if (this is not IUpdatePackage updatePackage)
             {
                 throw new InvalidOperationException();
             }
@@ -181,9 +167,7 @@ namespace AnyPackage.Provider
 
         internal void GetSource(SourceRequest request)
         {
-            IGetSource? packageSource = this as IGetSource;
-
-            if (packageSource is null)
+            if (this is not IGetSource packageSource)
             {
                 throw new InvalidOperationException();
             }
@@ -193,9 +177,7 @@ namespace AnyPackage.Provider
 
         internal void RegisterSource(SourceRequest request)
         {
-            ISetSource? packageSource = this as ISetSource;
-
-            if (packageSource is null)
+            if (this is not ISetSource packageSource)
             {
                 throw new InvalidOperationException();
             }
@@ -205,9 +187,7 @@ namespace AnyPackage.Provider
 
         internal void SetSource(SourceRequest request)
         {
-            ISetSource? packageSource = this as ISetSource;
-
-            if (packageSource is null)
+            if (this is not ISetSource packageSource)
             {
                 throw new InvalidOperationException();
             }
@@ -217,9 +197,7 @@ namespace AnyPackage.Provider
 
         internal void UnregisterSource(SourceRequest request)
         {
-            ISetSource? packageSource = this as ISetSource;
-
-            if (packageSource is null)
+            if (this is not ISetSource packageSource)
             {
                 throw new InvalidOperationException();
             }
