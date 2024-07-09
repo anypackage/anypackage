@@ -26,7 +26,7 @@ namespace AnyPackage.Commands
             ValueFromPipelineByPropertyName = true)]
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
-        public string[] Name { get; set; } = new string[] { "*" };
+        public string[] Name { get; set; } = ["*"];
 
         /// <summary>
         /// Gets or sets the version of the packages to retrieve.

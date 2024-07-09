@@ -33,7 +33,7 @@ namespace AnyPackage.Commands
             ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
         [ValidateNoWildcards]
-        public string[] Name { get; set; } = Array.Empty<string>();
+        public string[] Name { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the version of the packages to retrieve.
@@ -101,7 +101,7 @@ namespace AnyPackage.Commands
             Position = 0,
             ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
-        public PackageInfo[] InputObject { get; set; } = Array.Empty<PackageInfo>();
+        public PackageInfo[] InputObject { get; set; } = [];
 
         /// <summary>
         /// Instantiates the <c>SavePackageCommand</c> class.

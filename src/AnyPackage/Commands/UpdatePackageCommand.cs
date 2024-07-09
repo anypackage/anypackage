@@ -31,7 +31,7 @@ namespace AnyPackage.Commands
             ValueFromPipeline = true)]
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
-        public string[] Name { get; set; } = new string[] { "*" };
+        public string[] Name { get; set; } = ["*"];
 
         /// <summary>
         /// Gets or sets the version of the packages to retrieve.
@@ -94,7 +94,7 @@ namespace AnyPackage.Commands
             Position = 0,
             ValueFromPipeline = true)]
         [ValidateNotNullOrEmpty]
-        public PackageInfo[] InputObject { get; set; } = Array.Empty<PackageInfo>();
+        public PackageInfo[] InputObject { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the package path(s).
@@ -104,7 +104,7 @@ namespace AnyPackage.Commands
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
         [Alias("FilePath")]
-        public string[] Path { get; set; } = Array.Empty<string>();
+        public string[] Path { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the package path(s).
@@ -113,7 +113,7 @@ namespace AnyPackage.Commands
             ParameterSetName = Constants.LiteralPathParameterSet)]
         [ValidateNotNullOrEmpty]
         [Alias("PSPath")]
-        public string[] LiteralPath { get; set; } = Array.Empty<string>();
+        public string[] LiteralPath { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the package Uri(s).
@@ -121,7 +121,7 @@ namespace AnyPackage.Commands
         [Parameter(Mandatory = true,
             ParameterSetName = Constants.UriParameterSet)]
         [ValidateNotNullOrEmpty]
-        public Uri[] Uri { get; set; } = Array.Empty<Uri>();
+        public Uri[] Uri { get; set; } = [];
 
         /// <summary>
         /// Instantiates the <c>UpdatePackageCommand</c> class.

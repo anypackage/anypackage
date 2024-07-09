@@ -18,7 +18,7 @@ namespace AnyPackage.Commands.Internal
         {
             get
             {
-                _request = _request ?? new SourceRequest(this);
+                _request ??= new SourceRequest(this);
                 return _request;
             }
         }

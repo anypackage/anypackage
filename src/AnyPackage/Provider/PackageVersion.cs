@@ -13,10 +13,10 @@ namespace AnyPackage.Provider
     /// </summary>
     public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, IEquatable<PackageVersion>
     {
-        private static readonly Regex s_semVer = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$");
-        private static readonly Regex s_multiPartNumericSuffix = new Regex(@"^(?<version>((\d+\.)+\d+))(?<suffix>[a-zA-Z]\w*)$");
-        private static readonly Regex s_multiPartNumeric = new Regex(@"^(\d+\.)+\d+$");
-        private static readonly Regex s_integer = new Regex(@"^\d+$");
+        private static readonly Regex s_semVer = new(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$");
+        private static readonly Regex s_multiPartNumericSuffix = new(@"^(?<version>((\d+\.)+\d+))(?<suffix>[a-zA-Z]\w*)$");
+        private static readonly Regex s_multiPartNumeric = new(@"^(\d+\.)+\d+$");
+        private static readonly Regex s_integer = new(@"^\d+$");
 
         /// <summary>
         /// Gets the version.
@@ -78,9 +78,9 @@ namespace AnyPackage.Provider
         /// </summary>
         public PackageVersionScheme Scheme { get; }
 
-        private List<ulong> _parts = new List<ulong>();
-        private List<string> _prerelease = new List<string>();
-        private List<string> _metadata = new List<string>();
+        private readonly List<ulong> _parts = [];
+        private readonly List<string> _prerelease = [];
+        private readonly List<string> _metadata = [];
 
         /// <summary>
         /// Constructs an instance of the <c>PackageVersion</c> class.
@@ -249,14 +249,14 @@ namespace AnyPackage.Provider
         /// Implicit cast operator for casing <c>string</c> to <c>PackageVersion</c>.
         /// </summary>
         /// <param name="version">String representation of version.</param>
-        public static implicit operator PackageVersion(string version) => new PackageVersion(version);
+        public static implicit operator PackageVersion(string version) => new(version);
 
         /// <summary>
         /// Implicit cast operator for casing <c>Version</c> to <c>PackageVersion</c>.
         /// </summary>
         /// <param name="version">The Version object to convert to PackageVersion.</param>
         /// <returns>The corresponding PackageVersion object.</returns>
-        public static implicit operator PackageVersion(Version version) => new PackageVersion(version);
+        public static implicit operator PackageVersion(Version version) => new(version);
 
         /// <summary>
         /// Explicit cast operator for casting <c>PackageVersion</c> to <c>Version</c>.
@@ -272,7 +272,7 @@ namespace AnyPackage.Provider
         /// <returns>
         /// An object that is equivalent to the version specified in the version parameter.
         /// </returns>
-        public static PackageVersion Parse(string version) => new PackageVersion(version);
+        public static PackageVersion Parse(string version) => new(version);
 
         /// <summary>
         /// Tries to convert the string representation of a version to an equivalent <c>PackageVersion</c> object,
@@ -391,9 +391,7 @@ namespace AnyPackage.Provider
         {
             if (other is null) { return 1; }
 
-            int result;
-
-            if (CompareToScheme(other, out result))
+            if (CompareToScheme(other, out var result))
             {
                 return result;
             }
