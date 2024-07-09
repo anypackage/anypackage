@@ -27,7 +27,7 @@ namespace AnyPackage.Commands
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
         [ArgumentCompleter(typeof(SourceArgumentCompleter))]
-        public string[] Name { get; set; } = new string[] { "*" };
+        public string[] Name { get; set; } = ["*"];
 
         /// <summary>
         /// Gets or sets the provider.

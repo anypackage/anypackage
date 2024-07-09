@@ -29,7 +29,7 @@ namespace AnyPackage.Commands
         [ValidateNotNullOrEmpty]
         [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
         [Alias("Provider")]
-        public string[] Name { get; set; } = new string[] { "*" };
+        public string[] Name { get; set; } = ["*"];
 
         /// <summary>
         /// Gets or sets if available providers are returned. 
@@ -37,7 +37,7 @@ namespace AnyPackage.Commands
         [Parameter]
         public SwitchParameter ListAvailable { get; set; }
 
-        private List<PackageProviderInfo> _availableProviders = new List<PackageProviderInfo>();
+        private List<PackageProviderInfo> _availableProviders = [];
 
         /// <summary>
         /// Initializes the command.
@@ -96,19 +96,15 @@ namespace AnyPackage.Commands
                           .AddParameter("ListAvailable")
                           .Invoke<PSModuleInfo>();
 
-            List<PackageProviderInfo> providerInfos = new List<PackageProviderInfo>();
+            List<PackageProviderInfo> providerInfos = [];
 
             foreach (var module in modules)
             {
-                var privateData = module.PrivateData as Hashtable;
-
-                if (privateData is null) { continue; }
+                if (module.PrivateData is not Hashtable privateData) { continue; }
 
                 if (privateData.ContainsKey("AnyPackage"))
                 {
-                    var anyPackage = privateData["AnyPackage"] as Hashtable;
-
-                    if (anyPackage is null) { continue; }
+                    if (privateData["AnyPackage"] is not Hashtable anyPackage) { continue; }
 
                     if (anyPackage.ContainsKey("Providers"))
                     {

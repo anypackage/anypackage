@@ -49,7 +49,7 @@ namespace AnyPackage.Provider
         /// </summary>
         public IEnumerable<PackageDependency> Dependencies => _dependencies;
 
-        private List<PackageDependency> _dependencies = new List<PackageDependency>();
+        private readonly List<PackageDependency> _dependencies = [];
 
         /// <summary>
         /// Instantiates a <c>PackageInfo</c> object.

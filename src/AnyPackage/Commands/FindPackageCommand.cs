@@ -29,7 +29,7 @@ namespace AnyPackage.Commands
             ValueFromPipelineByPropertyName = true)]
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
-        public string[] Name { get; set; } = new string[] { "*" };
+        public string[] Name { get; set; } = ["*"];
 
         /// <summary>
         /// Gets or sets the version of the packages to retrieve.
@@ -76,7 +76,7 @@ namespace AnyPackage.Commands
         [SupportsWildcards]
         [ValidateNotNullOrEmpty]
         [Alias("FilePath")]
-        public string[] Path { get; set; } = Array.Empty<string>();
+        public string[] Path { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the package path(s).
@@ -85,7 +85,7 @@ namespace AnyPackage.Commands
             ParameterSetName = Constants.LiteralPathParameterSet)]
         [ValidateNotNullOrEmpty]
         [Alias("PSPath")]
-        public string[] LiteralPath { get; set; } = Array.Empty<string>();
+        public string[] LiteralPath { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the package Uri(s).
@@ -93,7 +93,7 @@ namespace AnyPackage.Commands
         [Parameter(Mandatory = true,
             ParameterSetName = Constants.UriParameterSet)]
         [ValidateNotNullOrEmpty]
-        public Uri[] Uri { get; set; } = Array.Empty<Uri>();
+        public Uri[] Uri { get; set; } = [];
 
         /// <summary>
         /// Instances the <c>FindPackageCommand</c> class.
@@ -151,7 +151,7 @@ namespace AnyPackage.Commands
         {
             PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
             string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
-            var instances = GetNameInstances(Provider);
+            var instances = GetNameInstances();
 
             if (source is not null)
             {

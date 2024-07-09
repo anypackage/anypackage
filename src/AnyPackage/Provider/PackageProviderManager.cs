@@ -21,10 +21,7 @@ namespace AnyPackage.Provider
         {
             get
             {
-                if (t_providers is null)
-                {
-                   t_providers = new Dictionary<Guid, PackageProviderInfo>();
-                }
+                t_providers ??= [];
 
                 return t_providers;
             }

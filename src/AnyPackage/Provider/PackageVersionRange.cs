@@ -108,29 +108,19 @@ namespace AnyPackage.Provider
                 return;
             }
 
-            switch (first)
+            IsMinInclusive = first switch
             {
-                case '[':
-                    IsMinInclusive = true;
-                    break;
-                case '(':
-                    IsMinInclusive = false;
-                    break;
-                default:
-                    throw new ArgumentException(nameof(versionRange), "Invalid format.");
-            }
+                '[' => true,
+                '(' => false,
+                _ => throw new ArgumentException(nameof(versionRange), "Invalid format."),
+            };
 
-            switch (last)
+            IsMaxInclusive = last switch
             {
-                case ']':
-                    IsMaxInclusive = true;
-                    break;
-                case ')':
-                    IsMaxInclusive = false;
-                    break;
-                default:
-                    throw new ArgumentException(nameof(versionRange), "Invalid format.");
-            }
+                ']' => true,
+                ')' => false,
+                _ => throw new ArgumentException(nameof(versionRange), "Invalid format."),
+            };
 
             // Strip off opening and closing characters
             var nuGetVersion = versionRange.Substring(1, versionRange.Length - 2);
@@ -230,7 +220,7 @@ namespace AnyPackage.Provider
         /// <exception cref="ArgumentException">Version range is not in correct format.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Min version is higher than max version.</exception>
         public static PackageVersionRange Parse(string versionRange)
-            => new PackageVersionRange(versionRange);
+            => new(versionRange);
 
         /// <summary>
         /// Converts the string representation of a version range to an equivalent <c>PackageVersionRange</c> object.
@@ -258,7 +248,7 @@ namespace AnyPackage.Provider
         /// <exception cref="ArgumentException">Version range is not in correct format.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Min version is higher than max version.</exception>
         public static PackageVersionRange Parse(string versionRange, bool useNuGetSyntax)
-            => new PackageVersionRange(versionRange, useNuGetSyntax);
+            => new(versionRange, useNuGetSyntax);
 
         /// <summary>
         /// Tries to convert the string representation of a

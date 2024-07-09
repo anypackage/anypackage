@@ -30,7 +30,7 @@ namespace AnyPackage.Commands
         [ValidateNotNullOrEmpty]
         [ValidateNoWildcards]
         [ArgumentCompleter(typeof(SourceArgumentCompleter))]
-        public string[] Name { get; set; } = Array.Empty<string>();
+        public string[] Name { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the provider.

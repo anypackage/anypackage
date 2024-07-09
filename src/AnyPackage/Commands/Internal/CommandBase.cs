@@ -28,7 +28,7 @@ namespace AnyPackage.Commands.Internal
         /// <summary>
         /// Gets or sets package provider instances.
         /// </summary>
-        protected Dictionary<Guid, PackageProvider> Instances { get; set; } = new Dictionary<Guid, PackageProvider>();
+        protected Dictionary<Guid, PackageProvider> Instances { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the operation.
