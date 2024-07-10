@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands.Internal
 {
@@ -114,11 +115,11 @@ namespace AnyPackage.Commands.Internal
                 string message;
                 if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
                 {
-                    message = $"Package provider '{Provider}' does not support package by name.";
+                    message = string.Format(Strings.PackageProviderNotSupportPackageByName, Provider);
                 }
                 else
                 {
-                    message = $"No package providers support package by name.";
+                    message = Strings.NoPackageProvidersSupportPackageByName;
                 }
 
                 throw new InvalidOperationException(message);
@@ -141,11 +142,11 @@ namespace AnyPackage.Commands.Internal
                 string message;
                 if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
                 {
-                    message = $"Package provider '{Provider}' does not support '{extension}' extension.";
+                    message = string.Format(Strings.PackageProviderExtensionNotSupported, Provider);
                 }
                 else
                 {
-                    message = $"No package providers support '{extension}' extension.";
+                    message = Strings.NoPackageProviderSupportsExtension;
                 }
 
                 var ex = new InvalidOperationException(message);

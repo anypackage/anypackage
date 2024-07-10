@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Commands.Internal
@@ -61,7 +62,7 @@ namespace AnyPackage.Commands.Internal
         {
             if (Providers.Count == 0)
             {
-                throw new InvalidOperationException("No package providers available.");
+                throw new InvalidOperationException(Strings.NoPackageProviders);
             }
             
             var providers = GetProviders(Operation);
@@ -74,7 +75,7 @@ namespace AnyPackage.Commands.Internal
             }
 
             if (noProvider) {
-                throw new InvalidOperationException("No package providers support this operation.");
+                throw new InvalidOperationException(Strings.NoPackageProvidersSupportOperation);
             }
         }
 

@@ -4,6 +4,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
 {
@@ -13,9 +14,6 @@ namespace AnyPackage.Provider
     [Serializable]
     public class PackageSourceNotFoundException : PackageProviderException
     {
-        // TODO: Put into string resource.
-        private const string DefaultMessage = "Package source not found."; 
-
         /// <summary>
         /// Gets the source name.
         /// </summary>
@@ -28,27 +26,22 @@ namespace AnyPackage.Provider
         {
             get
             {
-                var message = base.Message;
-
-                if (!string.IsNullOrEmpty(SourceName))
-                {
-                    message += $" (Source '{SourceName}')";
-                }
-
-                return message;
+                return string.IsNullOrEmpty(SourceName)
+                ? base.Message
+                : string.Format(Strings.SourceNotFoundName, base.Message, SourceName);
             }
         }
 
         /// <summary>
         /// Instantiates the <c>PackageSourceNotFoundException</c> class.
         /// </summary>
-        public PackageSourceNotFoundException() : base(DefaultMessage) { }
+        public PackageSourceNotFoundException() : base(Strings.SourceNotFound) { }
 
         /// <summary>
         /// Instantiates the <c>PackageSourceNotFoundException</c> class.
         /// </summary>
         /// <param name="sourceName">Specifies the source name.</param>
-        public PackageSourceNotFoundException(string? sourceName) : base(DefaultMessage)
+        public PackageSourceNotFoundException(string? sourceName) : base(Strings.SourceNotFound)
         {
             SourceName = sourceName;
         }
