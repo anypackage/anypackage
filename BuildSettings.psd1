@@ -6,4 +6,5 @@
     )
     Destination = './out/AnyPackage'
     Exclude = 'AnyPackage.xml'
+    Recurse = $true
 }
