@@ -165,4 +165,32 @@
     <value>No package providers support '{0}' extension.</value>
     <comment/>
   </data>
+  <data name="PackageProviderUriSchemeNotSupported" xml:space="preserve">
+    <value>Package provider '{0}' does not support '{1}' scheme.</value>
+    <comment/>
+  </data>
+  <data name="NoPackageProviderSupportsUriScheme" xml:space="preserve">
+    <value>No package providers support '{0}' scheme.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderSourceNotSupported" xml:space="preserve">
+    <value>Package provider '{0}' does not support '{1}' source.</value>
+    <comment/>
+  </data>
+  <data name="NoPackageProviderSupportsSource" xml:space="preserve">
+    <value>No package providers support '{source}' source.</value>
+    <comment/>
+  </data>
+  <data name="PathNotFileSystemProvider" xml:space="preserve">
+    <value>Path '{0}' is not a file system path.</value>
+    <comment/>
+  </data>
+  <data name="PathNotFile" xml:space="preserve">
+    <value>Path '{0}' is not a file.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderOperationNotSupported" xml:space="preserve">
+    <value>Package provider '{0}' does not support this operation.</value>
+    <comment/>
+  </data>
 </root>

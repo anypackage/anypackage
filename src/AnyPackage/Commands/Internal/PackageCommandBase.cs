@@ -170,15 +170,15 @@ namespace AnyPackage.Commands.Internal
                 string message;
                 if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
                 {
-                    message = $"Package provider '{Provider}' does not support '{uri.Scheme}' scheme.";
+                    message = string.Format(Strings.PackageProviderUriSchemeNotSupported, Provider, uri.Scheme);
                 }
                 else
                 {
-                    message = $"No package providers support '{uri.Scheme}' scheme.";
+                    message = string.Format(Strings.NoPackageProviderSupportsUriScheme, Provider, uri.Scheme);
                 }
 
                 var ex = new InvalidOperationException(message);
-                var er = new ErrorRecord(ex, "PackageProviderSchemeNotSupported", ErrorCategory.InvalidOperation, uri);
+                var er = new ErrorRecord(ex, "PackageProviderUriSchemeNotSupported", ErrorCategory.InvalidOperation, uri);
                 WriteError(er);
             }
 
@@ -265,11 +265,11 @@ namespace AnyPackage.Commands.Internal
                 string message;
                 if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
                 {
-                    message = $"Package provider '{Provider}' does not support '{source}' source.";
+                    message = string.Format(Strings.PackageProviderSourceNotSupported, Provider, source);
                 }
                 else
                 {
-                    message = $"No package providers support '{source}' source.";
+                    message = string.Format(Strings.NoPackageProviderSupportsSource, source);
                 }
 
                 throw new InvalidOperationException(message);
@@ -287,7 +287,7 @@ namespace AnyPackage.Commands.Internal
         {
             if (provider.Name != "FileSystem")
             {
-                var ex = new InvalidOperationException($"Path '{path}' is not a file system path.");
+                var ex = new InvalidOperationException(string.Format(Strings.PathNotFileSystemProvider, path));
                 var er = new ErrorRecord(ex, "PathNotFileSystemProvider", ErrorCategory.InvalidArgument, path);
                 WriteError(er);
                 return false;
@@ -295,7 +295,7 @@ namespace AnyPackage.Commands.Internal
 
             if (!File.Exists(path))
             {
-                var ex = new InvalidOperationException($"Path '{path}' is not a file.");
+                var ex = new InvalidOperationException(string.Format(Strings.PathNotFile, path));
                 var er = new ErrorRecord(ex, "PathNotFile", ErrorCategory.InvalidArgument, path);
                 WriteError(er);
                 return false;
@@ -317,7 +317,7 @@ namespace AnyPackage.Commands.Internal
             }
             else
             {
-                var ex = new InvalidOperationException($"Package provider '{package.Provider.Name}' does not support this operation.");
+                var ex = new InvalidOperationException(string.Format(Strings.PackageProviderOperationNotSupported, package.Provider.Name));
                 var er = new ErrorRecord(ex, "PackageProviderOperationNotSupported", ErrorCategory.InvalidOperation, Request.Name);
                 WriteError(er);
                 return false;
