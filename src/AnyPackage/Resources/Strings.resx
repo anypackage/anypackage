@@ -273,4 +273,64 @@
     <value>Package provider '{0}' does not support this operation or cannot be found. Use 'Get-PackageProvider -Name {0}' to see if it is present and supports this operation.</value>
     <comment/>
   </data>
+  <data name="PackageNameNullOrWhiteSpace" xml:space="preserve">
+    <value>Package name cannot be null or whitespace.</value>
+    <comment/>
+  </data>
+  <data name="ProviderNameNullOrWhiteSpace" xml:space="preserve">
+    <value>The provider name cannot be null or whitespace.</value>
+    <comment/>
+  </data>
+  <data name="InvalidCharacters" xml:space="preserve">
+    <value>Contains invalid characters.</value>
+    <comment/>
+  </data>
+  <data name="TypeNotDerive" xml:space="preserve">
+    <value>Type '{0}' does not derive from '{1}' class.</value>
+    <comment/>
+  </data>
+  <data name="EmptyGuid" xml:space="preserve">
+    <value>The value cannot be an empty GUID.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderAttributeNotFound" xml:space="preserve">
+    <value>Package provider attribute not found.</value>
+    <comment/>
+  </data>
+  <data name="InstallFromUntrustedSource" xml:space="preserve">
+    <value>You are installing packages from an untrusted source. If you trust this source, change its Trusted value by running the Set-PackageSource cmdlet. Are you sure you want to install the package from '{0}'?</value>
+    <comment/>
+  </data>
+  <data name="NullOrWhiteSpace" xml:space="preserve">
+    <value>Cannot be null or whitespace.</value>
+    <comment/>
+  </data>
+  <data name="VersionSchemeAlphaNumeric" xml:space="preserve">
+    <value>Cannot convert alpha-numeric versions to Version type.</value>
+    <comment/>
+  </data>
+  <data name="VersionHasTooManyParts" xml:space="preserve">
+    <value>Version contains more than four parts.</value>
+    <comment/>
+  </data>
+  <data name="VersionHasTooLittleParts" xml:space="preserve">
+    <value>Version contains less than two parts.</value>
+    <comment/>
+  </data>
+  <data name="VersionHasPrerelease" xml:space="preserve">
+    <value>Version contains prerelease.</value>
+    <comment/>
+  </data>
+  <data name="VersionHasBuildMetadata" xml:space="preserve">
+    <value>Version contains build metadata.</value>
+    <comment/>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Invalid format.</value>
+    <comment/>
+  </data>
+  <data name="MinVersionHigherThanMaxVersion" xml:space="preserve">
+    <value>Min version is higher than max version.</value>
+    <comment/>
+  </data>
 </root>
