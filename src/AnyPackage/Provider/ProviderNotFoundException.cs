@@ -4,6 +4,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
 {
@@ -13,9 +14,6 @@ namespace AnyPackage.Provider
     [Serializable]
     public class PackageProviderNotFoundException : PackageProviderException
     {
-        // TODO: Put into string resource.
-        private const string DefaultMessage = "Package provider not found."; 
-
         /// <summary>
         /// Gets the provider name.
         /// </summary>
@@ -28,27 +26,22 @@ namespace AnyPackage.Provider
         {
             get
             {
-                var message = base.Message;
-
-                if (!string.IsNullOrEmpty(ProviderName))
-                {
-                    message += $" (Provider '{ProviderName}')";
-                }
-
-                return message;
+                return string.IsNullOrEmpty(ProviderName)
+                ? base.Message
+                : string.Format(Strings.PackageProviderNotFoundName, base.Message, ProviderName);
             }
         }
 
         /// <summary>
         /// Instantiates the <c>PackageProviderNotFoundException</c> class.
         /// </summary>
-        public PackageProviderNotFoundException() : base(DefaultMessage) { }
+        public PackageProviderNotFoundException() : base(Strings.PackageProviderNotFound) { }
 
         /// <summary>
         /// Instantiates the <c>PackageProviderNotFoundException</c> class.
         /// </summary>
         /// <param name="providerName">Specifies the provider name.</param>
-        public PackageProviderNotFoundException(string? providerName) : base(DefaultMessage)
+        public PackageProviderNotFoundException(string? providerName) : base(Strings.PackageProviderNotFound)
         {
             ProviderName = providerName;
         }

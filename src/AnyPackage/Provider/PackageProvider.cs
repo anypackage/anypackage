@@ -109,7 +109,7 @@ namespace AnyPackage.Provider
         {
             if (this is not IGetPackage getPackage)
             {
-                throw new InvalidOperationException($"Package provider '{ProviderInfo.Name}' does not support Get-Package.");
+                throw new InvalidOperationException();
             }
 
             getPackage.GetPackage(request);

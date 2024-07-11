@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
 {
@@ -67,12 +68,12 @@ namespace AnyPackage.Provider
             
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Cannot be null or whitespace.", nameof(name));
+                throw new ArgumentException(Strings.NullOrWhiteSpace, nameof(name));
             }
 
             if (string.IsNullOrWhiteSpace(location))
             {
-                throw new ArgumentException("Cannot be null or whitespace.", nameof(location));
+                throw new ArgumentException(Strings.NullOrWhiteSpace, nameof(location));
             }
 
             Name = name;

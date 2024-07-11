@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
 {
@@ -85,7 +86,7 @@ namespace AnyPackage.Provider
             
             if (string.IsNullOrWhiteSpace(versionRange))
             {
-                throw new ArgumentException(nameof(versionRange), "Cannot be null or whitespace.");
+                throw new ArgumentException(Strings.NullOrWhiteSpace, nameof(versionRange));
             }
 
             if (versionRange == "*") { return; }
@@ -112,14 +113,14 @@ namespace AnyPackage.Provider
             {
                 '[' => true,
                 '(' => false,
-                _ => throw new ArgumentException(nameof(versionRange), "Invalid format."),
+                _ => throw new ArgumentException(Strings.InvalidFormat, nameof(versionRange)),
             };
 
             IsMaxInclusive = last switch
             {
                 ']' => true,
                 ')' => false,
-                _ => throw new ArgumentException(nameof(versionRange), "Invalid format."),
+                _ => throw new ArgumentException(Strings.InvalidFormat, nameof(versionRange)),
             };
 
             // Strip off opening and closing characters
@@ -132,7 +133,7 @@ namespace AnyPackage.Provider
                  parts.All(string.IsNullOrEmpty)) ||
                  (parts.Length == 1 && first == '(' && last == ')'))
             {
-                throw new ArgumentException(nameof(nuGetVersion), "Invalid format.");
+                throw new ArgumentException(Strings.InvalidFormat, nameof(nuGetVersion));
             }
 
             var minimumVersion = parts[0];
@@ -152,7 +153,7 @@ namespace AnyPackage.Provider
                 && MaxVersion is not null
                 && MinVersion > MaxVersion)
             {
-                throw new ArgumentOutOfRangeException(nameof(versionRange), "Min version is higher than max version.");
+                throw new ArgumentOutOfRangeException(Strings.MinVersionHigherThanMaxVersion, nameof(versionRange));
             }
         }
 
@@ -173,7 +174,7 @@ namespace AnyPackage.Provider
                 && maxVersion is not null
                 && minVersion > maxVersion)
             {
-                throw new ArgumentOutOfRangeException(nameof(minVersion), "Min version is higher than max version.");
+                throw new ArgumentOutOfRangeException(Strings.MinVersionHigherThanMaxVersion, nameof(minVersion));
             }
 
             if (minVersion is not null)

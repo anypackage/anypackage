@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -18,7 +19,6 @@ namespace AnyPackage.Commands
     public sealed class FindPackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Find = PackageProviderOperations.Find;
-        private const string Finding = "Finding";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -163,7 +163,7 @@ namespace AnyPackage.Commands
             foreach (var name in Name)
             {
                 SetRequest(name, version, source);
-                Invoke(name, Finding, invoke);
+                Invoke(name, Strings.Finding, invoke);
             }
         }
 
@@ -186,7 +186,7 @@ namespace AnyPackage.Commands
                 var invoke = GetInvoke(instances);
 
                 SetPathRequest(path);
-                Invoke(path, Finding, invoke);
+                Invoke(path, Strings.Finding, invoke);
             }
         }
 
@@ -198,7 +198,7 @@ namespace AnyPackage.Commands
                 var invoke = GetInvoke(instances);
 
                 SetRequest(uri);
-                Invoke(uri.ToString(), Finding, invoke);
+                Invoke(uri.ToString(), Strings.Finding, invoke);
             }
         }
     }
