@@ -371,7 +371,7 @@ namespace AnyPackage.Commands.Internal
 
         private void Invoke(string package, PackageProvider instance, InvokePackage operation)
         {
-            WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
+            WriteVerbose(string.Format(Strings.CallingProvider, instance.ProviderInfo.Name));
             Request.ProviderInfo = instance.ProviderInfo;
 
             try

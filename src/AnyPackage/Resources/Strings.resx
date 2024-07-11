@@ -193,4 +193,84 @@
     <value>Package provider '{0}' does not support this operation.</value>
     <comment/>
   </data>
+  <data name="Finding" xml:space="preserve">
+    <value>Finding</value>
+    <comment/>
+  </data>
+  <data name="Getting" xml:space="preserve">
+    <value>Getting</value>
+    <comment/>
+  </data>
+  <data name="GettingSource" xml:space="preserve">
+    <value>Getting '{0}' source.</value>
+    <comment/>
+  </data>
+  <data name="CallingProvider" xml:space="preserve">
+    <value>Calling '{0}' provider.</value>
+    <comment/>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>Installing</value>
+    <comment/>
+  </data>
+  <data name="Publishing" xml:space="preserve">
+    <value>Publishing</value>
+    <comment/>
+  </data>
+  <data name="RegisteringSource" xml:space="preserve">
+    <value>Registering '{0}' source.</value>
+    <comment/>
+  </data>
+  <data name="PackageSourceNotRegistered" xml:space="preserve">
+    <value>Package provider did not register package source.</value>
+    <comment/>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Saving</value>
+    <comment/>
+  </data>
+  <data name="SettingSource" xml:space="preserve">
+    <value>Setting '{0}' source.</value>
+    <comment/>
+  </data>
+  <data name="PackageSourceFailedSet" xml:space="preserve">
+    <value>Package provider did not set the package source configuration.</value>
+    <comment/>
+  </data>
+  <data name="Uninstalling" xml:space="preserve">
+    <value>Uninstalling</value>
+    <comment/>
+  </data>
+  <data name="UnregisteringSource" xml:space="preserve">
+    <value>Unregistering '{0}' source.</value>
+    <comment/>
+  </data>
+  <data name="Updating" xml:space="preserve">
+    <value>Updating</value>
+    <comment/>
+  </data>
+  <data name="ParameterNoWildcards" xml:space="preserve">
+    <value>The parameter does not support wildcards.</value>
+    <comment/>
+  </data>
+  <data name="PathIsFile" xml:space="preserve">
+    <value>Path '{0}' is a file.</value>
+    <comment/>
+  </data>
+  <data name="PathNotExist" xml:space="preserve">
+    <value>Path '{0}' does not exist.</value>
+    <comment/>
+  </data>
+  <data name="WildcardsNotSupported" xml:space="preserve">
+    <value>Wildcard characters not supported.</value>
+    <comment/>
+  </data>
+  <data name="MultiplePackageProvidersFound" xml:space="preserve">
+    <value>Multiple package providers found for '{0}'. Use provider full name 'Module\\Provider' instead.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderNotFoundOrSupportOperation" xml:space="preserve">
+    <value>Package provider '{0}' does not support this operation or cannot be found. Use 'Get-PackageProvider -Name {0}' to see if it is present and supports this operation.</value>
+    <comment/>
+  </data>
 </root>

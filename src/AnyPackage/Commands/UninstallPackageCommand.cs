@@ -2,11 +2,11 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
-using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -21,7 +21,6 @@ namespace AnyPackage.Commands
     public sealed class UninstallPackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Uninstall = PackageProviderOperations.Uninstall;
-        private const string Uninstalling = "Uninstalling";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -126,7 +125,7 @@ namespace AnyPackage.Commands
             foreach (var name in Name)
             {
                 SetRequest(name, version);
-                Invoke(name, Uninstalling, invoke, true, true);
+                Invoke(name, Strings.Uninstalling, invoke, true, true);
             }
         }
 
@@ -142,7 +141,7 @@ namespace AnyPackage.Commands
                 var instances = GetInstances(package.Provider.FullName);
                 var invoke = GetInvoke(instances);
                 SetRequest(package);
-                Invoke(package.Name, Uninstalling, invoke, true, true);
+                Invoke(package.Name, Strings.Uninstalling, invoke, true, true);
             }
         }
     }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -93,10 +94,10 @@ namespace AnyPackage.Commands
 
             var instance = GetInstances(Provider).First();
 
-            WriteVerbose($"Registering '{Name}' source.");
+            WriteVerbose(string.Format(Strings.RegisteringSource, Name));
             SetRequest(Name, Location, Trusted, Force);
 
-            WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
+            WriteVerbose(string.Format(Strings.CallingProvider, instance.ProviderInfo.Name));
             Request.ProviderInfo = instance.ProviderInfo;
 
             try
@@ -115,7 +116,7 @@ namespace AnyPackage.Commands
 
             if (!Request.HasWriteObject)
             {
-                var ex = new PackageProviderException("Package provider did not register package source.");
+                var ex = new PackageProviderException(Strings.PackageSourceNotRegistered);
                 var err = new ErrorRecord(ex, "PackageSourceNotRegistered", ErrorCategory.NotSpecified, Name);
                 WriteError(err);
             }

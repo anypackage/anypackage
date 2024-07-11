@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -21,7 +22,6 @@ namespace AnyPackage.Commands
     public sealed class InstallPackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Install = PackageProviderOperations.Install;
-        private const string Installing = "Installing";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -196,7 +196,7 @@ namespace AnyPackage.Commands
             foreach (var name in Name)
             {
                 SetRequest(name, version, source, TrustSource);
-                Invoke(name, Installing, invoke, true, true);
+                Invoke(name, Strings.Installing, invoke, true, true);
             }
         }
 
@@ -212,7 +212,7 @@ namespace AnyPackage.Commands
                 var instances = GetInstances(package.Provider.FullName);
                 var invoke = GetInvoke(instances);
                 SetRequest(package, TrustSource);
-                Invoke(package.Name, Installing, invoke, true, true);
+                Invoke(package.Name, Strings.Installing, invoke, true, true);
             }
         }
 
@@ -235,7 +235,7 @@ namespace AnyPackage.Commands
                 var invoke = GetInvoke(instances);
 
                 SetPathRequest(path);
-                Invoke(path, Installing, invoke, true, true);
+                Invoke(path, Strings.Installing, invoke, true, true);
             }
         }
 
@@ -247,7 +247,7 @@ namespace AnyPackage.Commands
                 var invoke = GetInvoke(instances);
 
                 SetRequest(uri);
-                Invoke(uri.ToString(), Installing, invoke, true, true);
+                Invoke(uri.ToString(), Strings.Installing, invoke, true, true);
             }
         }
     }

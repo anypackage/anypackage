@@ -5,6 +5,7 @@
 using System.Linq;
 using System.Management.Automation;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Commands
@@ -25,18 +26,18 @@ namespace AnyPackage.Commands
 
             if (WildcardPattern.ContainsWildcardCharacters(provider))
             {
-                throw new ValidationMetadataException("Wildcard characters not supported.");
+                throw new ValidationMetadataException(Strings.WildcardsNotSupported);
             }
 
             var providers = GetProviders(provider, operations).ToArray();
 
             if (providers.Length > 1)
             {
-                throw new ValidationMetadataException($"Multiple package providers found for '{provider}'. Use provider full name 'Module\\Provider' instead.");
+                throw new ValidationMetadataException(string.Format(Strings.MultiplePackageProvidersFound, provider));
             }
             else if (providers.Length == 0)
             {
-                throw new ValidationMetadataException($"Package provider '{provider}' does not support this operation or cannot be found. Use 'Get-PackageProvider -Name {provider}' to see if it is present and supports this operation.");
+                throw new ValidationMetadataException(string.Format(Strings.PackageProviderNotFoundOrSupportOperation, provider));
             }
         }
     }

@@ -5,6 +5,7 @@
 using System.Collections;
 using System.Linq;
 using System.Management.Automation;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -29,7 +30,7 @@ namespace AnyPackage.Commands
                 {
                     if (WildcardPattern.ContainsWildcardCharacters(value))
                     {
-                        throw new ValidationMetadataException("The parameter does not support wildcards.");
+                        throw new ValidationMetadataException(Strings.ParameterNoWildcards);
                     }
                 }
             }

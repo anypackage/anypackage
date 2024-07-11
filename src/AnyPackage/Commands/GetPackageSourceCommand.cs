@@ -6,6 +6,7 @@ using System;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -55,13 +56,13 @@ namespace AnyPackage.Commands
 
             foreach (var name in Name)
             {
-                WriteVerbose($"Getting '{name}' source.");
+                WriteVerbose(Strings.GettingSource);
 
                 SetRequest(name);
 
                 foreach (var instance in instances)
                 {
-                    WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
+                    WriteVerbose(string.Format(Strings.CallingProvider, instance.ProviderInfo.Name));
                     Request.ProviderInfo = instance.ProviderInfo;
 
                     try

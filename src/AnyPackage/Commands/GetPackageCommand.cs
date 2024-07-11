@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -67,7 +68,7 @@ namespace AnyPackage.Commands
             foreach (var name in Name)
             {
                 SetRequest(name, version);
-                Invoke(name, "Getting", invoke);
+                Invoke(name, Strings.Getting, invoke);
             }
         }
 
