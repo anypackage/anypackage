@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
 {
@@ -95,7 +96,7 @@ namespace AnyPackage.Provider
 
             if (string.IsNullOrWhiteSpace(version))
             {
-                throw new ArgumentException("Value cannot be whitespace.", version);
+                throw new ArgumentException(Strings.NullOrWhiteSpace, nameof(version));
             }
 
             Match match;
@@ -308,27 +309,27 @@ namespace AnyPackage.Provider
         {
             if (Scheme == PackageVersionScheme.AlphaNumeric)
             {
-                throw new InvalidOperationException("Cannot convert alpha-numeric versions to Version type.");
+                throw new InvalidOperationException(Strings.VersionSchemeAlphaNumeric);
             }
 
             if (_parts.Count > 4)
             {
-                throw new InvalidOperationException("Version contains more than four parts.");
+                throw new InvalidOperationException(Strings.VersionHasTooManyParts);
             }
 
             if (_parts.Count < 2)
             {
-                throw new InvalidOperationException("Version contains less than two parts.");
+                throw new InvalidOperationException(Strings.VersionHasTooLittleParts);
             }
 
             if (IsPrerelease)
             {
-                throw new InvalidOperationException("Version contains prerelease.");
+                throw new InvalidOperationException(Strings.VersionHasPrerelease);
             }
 
             if (HasMetadata)
             {
-                throw new InvalidOperationException("Version contains build metadata.");
+                throw new InvalidOperationException(Strings.VersionHasBuildMetadata);
             }
 
             return System.Version.Parse(Version);

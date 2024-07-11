@@ -3,6 +3,7 @@
 // terms of the MIT license.
 
 using System;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
 {
@@ -47,12 +48,12 @@ namespace AnyPackage.Provider
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("The provider name cannot be null or whitespace.", nameof(name));
+                throw new ArgumentException(Strings.ProviderNameNullOrWhiteSpace, nameof(name));
             }
 
             if (name.IndexOfAny(_invalidCharacters) != -1)
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Contains invalid characters.");
+                throw new ArgumentOutOfRangeException(nameof(name), Strings.InvalidCharacters);
             }
 
             Name = name;

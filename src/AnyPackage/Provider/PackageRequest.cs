@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
 {
@@ -163,10 +164,8 @@ namespace AnyPackage.Provider
                 return true;
             }
 
-            var query = string.Format("You are installing packages from an untrusted source. If you trust this source, change its Trusted value by running the Set-PackageSource cmdlet. Are you sure you want to install the package from '{0}'?", source);
-
             var trusted = Cmdlet.ShouldContinue(
-                query: query,
+                query: string.Format(Strings.InstallFromUntrustedSource, source),
                 caption: "Untrusted Source",
                 hasSecurityImpact: true,
                 yesToAll: ref _yesToAll,

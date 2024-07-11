@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -21,7 +22,6 @@ namespace AnyPackage.Commands
     public sealed class UpdatePackageCommand : PackageCommandBase
     {
         private const PackageProviderOperations Update = PackageProviderOperations.Update;
-        private const string Updating = "Updating";
 
         /// <summary>
         /// Gets or sets the name(s).
@@ -195,7 +195,7 @@ namespace AnyPackage.Commands
             foreach (var name in Name)
             {
                 SetRequest(name, version, source, TrustSource);
-                Invoke(name, Updating, invoke, true);
+                Invoke(name, Strings.Updating, invoke, true);
             }
         }
 
@@ -211,7 +211,7 @@ namespace AnyPackage.Commands
                 var instances = GetInstances(package.Provider.FullName);
                 var invoke = GetInvoke(instances);
                 SetRequest(package, TrustSource);
-                Invoke(package.Name, Updating, invoke, true);
+                Invoke(package.Name, Strings.Updating, invoke, true);
             }
         }
 
@@ -234,7 +234,7 @@ namespace AnyPackage.Commands
                 var invoke = GetInvoke(instances);
 
                 SetPathRequest(path);
-                Invoke(path, Updating, invoke, true);
+                Invoke(path, Strings.Updating, invoke, true);
             }
         }
 
@@ -246,7 +246,7 @@ namespace AnyPackage.Commands
                 var invoke = GetInvoke(instances);
 
                 SetRequest(uri);
-                Invoke(uri.ToString(), Updating, invoke, true);
+                Invoke(uri.ToString(), Strings.Updating, invoke, true);
             }
         }
     }

@@ -235,7 +235,5 @@ namespace AnyPackage.Provider
         /// The package name.
         /// </returns>
         public override string ToString() => Name;
-
-        // TODO: Add set property methods to return new object with updated values.
     }
 }

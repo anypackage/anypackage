@@ -2,11 +2,11 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
-using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -180,7 +180,7 @@ namespace AnyPackage.Commands
             foreach (var name in Name)
             {
                 SetRequest(name, version, source, TrustSource);
-                Invoke(name, Saving, invoke, true, true);
+                Invoke(name, Strings.Saving, invoke, true, true);
             }
         }
 
@@ -196,7 +196,7 @@ namespace AnyPackage.Commands
                 var instances = GetInstances(package.Provider.FullName);
                 var invoke = GetInvoke(instances);
                 SetRequest(package, TrustSource);
-                Invoke(package.Name, Saving, invoke, true, true);
+                Invoke(package.Name, Strings.Saving, invoke, true, true);
             }
         }
     }

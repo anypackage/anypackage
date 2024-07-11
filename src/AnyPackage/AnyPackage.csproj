@@ -28,4 +28,22 @@
     <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Strings.resx">
+      <!-- Tell Visual Studio that MSBuild will do the generation. -->
+      <Generator>MSBuild:Compile</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <!-- Put generated files in the 'obj' folder. -->
+      <StronglyTypedFileName>$(IntermediateOutputPath)\Strings.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedNamespace>AnyPackage.Resources</StronglyTypedNamespace>
+      <StronglyTypedClassName>Strings</StronglyTypedClassName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- For VS Code/OmniSharp support, ensure that CoreResGen runs before CoreCompile -->
+  <PropertyGroup>
+    <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
+  </PropertyGroup>
+
 </Project>

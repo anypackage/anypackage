@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
+using AnyPackage.Resources;
 using static AnyPackage.Provider.PackageProviderManager;
 
 namespace AnyPackage.Provider
@@ -112,9 +113,9 @@ namespace AnyPackage.Provider
         /// </summary>
         public IEnumerable<string> UriSchemes => _uriSchemes;
 
-        private HashSet<string> _fileExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private HashSet<string> _uriSchemes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private string? _moduleName;
+        private readonly HashSet<string> _fileExtensions = new(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> _uriSchemes = new(StringComparer.OrdinalIgnoreCase);
+        private readonly string? _moduleName;
         private PSModuleInfo? _module;
         private bool _moduleRead;
 
@@ -122,7 +123,7 @@ namespace AnyPackage.Provider
         {
             if (!type.IsSubclassOf(typeof(PackageProvider)))
             {
-                throw new ArgumentException($"Type '{type}' does not derive from '{nameof(PackageProvider)}' class.", nameof(type));
+                throw new ArgumentException(string.Format(Strings.TypeNotDerive, type, nameof(PackageProvider)));
             }
 
             ImplementingType = type;
@@ -138,7 +139,7 @@ namespace AnyPackage.Provider
         {
             if (id == Guid.Empty)
             {
-                throw new ArgumentException("The value cannot be an empty GUID.", nameof(id));
+                throw new ArgumentException(Strings.EmptyGuid, nameof(id));
             }
 
             Id = id;
@@ -191,9 +192,7 @@ namespace AnyPackage.Provider
 
         internal PackageProvider CreateInstance()
         {
-            var providerInstance = Activator.CreateInstance(ImplementingType) as PackageProvider;
-
-            if (providerInstance is null)
+            if (Activator.CreateInstance(ImplementingType) is not PackageProvider providerInstance)
             {
                 throw new InvalidOperationException();
             }
@@ -221,7 +220,7 @@ namespace AnyPackage.Provider
 
             if (packageProviderAttribute?.Length != 1)
             {
-                throw new InvalidOperationException("Package provider attribute not present.");
+                throw new InvalidOperationException(Strings.PackageProviderAttributeNotFound);
             }
 
             return packageProviderAttribute[0];

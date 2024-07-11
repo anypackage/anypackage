@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -74,7 +75,7 @@ namespace AnyPackage.Commands
             var invoke = GetInvoke(instance);
 
             SetRequest(Path, source);
-            Invoke(Path, "Publishing", invoke, true);
+            Invoke(Path, Strings.Publishing, invoke, true);
         }
 
         private void SetRequest(string path, string? source)

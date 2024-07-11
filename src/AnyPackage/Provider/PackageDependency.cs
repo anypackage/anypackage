@@ -3,6 +3,7 @@
 // terms of the MIT license.
 
 using System;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
 {
@@ -38,9 +39,9 @@ namespace AnyPackage.Provider
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Package name cannot be null or whitespace.", nameof(name));
+                throw new ArgumentException(Strings.PackageNameNullOrWhiteSpace, nameof(name));
             }
-            
+
             Name = name;
         }
 

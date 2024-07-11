@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using System.Management.Automation;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -29,12 +30,12 @@ namespace AnyPackage.Commands
 
             if (File.Exists(path))
             {
-                var ex = new InvalidOperationException($"Path '{path}' is a file.");
+                var ex = new InvalidOperationException(string.Format(Strings.PathIsFile, path));
                 throw new ValidationMetadataException(ex.Message, ex);
             }
             else if (!Directory.Exists(path))
             {
-                var ex = new DirectoryNotFoundException($"Path '{path}' does not exist.");
+                var ex = new DirectoryNotFoundException(string.Format(Strings.PathNotExist, path));
                 throw new ValidationMetadataException(ex.Message, ex);
             }
         }

@@ -6,6 +6,7 @@ using System;
 using System.Management.Automation;
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands
 {
@@ -78,7 +79,7 @@ namespace AnyPackage.Commands
                 return;
             }
 
-            WriteVerbose($"Registering '{Name}' source.");
+            WriteVerbose(string.Format(Strings.SettingSource, Name));
 
             string? location = MyInvocation.BoundParameters.ContainsKey(nameof(Location)) ? Location : null;
             bool? trusted = MyInvocation.BoundParameters.ContainsKey(nameof(Trusted)) ? Trusted.IsPresent : null;
@@ -89,7 +90,7 @@ namespace AnyPackage.Commands
 
             foreach (var instance in instances)
             {
-                WriteVerbose($"Calling '{instance.ProviderInfo.Name}' provider.");
+                WriteVerbose(string.Format(Strings.CallingProvider, instance.ProviderInfo.Name));
                 Request.ProviderInfo = instance.ProviderInfo;
 
                 try
@@ -115,7 +116,7 @@ namespace AnyPackage.Commands
 
             if (!Request.HasWriteObject)
             {
-                var ex = new PackageProviderException("Package provider did not set the package source configuration.");
+                var ex = new PackageProviderException(Strings.PackageSourceFailedSet);
                 var err = new ErrorRecord(ex, "PackageSourceFailedSet", ErrorCategory.NotSpecified, Name);
                 WriteError(err);
             }
