@@ -34,7 +34,6 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets the package provider PowerShell module information.
         /// </summary>
-        // TODO: Figure out if will be supporting non-module shipped providers.
         // This will determine if this property is nullable or not.
         public PSModuleInfo? Module
         {
