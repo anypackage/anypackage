@@ -333,4 +333,8 @@
     <value>Min version is higher than max version.</value>
     <comment/>
   </data>
+  <data name="OperationPackage" xml:space="preserve">
+    <value>{0} '{1}' package.</value>
+    <comment/>
+  </data>
 </root>
