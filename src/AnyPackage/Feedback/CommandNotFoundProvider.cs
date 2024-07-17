@@ -57,7 +57,7 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider,
     {
         _command = ((CommandNotFoundException)context.LastError!.Exception).CommandName;
         _token = token;
-        return new FeedbackItem(Strings.FeedbackHeader, GetActions());
+        return new FeedbackItem(Strings.FeedbackHeader, GetActions().ToList());
     }
 
     /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.feedback.ifeedbackprovider.getfeedback</see>
