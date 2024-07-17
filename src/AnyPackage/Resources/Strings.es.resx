@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PackageProviderNotFound" xml:space="preserve">
+    <value>Package provider not found.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderNotFoundName" xml:space="preserve">
+    <value>{0} (Provider '{1}')</value>
+    <comment/>
+  </data>
+  <data name="SourceNotFound" xml:space="preserve">
+    <value>Package source not found.</value>
+    <comment/>
+  </data>
+  <data name="SourceNotFoundName" xml:space="preserve">
+    <value>{0} (Source '{1}')</value>
+    <comment/>
+  </data>
+  <data name="PackageNotFound" xml:space="preserve">
+    <value>Package not found.</value>
+    <comment/>
+  </data>
+  <data name="PackageNotFoundName" xml:space="preserve">
+    <value>{0} (Package '{1}')</value>
+    <comment/>
+  </data>
+  <data name="NoPackageProviders" xml:space="preserve">
+    <value>No package providers available.</value>
+    <comment/>
+  </data>
+  <data name="NoPackageProvidersSupportOperation" xml:space="preserve">
+    <value>No package providers support this operation.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderNotSupportPackageByName" xml:space="preserve">
+    <value>Package provider '{0}' does not support package by name.</value>
+    <comment/>
+  </data>
+  <data name="NoPackageProvidersSupportPackageByName" xml:space="preserve">
+    <value>No package providers support package by name.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderExtensionNotSupported" xml:space="preserve">
+    <value>Package provider '{0}' does not support '{1}' extension.</value>
+    <comment/>
+  </data>
+  <data name="NoPackageProviderSupportsExtension" xml:space="preserve">
+    <value>No package providers support '{0}' extension.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderUriSchemeNotSupported" xml:space="preserve">
+    <value>Package provider '{0}' does not support '{1}' scheme.</value>
+    <comment/>
+  </data>
+  <data name="NoPackageProviderSupportsUriScheme" xml:space="preserve">
+    <value>No package providers support '{0}' scheme.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderSourceNotSupported" xml:space="preserve">
+    <value>Package provider '{0}' does not support '{1}' source.</value>
+    <comment/>
+  </data>
+  <data name="NoPackageProviderSupportsSource" xml:space="preserve">
+    <value>No package providers support '{source}' source.</value>
+    <comment/>
+  </data>
+  <data name="PathNotFileSystemProvider" xml:space="preserve">
+    <value>Path '{0}' is not a file system path.</value>
+    <comment/>
+  </data>
+  <data name="PathNotFile" xml:space="preserve">
+    <value>Path '{0}' is not a file.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderOperationNotSupported" xml:space="preserve">
+    <value>Package provider '{0}' does not support this operation.</value>
+    <comment/>
+  </data>
+  <data name="Finding" xml:space="preserve">
+    <value>Finding</value>
+    <comment/>
+  </data>
+  <data name="Getting" xml:space="preserve">
+    <value>Getting</value>
+    <comment/>
+  </data>
+  <data name="GettingSource" xml:space="preserve">
+    <value>Getting '{0}' source.</value>
+    <comment/>
+  </data>
+  <data name="CallingProvider" xml:space="preserve">
+    <value>Calling '{0}' provider.</value>
+    <comment/>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>Installing</value>
+    <comment/>
+  </data>
+  <data name="Publishing" xml:space="preserve">
+    <value>Publishing</value>
+    <comment/>
+  </data>
+  <data name="RegisteringSource" xml:space="preserve">
+    <value>Registering '{0}' source.</value>
+    <comment/>
+  </data>
+  <data name="PackageSourceNotRegistered" xml:space="preserve">
+    <value>Package provider did not register package source.</value>
+    <comment/>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Saving</value>
+    <comment/>
+  </data>
+  <data name="SettingSource" xml:space="preserve">
+    <value>Setting '{0}' source.</value>
+    <comment/>
+  </data>
+  <data name="PackageSourceFailedSet" xml:space="preserve">
+    <value>Package provider did not set the package source configuration.</value>
+    <comment/>
+  </data>
+  <data name="Uninstalling" xml:space="preserve">
+    <value>Uninstalling</value>
+    <comment/>
+  </data>
+  <data name="UnregisteringSource" xml:space="preserve">
+    <value>Unregistering '{0}' source.</value>
+    <comment/>
+  </data>
+  <data name="Updating" xml:space="preserve">
+    <value>Updating</value>
+    <comment/>
+  </data>
+  <data name="ParameterNoWildcards" xml:space="preserve">
+    <value>The parameter does not support wildcards.</value>
+    <comment/>
+  </data>
+  <data name="PathIsFile" xml:space="preserve">
+    <value>Path '{0}' is a file.</value>
+    <comment/>
+  </data>
+  <data name="PathNotExist" xml:space="preserve">
+    <value>Path '{0}' does not exist.</value>
+    <comment/>
+  </data>
+  <data name="WildcardsNotSupported" xml:space="preserve">
+    <value>Wildcard characters not supported.</value>
+    <comment/>
+  </data>
+  <data name="MultiplePackageProvidersFound" xml:space="preserve">
+    <value>Multiple package providers found for '{0}'. Use provider full name 'Module\\Provider' instead.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderNotFoundOrSupportOperation" xml:space="preserve">
+    <value>Package provider '{0}' does not support this operation or cannot be found. Use 'Get-PackageProvider -Name {0}' to see if it is present and supports this operation.</value>
+    <comment/>
+  </data>
+  <data name="PackageNameNullOrWhiteSpace" xml:space="preserve">
+    <value>Package name cannot be null or whitespace.</value>
+    <comment/>
+  </data>
+  <data name="ProviderNameNullOrWhiteSpace" xml:space="preserve">
+    <value>The provider name cannot be null or whitespace.</value>
+    <comment/>
+  </data>
+  <data name="InvalidCharacters" xml:space="preserve">
+    <value>Contains invalid characters.</value>
+    <comment/>
+  </data>
+  <data name="TypeNotDerive" xml:space="preserve">
+    <value>Type '{0}' does not derive from '{1}' class.</value>
+    <comment/>
+  </data>
+  <data name="EmptyGuid" xml:space="preserve">
+    <value>The value cannot be an empty GUID.</value>
+    <comment/>
+  </data>
+  <data name="PackageProviderAttributeNotFound" xml:space="preserve">
+    <value>Package provider attribute not found.</value>
+    <comment/>
+  </data>
+  <data name="InstallFromUntrustedSource" xml:space="preserve">
+    <value>You are installing packages from an untrusted source. If you trust this source, change its Trusted value by running the Set-PackageSource cmdlet. Are you sure you want to install the package from '{0}'?</value>
+    <comment/>
+  </data>
+  <data name="NullOrWhiteSpace" xml:space="preserve">
+    <value>Cannot be null or whitespace.</value>
+    <comment/>
+  </data>
+  <data name="VersionSchemeAlphaNumeric" xml:space="preserve">
+    <value>Cannot convert alpha-numeric versions to Version type.</value>
+    <comment/>
+  </data>
+  <data name="VersionHasTooManyParts" xml:space="preserve">
+    <value>Version contains more than four parts.</value>
+    <comment/>
+  </data>
+  <data name="VersionHasTooLittleParts" xml:space="preserve">
+    <value>Version contains less than two parts.</value>
+    <comment/>
+  </data>
+  <data name="VersionHasPrerelease" xml:space="preserve">
+    <value>Version contains prerelease.</value>
+    <comment/>
+  </data>
+  <data name="VersionHasBuildMetadata" xml:space="preserve">
+    <value>Version contains build metadata.</value>
+    <comment/>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Invalid format.</value>
+    <comment/>
+  </data>
+  <data name="MinVersionHigherThanMaxVersion" xml:space="preserve">
+    <value>Min version is higher than max version.</value>
+    <comment/>
+  </data>
+</root>
