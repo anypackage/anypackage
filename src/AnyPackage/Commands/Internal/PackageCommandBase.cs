@@ -348,7 +348,7 @@ namespace AnyPackage.Commands.Internal
                 return;
             }
 
-            WriteVerbose($"{verb} '{package}' package.");
+            WriteVerbose(string.Format(Strings.OperationPackage, verb, package));
 
             foreach (var instance in instances.Keys)
             {
