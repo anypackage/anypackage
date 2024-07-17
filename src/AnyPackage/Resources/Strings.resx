@@ -337,4 +337,24 @@
     <value>{0} '{1}' package.</value>
     <comment/>
   </data>
+  <data name="AnyPackage" xml:space="preserve">
+    <value>AnyPackage</value>
+    <comment/>
+  </data>
+  <data name="FeedbackHeader" xml:space="preserve">
+    <value>The command can be found in the following packages:</value>
+    <comment/>
+  </data>
+  <data name="FeedbackWithProvider" xml:space="preserve">
+    <value>Install-Package {0} -Provider {1}</value>
+    <comment/>
+  </data>
+  <data name="FeedbackDescription" xml:space="preserve">
+    <value>AnyPackage command not found feedback provider.</value>
+    <comment/>
+  </data>
+  <data name="FeedbackWithSourceAndProvider" xml:space="preserve">
+    <value>Install-Package {0} -Source {1} -Provider {2}</value>
+    <comment/>
+  </data>
 </root>
