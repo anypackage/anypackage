@@ -23,6 +23,7 @@ namespace AnyPackage.Commands
         protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
         {
             var provider = arguments.ToString();
+            if (provider is null) { return; }
 
             if (WildcardPattern.ContainsWildcardCharacters(provider))
             {

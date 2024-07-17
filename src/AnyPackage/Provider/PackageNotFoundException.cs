@@ -68,6 +68,9 @@ namespace AnyPackage.Provider
         /// </summary>
         /// <param name="info">Serialized info.</param>
         /// <param name="context">Streaming context.</param>
+        #if NET8_0_OR_GREATER
+        [Obsolete(DiagnosticId = "SYSLIB0051")]
+        #endif
         protected PackageNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             Package = info.GetString(nameof(Package));
@@ -78,6 +81,9 @@ namespace AnyPackage.Provider
         /// </summary>
         /// <param name="info">Serialized info.</param>
         /// <param name="context">Streaming context.</param>
+        #if NET8_0_OR_GREATER
+        [Obsolete(DiagnosticId = "SYSLIB0051")]
+        #endif
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
