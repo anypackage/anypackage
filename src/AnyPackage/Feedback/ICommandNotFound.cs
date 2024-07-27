@@ -7,7 +7,7 @@ namespace AnyPackage.Feedback;
 /// <summary>
 /// Interface to support PowerShell feedback provider.
 /// </summary>
-interface ICommandNotFound
+public interface ICommandNotFound
 {
     /// <summary>
     /// Get packages that ship the command.

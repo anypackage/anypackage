@@ -12,7 +12,7 @@ namespace AnyPackage.Feedback;
 /// </summary>
 /// <param name="name">Missing command package name.</param>
 /// <param name="provider">Package provider.</param>
-class CommandNotFoundFeedback(string name, PackageProviderInfo provider)
+public sealed class CommandNotFoundFeedback(string name, PackageProviderInfo provider)
 {
     /// <summary>
     /// The missing command package name.

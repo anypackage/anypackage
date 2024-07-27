@@ -9,7 +9,7 @@ namespace AnyPackage.Feedback;
 /// Contains information about command not found.
 /// </summary>
 /// <param name="command">The command name.</param>
-class CommandNotFoundContext(string command)
+public sealed class CommandNotFoundContext(string command)
 {
     /// <summary>
     /// The command name not found.
