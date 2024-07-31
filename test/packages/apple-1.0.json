@@ -1,5 +1,9 @@
 {
   "name": "Apple",
   "version": "1.0",
-  "description": "Makes a good pie."
+  "description": "Makes a good pie.",
+  "bin": [
+    "red",
+    "green"
+  ]
 }

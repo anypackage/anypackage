@@ -353,8 +353,8 @@
     <value>AnyPackage command not found feedback provider.</value>
     <comment/>
   </data>
-  <data name="FeedbackWithSourceAndProvider" xml:space="preserve">
-    <value>Install-Package {0} -Source {1} -Provider {2}</value>
+  <data name="FeedbackWithProviderAndParameters" xml:space="preserve">
+    <value>Install-Package {0} -Provider {1}{2}</value>
     <comment/>
   </data>
 </root>

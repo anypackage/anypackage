@@ -3,11 +3,10 @@
 // terms of the MIT license.
 
 #if NET8_0_OR_GREATER
-using System.Collections.ObjectModel;
 using System.Management.Automation;
-using System.Management.Automation.Subsystem;
 using System.Management.Automation.Subsystem.Feedback;
 using System.Management.Automation.Subsystem.Prediction;
+using System.Management.Automation.Runspaces;
 using AnyPackage.Provider;
 using AnyPackage.Resources;
 
@@ -17,47 +16,91 @@ namespace AnyPackage.Feedback;
 /// The <c>CommandNotFoundProvider</c> class.
 /// The AnyPackage command not found feedback provider.
 /// </summary>
-public sealed class CommandNotFoundProvider : IFeedbackProvider,
-                                              ICommandPredictor,
-                                              IModuleAssemblyInitializer,
-                                              IModuleAssemblyCleanup
+public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredictor, IDisposable
 {
     /// <summary>
     /// Feedback provider ID.
     /// </summary>
     public Guid Id => new("4640f573-1a93-43f0-8ccd-492a54df3b2d");
-    
+
     /// <summary>
     /// Feedback provider name.
     /// </summary>
     public string Name => Strings.AnyPackage;
-    
+
     /// <summary>
     /// Feedback provider description.
     /// </summary>
     public string Description => Strings.FeedbackDescription;
-    
+
     /// <summary>
     /// PowerShell functions to define in the global scope.
     /// </summary>
     public Dictionary<string, string>? FunctionsToDefine => null;
 
-    /// <summary>
-    /// Triggers for feedback provider.
-    /// </summary>
-    public FeedbackTrigger Trigger => FeedbackTrigger.CommandNotFound;
-
     private readonly List<string> _candidates = [];
-    private readonly PowerShell _powershell = PowerShell.Create(RunspaceMode.CurrentRunspace);
-    private string _command = "";
-    private CancellationToken _token;
+    private readonly Dictionary<Guid, Runspace> _runspaces = [];
 
     /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.feedback.ifeedbackprovider.getfeedback</see>
     public FeedbackItem? GetFeedback(FeedbackContext context, CancellationToken token)
     {
-        _command = ((CommandNotFoundException)context.LastError!.Exception).CommandName;
-        _token = token;
-        return new FeedbackItem(Strings.FeedbackHeader, GetActions().ToList());
+        var command = ((CommandNotFoundException)context.LastError!.Exception).CommandName;
+
+        var commandNotFoundContext = new CommandNotFoundContext(command);
+        var actions = new List<string>();
+        List<Task> tasks = [];
+
+        foreach (var runspace in _runspaces)
+        {
+            if (token.IsCancellationRequested) { return null; }
+
+            var script = @"
+                param($id, $context, $token)
+                $provider = Get-PackageProvider | Where-Object Id -eq $id
+                $instance = $provider.CreateInstance()
+                $instance.FindPackage($context, $token)
+            ";
+
+            using var ps = PowerShell.Create();
+            ps.Runspace = runspace.Value;
+            var results = ps.AddScript(script)
+                            .AddArgument(runspace.Key)
+                            .AddArgument(commandNotFoundContext)
+                            .AddArgument(token)
+                            .Invoke<CommandNotFoundFeedback>();
+
+            foreach (var result in results)
+            {
+                actions.Add(GetAction(result));
+            }
+        }
+
+        if (actions.Count > 0)
+        {
+            return new FeedbackItem(Strings.FeedbackHeader, actions);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private static string GetAction(CommandNotFoundFeedback result)
+    {
+        var requiredParameters = "";
+
+        if (result.RequiredParameters is not null)
+        {
+            foreach (var parameter in result.RequiredParameters)
+            {
+                requiredParameters += string.Format(" -{0} {1}", parameter.Key, parameter.Value);
+            }
+
+            return string.Format(Strings.FeedbackWithProviderAndParameters, result.Name, result.Provider.Name, requiredParameters);
+
+        }
+
+        return string.Format(Strings.FeedbackWithProvider, result.Name, result.Provider.Name);
     }
 
     /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.feedback.ifeedbackprovider.getfeedback</see>
@@ -69,55 +112,95 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider,
     /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.prediction.commandprediction.onsuggestionaccepted</see>
     public void OnSuggestionAccepted(PredictionClient client, uint session, string acceptedSuggestion) => _candidates.Clear();
 
-    /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.imoduleassemblyinitializer.onimport</see>
-    public void OnImport()
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Dispose()
     {
-        SubsystemManager.RegisterSubsystem(SubsystemKind.FeedbackProvider, this);
-        SubsystemManager.RegisterSubsystem(SubsystemKind.CommandPredictor, this);
+        Runspace.DefaultRunspace.AvailabilityChanged -= SyncProviderRunspaces;
+        StopProviders();
     }
 
-    /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.imoduleassemblycleanup.onremove</see>
-    public void OnRemove(PSModuleInfo psModuleInfo)
+    internal void RegisterEvent()
     {
-        SubsystemManager.UnregisterSubsystem<ICommandPredictor>(Id);
-        SubsystemManager.UnregisterSubsystem<IFeedbackProvider>(Id);
+        Runspace.DefaultRunspace.AvailabilityChanged += SyncProviderRunspaces;
     }
 
-    private IEnumerable<string> GetActions()
+    private void SyncProviderRunspaces(object? sender, RunspaceAvailabilityEventArgs e)
     {
-        foreach (var package in GetPackages())
+        if (sender is null || e.RunspaceAvailability != RunspaceAvailability.Available)
         {
-            yield return string.Format(Strings.FeedbackWithProvider, package.Name, package.Provider);
+            return;
         }
-    }
 
-    private List<CommandNotFoundFeedback> GetPackages()
-    {
-        var context = new CommandNotFoundContext(_command);
-        var feedback = new List<CommandNotFoundFeedback>();
+        var runspace = (Runspace)sender;
+        runspace.AvailabilityChanged -= SyncProviderRunspaces;
 
-        foreach (var provider in GetPackageProviders())
+        try
         {
-            if (_token.IsCancellationRequested) { return feedback; }
+            using var ps = PowerShell.Create();
+            ps.Runspace = runspace;
 
-            if (Activator.CreateInstance(provider.ImplementingType) is ICommandNotFound instance)
+            var providers = ps.AddCommand("Get-PackageProvider")
+                              .Invoke<PackageProviderInfo>()
+                              .Where(x => typeof(ICommandNotFound).IsAssignableFrom(x.ImplementingType));
+
+            foreach (var provider in providers)
             {
-                var packages = instance.FindPackage(context, _token);
+                StartProvider(provider);
+            }
 
-                if (packages is not null)
-                {
-                    feedback.AddRange(packages);
-                }
+            var ids = providers.Select(x => x.Id);
+            var stopIds = _runspaces.Keys.Except(ids);
+
+            foreach (var id in stopIds)
+            {
+                StopProvider(id);
             }
         }
-
-        return feedback;
+        finally
+        {
+            runspace.AvailabilityChanged += SyncProviderRunspaces;
+        }
     }
 
-    private Collection<PackageProviderInfo> GetPackageProviders()
+    private void StartProvider(PackageProviderInfo provider)
     {
-        return _powershell.AddCommand("Get-PackageProvider")
-                          .Invoke<PackageProviderInfo>();
+        if (_runspaces.ContainsKey(provider.Id))
+        {
+            return;
+        }
+
+        var runspace = RunspaceFactory.CreateRunspace();
+        runspace.Name = provider.FullName;
+        runspace.ThreadOptions = PSThreadOptions.ReuseThread;
+        runspace.Open();
+
+        using var ps = PowerShell.Create();
+        ps.Runspace = runspace;
+
+        ps.AddCommand("Import-Module")
+          .AddParameter("Name", provider.ModuleName)
+          .Invoke();
+
+        _runspaces.Add(provider.Id, runspace);
     }
+
+    private void StopProvider(Guid id)
+    {
+        _runspaces[id].Dispose();
+        _runspaces.Remove(id);
+    }
+
+    private void StopProviders()
+    {
+        foreach (var runspace in _runspaces.Values)
+        {
+            runspace.Dispose();
+        }
+
+        _runspaces.Clear();
+    }
+
 }
 #endif
