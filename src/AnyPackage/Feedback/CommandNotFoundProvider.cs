@@ -44,11 +44,9 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
     /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.feedback.ifeedbackprovider.getfeedback</see>
     public FeedbackItem? GetFeedback(FeedbackContext context, CancellationToken token)
     {
+        _candidates.Clear();
         var command = ((CommandNotFoundException)context.LastError!.Exception).CommandName;
-
         var commandNotFoundContext = new CommandNotFoundContext(command);
-        var actions = new List<string>();
-        List<Task> tasks = [];
 
         foreach (var runspace in _runspaces)
         {
@@ -71,13 +69,13 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
 
             foreach (var result in results)
             {
-                actions.Add(GetAction(result));
+                _candidates.Add(GetAction(result));
             }
         }
 
-        if (actions.Count > 0)
+        if (_candidates.Count > 0)
         {
-            return new FeedbackItem(Strings.FeedbackHeader, actions);
+            return new FeedbackItem(Strings.FeedbackHeader, _candidates);
         }
         else
         {
@@ -106,11 +104,34 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
     /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.feedback.ifeedbackprovider.getfeedback</see>
     public SuggestionPackage GetSuggestion(PredictionClient client, PredictionContext context, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (_candidates.Count > 0)
+        {
+            var input = context.InputAst.Extent.Text;
+            List<PredictiveSuggestion>? result = null;
+
+            foreach (var candidate in _candidates)
+            {
+                if (candidate.StartsWith(input, StringComparison.OrdinalIgnoreCase))
+                {
+                    result ??= new List<PredictiveSuggestion>(_candidates.Count);
+                    result.Add(new PredictiveSuggestion(candidate));
+                }
+            }
+
+            if (result is not null)
+            {
+                return new SuggestionPackage(result);
+            }
+        }
+
+        return default;
     }
 
-    /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.prediction.commandprediction.onsuggestionaccepted</see>
-    public void OnSuggestionAccepted(PredictionClient client, uint session, string acceptedSuggestion) => _candidates.Clear();
+    /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.prediction.commandprediction.oncommandlineexecuted</see>
+    public void OnCommandLineAccepted(PredictionClient client, IReadOnlyList<string> history) => _candidates.Clear();
+
+    /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.prediction.icommandpredictor.canacceptfeedback</see>
+    public bool CanAcceptFeedback(PredictionClient client, PredictorFeedbackKind feedback) => feedback == PredictorFeedbackKind.CommandLineAccepted;
 
     /// <summary>
     /// 
