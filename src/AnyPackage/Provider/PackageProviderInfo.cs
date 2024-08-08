@@ -189,7 +189,14 @@ namespace AnyPackage.Provider
         /// </summary>
         public override string ToString() => Name;
 
-        internal PackageProvider CreateInstance()
+        /// <summary>
+        /// Create an instance of the package provider.
+        /// </summary>
+        /// <returns>
+        /// Returns the package provider object.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Implementing type does not inherit from <c>PackageProvider</c> class.</exception>
+        public PackageProvider CreateInstance()
         {
             if (Activator.CreateInstance(ImplementingType) is not PackageProvider providerInstance)
             {

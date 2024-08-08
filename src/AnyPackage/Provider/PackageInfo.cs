@@ -37,7 +37,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets additional metadata about the package.
         /// </summary>
-        public IReadOnlyDictionary<string, object> Metadata { get; }
+        public IReadOnlyDictionary<string, object?> Metadata { get; }
 
         /// <summary>
         /// Gets the package provider.
@@ -70,7 +70,7 @@ namespace AnyPackage.Provider
 
             Name = name;
             Provider = provider;
-            Metadata = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>());
+            Metadata = new ReadOnlyDictionary<string, object?>(new Dictionary<string, object?>());
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace AnyPackage.Provider
                            PackageSourceInfo? source,
                            string description,
                            IEnumerable<PackageDependency>? dependencies,
-                           IDictionary<string, object> metadata,
+                           IDictionary<string, object?> metadata,
                            PackageProviderInfo provider)
             : this(name, version, source, description, dependencies, provider)
         {
@@ -188,7 +188,7 @@ namespace AnyPackage.Provider
                 throw new ArgumentNullException(nameof(metadata));
             }
 
-            Metadata = new ReadOnlyDictionary<string, object>(metadata);
+            Metadata = new ReadOnlyDictionary<string, object?>(metadata);
         }
 
         /// <summary>
@@ -217,14 +217,19 @@ namespace AnyPackage.Provider
 
             if (metadata.Count > 0)
             {
-                var dictionary = new Dictionary<string, object>();
+                var dictionary = new Dictionary<string, object?>();
 
-                foreach (var key in metadata.Keys)
+                foreach (DictionaryEntry entry in metadata)
                 {
-                    dictionary.Add(key.ToString(), metadata[key]);
+                    var key = entry.Key.ToString();
+
+                    if (key is not null)
+                    {
+                        dictionary.Add(key, entry.Value);
+                    }
                 }
 
-                Metadata = new ReadOnlyDictionary<string, object>(dictionary);
+                Metadata = new ReadOnlyDictionary<string, object?>(dictionary);
             }
         }
 

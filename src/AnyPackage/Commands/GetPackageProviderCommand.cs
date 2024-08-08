@@ -112,7 +112,7 @@ namespace AnyPackage.Commands
 
                         if (anyPackage["Providers"] is string)
                         {
-                            providers = new object[] { anyPackage["Providers"] };
+                            providers = new object?[] { anyPackage["Providers"] };
                         }
                         else if (anyPackage["Providers"] is Array)
                         {
@@ -121,7 +121,7 @@ namespace AnyPackage.Commands
 
                         if (providers is null) { continue; }
 
-                        foreach (var provider in providers)
+                        foreach (string provider in providers)
                         {
                             providerInfos.Add(new PackageProviderInfo(provider.ToString(), module));
                         }
