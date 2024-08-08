@@ -61,7 +61,7 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
 
             using var ps = PowerShell.Create();
             ps.Runspace = runspace.Value;
-            var results = ps.AddScript(script)
+            var results = ps.AddScript(script, useLocalScope: true)
                             .AddArgument(runspace.Key)
                             .AddArgument(commandNotFoundContext)
                             .AddArgument(token)
@@ -111,7 +111,7 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
 
             foreach (var candidate in _candidates)
             {
-                if (candidate.StartsWith(input, StringComparison.OrdinalIgnoreCase))
+                if (candidate.StartsWith(input, StringComparison.CurrentCultureIgnoreCase))
                 {
                     result ??= new List<PredictiveSuggestion>(_candidates.Count);
                     result.Add(new PredictiveSuggestion(candidate));
