@@ -349,12 +349,20 @@
     <value>Install-Package {0} -Provider {1}</value>
     <comment/>
   </data>
-  <data name="FeedbackDescription" xml:space="preserve">
+  <data name="FeedbackProviderDescription" xml:space="preserve">
     <value>AnyPackage command not found feedback provider.</value>
     <comment/>
   </data>
   <data name="FeedbackWithProviderAndParameters" xml:space="preserve">
     <value>Install-Package {0} -Provider {1}{2}</value>
+    <comment/>
+  </data>
+  <data name="FeedbackTooltip" xml:space="preserve">
+    <value>This package contains '{0}' command.</value>
+    <comment/>
+  </data>
+  <data name="FeedbackFooter" xml:space="preserve">
+    <value>More suggestions could be returned by importing additional package providers.</value>
     <comment/>
   </data>
 </root>

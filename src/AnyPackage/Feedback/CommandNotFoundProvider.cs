@@ -31,7 +31,7 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
     /// <summary>
     /// Feedback provider description.
     /// </summary>
-    public string Description => Strings.FeedbackDescription;
+    public string Description => Strings.FeedbackProviderDescription;
 
     /// <summary>
     /// PowerShell functions to define in the global scope.
@@ -39,14 +39,15 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
     public Dictionary<string, string>? FunctionsToDefine => null;
 
     private readonly List<string> _candidates = [];
+    private string _command = string.Empty;
     private readonly Dictionary<Guid, Runspace> _runspaces = [];
 
     /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.subsystem.feedback.ifeedbackprovider.getfeedback</see>
     public FeedbackItem? GetFeedback(FeedbackContext context, CancellationToken token)
     {
         _candidates.Clear();
-        var command = ((CommandNotFoundException)context.LastError!.Exception).CommandName;
-        var commandNotFoundContext = new CommandNotFoundContext(command);
+        _command = ((CommandNotFoundException)context.LastError!.Exception).CommandName;
+        var commandNotFoundContext = new CommandNotFoundContext(_command);
 
         foreach (var runspace in _runspaces)
         {
@@ -75,7 +76,10 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
 
         if (_candidates.Count > 0)
         {
-            return new FeedbackItem(Strings.FeedbackHeader, _candidates);
+            return new FeedbackItem(Strings.FeedbackHeader,
+                                    _candidates,
+                                    Strings.FeedbackFooter,
+                                    FeedbackDisplayLayout.Portrait);
         }
         else
         {
@@ -114,7 +118,8 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
                 if (candidate.StartsWith(input, StringComparison.CurrentCultureIgnoreCase))
                 {
                     result ??= new List<PredictiveSuggestion>(_candidates.Count);
-                    result.Add(new PredictiveSuggestion(candidate));
+                    result.Add(new PredictiveSuggestion(candidate,
+                                                        string.Format(Strings.FeedbackTooltip, _command)));
                 }
             }
 
