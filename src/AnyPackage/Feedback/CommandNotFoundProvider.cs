@@ -48,29 +48,22 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
         _candidates.Clear();
         _command = ((CommandNotFoundException)context.LastError!.Exception).CommandName;
         var commandNotFoundContext = new CommandNotFoundContext(_command);
+        var tasks = new List<Task<PSDataCollection<PSObject>>>();
 
         foreach (var runspace in _runspaces)
         {
-            if (token.IsCancellationRequested) { return null; }
+            var task = InvokePSAsync(runspace.Value, runspace.Key, commandNotFoundContext, token);
+            tasks.Add(task);
+        }
 
-            var script = @"
-                param($id, $context, $token)
-                $provider = Get-PackageProvider | Where-Object Id -eq $id
-                $instance = $provider.CreateInstance()
-                $instance.FindPackage($context, $token)
-            ";
+        Task.WaitAll(tasks.ToArray(), token);
 
-            using var ps = PowerShell.Create();
-            ps.Runspace = runspace.Value;
-            var results = ps.AddScript(script, useLocalScope: true)
-                            .AddArgument(runspace.Key)
-                            .AddArgument(commandNotFoundContext)
-                            .AddArgument(token)
-                            .Invoke<CommandNotFoundFeedback>();
-
-            foreach (var result in results)
+        foreach (var task in tasks)
+        {
+            foreach (var result in task.Result)
             {
-                _candidates.Add(GetAction(result));
+                var feedback = (CommandNotFoundFeedback)result.BaseObject;
+                _candidates.Add(GetAction(feedback));
             }
         }
 
@@ -85,6 +78,27 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
         {
             return null;
         }
+    }
+
+    private static async Task<PSDataCollection<PSObject>> InvokePSAsync(Runspace runspace, Guid id, CommandNotFoundContext context, CancellationToken token)
+    {
+        var script = @"
+                param($id, $context, $token)
+                $provider = Get-PackageProvider | Where-Object Id -eq $id
+                $instance = $provider.CreateInstance()
+                $instance.FindPackage($context, $token)
+            ";
+
+        using var ps = PowerShell.Create();
+        ps.Runspace = runspace;
+
+        using var reg = token.Register(() => ps.BeginStop(null, null));
+        return await ps.AddScript(script, useLocalScope: true)
+                       .AddArgument(id)
+                       .AddArgument(context)
+                       .AddArgument(token)
+                       .InvokeAsync()
+                       .ConfigureAwait(false);
     }
 
     private static string GetAction(CommandNotFoundFeedback result)
