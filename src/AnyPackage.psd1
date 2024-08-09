@@ -1,5 +1,5 @@
 @{
-    RootModule = 'AnyPackage.dll'
+    RootModule = 'AnyPackage.psm1'
     ModuleVersion = '0.5.1'
     CompatiblePSEditions = @('Desktop', 'Core')
     GUID = '19cd4cdd-6766-4e47-be1c-76c33cea7392'
