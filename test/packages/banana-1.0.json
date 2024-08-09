@@ -3,6 +3,7 @@
   "version": "1.0",
   "description": "Makes a good bread.",
   "bin": [
+    "green",
     "yellow"
   ]
 }
