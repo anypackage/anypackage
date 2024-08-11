@@ -1,8 +1,10 @@
 @{
     Path = @(
-        './src/AnyPackage/bin/Release/netstandard2.0/AnyPackage.dll',
+        './out/package/lib',
         './src/AnyPackage.format.ps1xml',
-        './src/AnyPackage.psd1'
+        './src/AnyPackage.psd1',
+        './src/AnyPackage.psm1'
     )
     Destination = './module'
+    Recurse = $true
 }

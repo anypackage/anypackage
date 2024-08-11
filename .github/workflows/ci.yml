@@ -22,11 +22,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: .NET Build
-        run: dotnet build --configuration Release
+        run: dotnet pack --output out
 
       - name: Create module
         run: |
-          New-Item module -ItemType Directory
+          New-Item module, ./out/package -ItemType Directory
+          Expand-Archive ./out/AnyPackage*.nupkg ./out/package
           $settings = Import-PowerShellDataFile ./BuildSettings.psd1
           Copy-Item @settings
 
