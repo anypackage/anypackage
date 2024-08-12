@@ -12,7 +12,7 @@ namespace AnyPackage.Feedback;
 public sealed class CommandNotFoundContext(string command)
 {
     /// <summary>
-    /// The command name not found.
+    /// Gets the command name not found.
     /// </summary>
     public string Command { get; } = command;
 }

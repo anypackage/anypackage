@@ -19,22 +19,22 @@ namespace AnyPackage.Feedback;
 public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredictor, IDisposable
 {
     /// <summary>
-    /// Feedback provider ID.
+    /// Gets the feedback provider ID.
     /// </summary>
     public Guid Id => new("4640f573-1a93-43f0-8ccd-492a54df3b2d");
 
     /// <summary>
-    /// Feedback provider name.
+    /// Gets the feedback provider name.
     /// </summary>
     public string Name => Strings.AnyPackage;
 
     /// <summary>
-    /// Feedback provider description.
+    /// Gets the feedback provider description.
     /// </summary>
     public string Description => Strings.FeedbackProviderDescription;
 
     /// <summary>
-    /// PowerShell functions to define in the global scope.
+    /// Gets the PowerShell functions to define in the global scope.
     /// </summary>
     public Dictionary<string, string>? FunctionsToDefine => null;
 

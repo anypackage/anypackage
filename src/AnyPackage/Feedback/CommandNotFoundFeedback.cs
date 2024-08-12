@@ -15,12 +15,12 @@ namespace AnyPackage.Feedback;
 public sealed class CommandNotFoundFeedback(string name, PackageProviderInfo provider)
 {
     /// <summary>
-    /// The missing command package name.
+    /// Gets the missing command package name.
     /// </summary>
     public string Name { get; } = name;
 
     /// <summary>
-    /// Specifies if any other parameters are required to install the package.
+    /// Gets if any other parameters are required to install the package.
     /// </summary>
     /// <remarks>
     /// If a specific version or package source is required add it, otherwise don't.
@@ -29,7 +29,7 @@ public sealed class CommandNotFoundFeedback(string name, PackageProviderInfo pro
     public IDictionary<string, string>? RequiredParameters { get; }
 
     /// <summary>
-    /// Package provider info.
+    /// Gets the package provider info.
     /// </summary>
     public PackageProviderInfo Provider { get; } = provider;
 
