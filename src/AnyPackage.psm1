@@ -2,10 +2,11 @@
 # You may use, distribute and modify this code under the
 # terms of the MIT license.
 
-if ($PSVersionTable.PSVersion -ge '7.4') {
-    Import-Module $PSScriptRoot\lib\net8.0\AnyPackage.dll
-}
-else {
-    Import-Module $PSScriptRoot\lib\netstandard2.0\AnyPackage.dll
+$framework = if ($PSVersionTable.PSVersion -ge '7.4') {
+    'net8.0'
+} else {
+    'netstandard2.0'
 }
 
+$path = Join-Path -Path $PSScriptRoot -ChildPath "lib/$framework/AnyPackage.dll"
+Import-Module $path
