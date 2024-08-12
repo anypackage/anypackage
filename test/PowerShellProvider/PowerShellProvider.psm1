@@ -1,14 +1,16 @@
 ﻿using module AnyPackage
 
+using namespace AnyPackage.Feedback
 using namespace AnyPackage.Provider
 using namespace System.Collections.Generic
+using namespace System.Threading
 
 [PackageProvider('PowerShell', FileExtensions = ('.json'), UriSchemes = ('file'))]
 class PowerShellProvider : PackageProvider,
     IFindPackage, IGetPackage,
     IInstallPackage, IPublishPackage,
     ISavePackage, IUninstallPackage, IUpdatePackage,
-    IGetSource, ISetSource {
+    IGetSource, ISetSource, ICommandNotFound {
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
         return [PowerShellProviderInfo]::new($providerInfo)
     }
@@ -20,6 +22,27 @@ class PowerShellProvider : PackageProvider,
         else {
             return $true
         }
+    }
+
+    [IEnumerable[CommandNotFoundFeedback]] FindPackage([CommandNotFoundContext] $context, [CancellationToken] $token) {
+        $dict = New-Object "System.Collections.Generic.Dictionary[[string],[CommandNotFoundFeedback]]"
+        foreach ($source in $this.ProviderInfo.Sources) {
+            $path = Join-Path -Path $source.Location -ChildPath *.json
+            Get-ChildItem -Path $path |
+            ForEach-Object {
+                Get-Content -Path $_.FullName |
+                ConvertFrom-Json |
+                Where-Object { $_.bin -contains $context.Command } |
+                ForEach-Object { 
+                    if (!$dict.ContainsKey($_.name)) {
+                        $feedback = [CommandNotFoundFeedback]::new($_.name, $this.ProviderInfo)
+                        $dict.Add($_.name, $feedback)
+                    }
+                }
+            }
+        }
+
+        return $dict.Values
     }
 
     [void] FindPackage([PackageRequest] $request) {

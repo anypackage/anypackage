@@ -34,7 +34,7 @@ namespace AnyPackage.Provider
         /// <summary>
         /// Gets source metadata.
         /// </summary>
-        public IReadOnlyDictionary<string, object> Metadata { get; }
+        public IReadOnlyDictionary<string, object?> Metadata { get; }
 
         /// <summary>
         /// Gets if the source is trusted.
@@ -65,7 +65,7 @@ namespace AnyPackage.Provider
             {
                 throw new ArgumentNullException(nameof(provider));
             }
-            
+
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException(Strings.NullOrWhiteSpace, nameof(name));
@@ -79,7 +79,7 @@ namespace AnyPackage.Provider
             Name = name;
             Location = location;
             Provider = provider;
-            Metadata = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>());
+            Metadata = new ReadOnlyDictionary<string, object?>(new Dictionary<string, object?>());
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace AnyPackage.Provider
         public PackageSourceInfo(string name,
                                  string location,
                                  bool trusted,
-                                 IDictionary<string, object> metadata,
+                                 IDictionary<string, object?> metadata,
                                  PackageProviderInfo provider) : this(name, location, trusted, provider)
         {
             if (metadata is null)
@@ -118,7 +118,7 @@ namespace AnyPackage.Provider
                 throw new ArgumentNullException(nameof(metadata));
             }
 
-            Metadata = new ReadOnlyDictionary<string, object>(metadata);
+            Metadata = new ReadOnlyDictionary<string, object?>(metadata);
         }
 
         /// <summary>
@@ -147,14 +147,19 @@ namespace AnyPackage.Provider
 
             if (metadata.Count > 0)
             {
-                var dictionary = new Dictionary<string, object>();
+                var dictionary = new Dictionary<string, object?>();
 
-                foreach (var key in metadata.Keys)
+                foreach (DictionaryEntry entry in metadata)
                 {
-                    dictionary.Add(key.ToString(), metadata[key]);
+                    var key = entry.Key.ToString();
+
+                    if (key is not null)
+                    {
+                        dictionary.Add(key, entry.Value);
+                    }
                 }
 
-                Metadata = new ReadOnlyDictionary<string, object>(dictionary);
+                Metadata = new ReadOnlyDictionary<string, object?>(dictionary);
             }
         }
 

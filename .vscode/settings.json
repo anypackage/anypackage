@@ -8,6 +8,8 @@
         "Readline",
         "resx",
         "Runspace",
+        "runspaces",
+        "SYSLIB",
         "Uninitializing",
         "Unregistering",
         "unregistration"

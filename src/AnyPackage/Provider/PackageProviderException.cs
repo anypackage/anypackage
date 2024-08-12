@@ -37,6 +37,9 @@ namespace AnyPackage.Provider
         /// </summary>
         /// <param name="info">Serialized info.</param>
         /// <param name="context">Streaming context.</param>
+        #if NET8_0_OR_GREATER
+        [Obsolete(DiagnosticId = "SYSLIB0051")]
+        #endif
         protected PackageProviderException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }    
 }

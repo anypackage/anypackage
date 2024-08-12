@@ -22,11 +22,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: .NET Build
-        run: dotnet build --configuration Release
+        run: dotnet pack --output out
 
       - name: Create module
         run: |
-          New-Item module -ItemType Directory
+          New-Item module, ./out/package -ItemType Directory
+          Expand-Archive ./out/AnyPackage*.nupkg ./out/package
           $settings = Import-PowerShellDataFile ./BuildSettings.psd1
           Copy-Item @settings
 
@@ -117,7 +118,9 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Copy signed AnyPackage.dll to release directory
-        run: Copy-Item ./module/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
+        run:
+          Copy-Item ./module/lib/netstandard2.0/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0/AnyPackage.dll
+          Copy-Item ./module/lib/net8.0/AnyPackage.dll ./src/AnyPackage/bin/Release/net8.0/AnyPackage.dll
 
       - name: .NET pack
         run: dotnet pack --configuration Release --no-build
