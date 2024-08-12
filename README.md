@@ -33,6 +33,7 @@ For more information on what `AnyPackage` is and how to use it refer to [about_A
 - PowerShell or C# package providers
 - Simple and concise package provider authoring experience
 - Package provider dynamic parameters
+- Command not found PowerShell feedback and command predictor
 - Updatable help
 - Argument completers
 - DSC resources

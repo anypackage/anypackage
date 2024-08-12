@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2024-08-12
+
+### Added
+
+- Add IsMatch overload with version comparer (#139)
+- Add PackageRequest IsVersionFiltered property (#140)
+- Add WriteError method (#166)
+- Add symbols package (#175)
+- Add localization (#181)
+- Add command not found feedback provider (#187)
+
+### Fixed
+
+- Fix provider argument completer not quoting spaces (#163)
+- Fix source completer not quoting spaces (#164)
+- Fix provider completer to return full name on duplicate short names (#165)
+- Fix provider completer list item and tooltip (#169)
+
+### Removed
+
+- Remove wrapping exception (#160)
+
 ## [0.5.1] - 2023-04-05
 
 ### Changed
@@ -120,7 +142,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[Unreleased]: https://github.com/anypackage/anypackage/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/anypackage/anypackage/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/anypackage/anypackage/releases/tag/v0.6.0
 [0.5.1]: https://github.com/anypackage/anypackage/releases/tag/v0.5.1
 [0.5.0]: https://github.com/anypackage/anypackage/releases/tag/v0.5.0
 [0.4.2]: https://github.com/anypackage/anypackage/releases/tag/v0.4.2
