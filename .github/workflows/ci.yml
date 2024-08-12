@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: .NET Build
         run: dotnet pack --output out
@@ -32,7 +32,7 @@ jobs:
           Copy-Item @settings
 
       - name: Upload module
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: module
           path: ./module/
@@ -45,10 +45,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download module
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: module
           path: AnyPackage
@@ -79,10 +79,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download module
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: module
           path: module
@@ -117,22 +117,29 @@ jobs:
       - name: .NET Build
         run: dotnet build --configuration Release
 
-      - name: Copy signed AnyPackage.dll to release directory
-        run:
-          Copy-Item ./module/lib/netstandard2.0/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
-          Copy-Item ./module/lib/net8.0/AnyPackage.dll ./src/AnyPackage/bin/Release/net8.0
+      - name: Copy signed netstandard2.0 AnyPackage.dll to release directory
+        run: Copy-Item ./module/lib/netstandard2.0/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
+
+      - name: Copy signed net8.0 AnyPackage.dll to release directory
+        run: Copy-Item ./module/lib/net8.0/AnyPackage.dll ./src/AnyPackage/bin/Release/net8.0
 
       - name: .NET pack
         run: dotnet pack --configuration Release --no-build
 
       - name: Upload NuGet package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nupkg
           path: ./src/AnyPackage/bin/Release/*.nupkg
 
+      - name: Upload Symbol NuGet package
+        uses: actions/upload-artifact@v4
+        with:
+          name: snupkg
+          path: ./src/AnyPackage/bin/Release/*.snupkg
+
       - name: Upload module
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: module-signed
           path: ./module/
@@ -143,13 +150,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download NuGet package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nupkg
           path: nupkg
 
+      - name: Download NuGet package
+        uses: actions/download-artifact@v4
+        with:
+          name: snupkg
+          path: nupkg
+
       - name: Download module
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: module-signed
           path: '~/.local/share/powershell/Modules/AnyPackage'

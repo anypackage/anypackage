@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <Version>0.6.0</Version>
     <Authors>Thomas Nieto</Authors>
-    <Copyright>© 2023 Thomas Nieto. All rights reserved.</Copyright>
+    <Copyright>© 2024 Thomas Nieto. All rights reserved.</Copyright>
     <Description>A PowerShell universal package manager.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://anypackage.dev</PackageProjectUrl>
