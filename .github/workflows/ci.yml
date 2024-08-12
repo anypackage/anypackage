@@ -75,7 +75,7 @@ jobs:
 
   Sign:
     needs: Test
-    if: github.event_name == 'release' && github.event.action == 'published'
+    # if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
