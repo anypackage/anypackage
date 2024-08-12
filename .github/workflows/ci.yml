@@ -119,8 +119,8 @@ jobs:
 
       - name: Copy signed AnyPackage.dll to release directory
         run:
-          Copy-Item ./module/lib/netstandard2.0/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0/AnyPackage.dll
-          Copy-Item ./module/lib/net8.0/AnyPackage.dll ./src/AnyPackage/bin/Release/net8.0/AnyPackage.dll
+          Copy-Item ./module/lib/netstandard2.0/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
+          Copy-Item ./module/lib/net8.0/AnyPackage.dll ./src/AnyPackage/bin/Release/net8.0
 
       - name: .NET pack
         run: dotnet pack --configuration Release --no-build
