@@ -75,7 +75,7 @@ jobs:
 
   Sign:
     needs: Test
-    # if: github.event_name == 'release' && github.event.action == 'published'
+    if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
@@ -118,8 +118,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Copy signed netstandard2.0 AnyPackage.dll to release directory
-        run:
-          Copy-Item ./module/lib/netstandard2.0/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
+        run: Copy-Item ./module/lib/netstandard2.0/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
 
       - name: Copy signed net8.0 AnyPackage.dll to release directory
         run: Copy-Item ./module/lib/net8.0/AnyPackage.dll ./src/AnyPackage/bin/Release/net8.0
