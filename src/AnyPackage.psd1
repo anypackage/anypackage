@@ -4,7 +4,7 @@
     CompatiblePSEditions = @('Desktop', 'Core')
     GUID = '19cd4cdd-6766-4e47-be1c-76c33cea7392'
     Author = 'Thomas Nieto'
-    Copyright = '(c) 2023 Thomas Nieto. All rights reserved.'
+    Copyright = '(c) 2024 Thomas Nieto. All rights reserved.'
     Description = 'Use various package managers with a single set of commands.'
     PowerShellVersion = '5.1'
     FormatsToProcess = @('AnyPackage.format.ps1xml')
