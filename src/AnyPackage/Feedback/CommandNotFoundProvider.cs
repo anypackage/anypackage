@@ -211,19 +211,20 @@ public sealed class CommandNotFoundProvider : IFeedbackProvider, ICommandPredict
             return;
         }
 
-        var runspace = RunspaceFactory.CreateRunspace();
-        runspace.Name = provider.FullName;
-        runspace.ThreadOptions = PSThreadOptions.ReuseThread;
-        runspace.Open();
-
-        using var ps = PowerShell.Create();
-        ps.Runspace = runspace;
-
-        ps.AddCommand("Import-Module")
-          .AddParameter("Name", provider.ModuleName)
-          .Invoke();
-
+        var runspace = CreateRunspace(provider);
         _runspaces.Add(provider.Id, runspace);
+    }
+
+    private static Runspace CreateRunspace(PackageProviderInfo provider)
+    {
+        var iss = InitialSessionState.CreateDefault2();
+        iss.ThreadOptions = PSThreadOptions.ReuseThread;
+        iss.ImportPSModule(provider.ModuleName);
+
+        var runspace = RunspaceFactory.CreateRunspace(iss);
+        runspace.Name = provider.FullName;
+        runspace.OpenAsync();
+        return runspace;
     }
 
     private void StopProvider(Guid id)
