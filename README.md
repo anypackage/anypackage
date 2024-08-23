@@ -23,6 +23,8 @@ This project is a spiritual successor to `PackageManagement` also known as `OneG
 
 For more information on what `AnyPackage` is and how to use it refer to [about_AnyPackage](https://anypackage.dev/docs/reference/about_AnyPackage).
 
+![AnyPackage Demo](https://vhs.charm.sh/vhs-7ynK3WrPLUD0xpOjdJcxsG.gif)
+
 ## Features
 
 - PowerShell 5.1+
