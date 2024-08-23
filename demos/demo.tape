@@ -1,4 +1,4 @@
-Output "demo.gif"
+Output "../out/demos/demo.gif"
 
 Set Shell powershell 
 Set Width 1400
