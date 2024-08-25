@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Management.Automation;
 using AnyPackage.Resources;
 
 namespace AnyPackage.Provider
@@ -147,20 +148,63 @@ namespace AnyPackage.Provider
 
             if (metadata.Count > 0)
             {
-                var dictionary = new Dictionary<string, object?>();
-
-                foreach (DictionaryEntry entry in metadata)
-                {
-                    var key = entry.Key.ToString();
-
-                    if (key is not null)
-                    {
-                        dictionary.Add(key, entry.Value);
-                    }
-                }
-
+                var dictionary = metadata.ToDictionary();
                 Metadata = new ReadOnlyDictionary<string, object?>(dictionary);
             }
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageSourceInfo</c> class.
+        /// </summary>
+        /// <remarks>
+        /// Metadata hashtable keys will be converted to strings.
+        /// </remarks>
+        /// <param name="psObject">A PSObject containing the key value pairs.</param>
+        /// <exception cref="InvalidCastException">If properties are not of the correct type.</exception>
+        /// <exception cref="NullReferenceException">If a required property is missing.</exception>
+        public PackageSourceInfo(PSObject psObject)
+        {
+            Name = (string)psObject.Properties[nameof(Name)].Value;
+
+            var provider = (PSObject)psObject.Properties[nameof(Provider)].Value;
+            Provider = provider.BaseObject as PackageProviderInfo ?? throw new InvalidCastException();
+
+            try
+            {
+                Location = (string)psObject.Properties[nameof(Location)].Value;
+            }
+            catch (NullReferenceException)
+            {
+                Location = Name;
+            }
+
+            try
+            {
+                Trusted = (bool)psObject.Properties[nameof(Trusted)].Value;
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+
+            IDictionary<string, object?> metadata;
+            try
+            {
+                metadata = (IDictionary<string, object?>)psObject.Properties[nameof(Metadata)].Value;
+                
+            }
+            catch (NullReferenceException)
+            {
+                metadata = new Dictionary<string, object?>();
+            }
+            catch (InvalidCastException)
+            {
+                var hashtable = psObject.Properties[nameof(Metadata)].Value as Hashtable
+                    ?? throw new InvalidCastException();
+                metadata = hashtable.ToDictionary();
+            }
+
+            Metadata = new ReadOnlyDictionary<string, object?>(metadata);
         }
 
         /// <summary>

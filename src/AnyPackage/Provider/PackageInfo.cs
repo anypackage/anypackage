@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Management.Automation;
 
 namespace AnyPackage.Provider
 {
@@ -100,7 +101,7 @@ namespace AnyPackage.Provider
                 throw new ArgumentNullException(nameof(description));
             }
 
-            Description = description; 
+            Description = description;
         }
 
         /// <summary>
@@ -157,7 +158,7 @@ namespace AnyPackage.Provider
             : this(name, version, description, provider)
         {
             Source = source;
-            
+
             if (dependencies is not null)
             {
                 _dependencies = new List<PackageDependency>(dependencies);
@@ -215,22 +216,81 @@ namespace AnyPackage.Provider
                 throw new ArgumentNullException(nameof(metadata));
             }
 
-            if (metadata.Count > 0)
+            var dictionary = metadata.ToDictionary();
+            Metadata = new ReadOnlyDictionary<string, object?>(dictionary);
+        }
+
+        /// <summary>
+        /// Instantiates a <c>PackageInfo</c> class.
+        /// </summary>
+        /// <remarks>
+        /// Metadata hashtable keys will be converted to strings.
+        /// </remarks>
+        /// <param name="psObject">A PSObject containing the key value pairs.</param>
+        /// <exception cref="InvalidCastException">If properties are not of the correct type.</exception>
+        /// <exception cref="NullReferenceException">If a required property is missing.</exception>
+        public PackageInfo(PSObject psObject)
+        {
+            Name = (string)psObject.Properties[nameof(Name)].Value;
+
+            var provider = (PSObject)psObject.Properties[nameof(Provider)].Value;
+            Provider = provider.BaseObject as PackageProviderInfo ?? throw new InvalidCastException();
+
+            try
             {
-                var dictionary = new Dictionary<string, object?>();
-
-                foreach (DictionaryEntry entry in metadata)
-                {
-                    var key = entry.Key.ToString();
-
-                    if (key is not null)
-                    {
-                        dictionary.Add(key, entry.Value);
-                    }
-                }
-
-                Metadata = new ReadOnlyDictionary<string, object?>(dictionary);
+                Version = (string)psObject.Properties[nameof(Version)].Value;
             }
+            catch (NullReferenceException)
+            {
+
+            }
+
+            try
+            {
+                Description = (string)psObject.Properties[nameof(Description)].Value;
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+
+            try
+            {
+                Source = (PackageSourceInfo)psObject.Properties[nameof(Source)].Value;
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+
+            try
+            {
+                var dependencies = (IEnumerable<PackageDependency>)psObject.Properties[nameof(Dependencies)].Value;
+                _dependencies = dependencies.ToList();
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+
+            IDictionary<string, object?> metadata;
+            try
+            {
+                metadata = (IDictionary<string, object?>)psObject.Properties[nameof(Metadata)].Value;
+                
+            }
+            catch (NullReferenceException)
+            {
+                metadata = new Dictionary<string, object?>();
+            }
+            catch (InvalidCastException)
+            {
+                var hashtable = psObject.Properties[nameof(Metadata)].Value as Hashtable
+                    ?? throw new InvalidCastException();
+                metadata = hashtable.ToDictionary();
+            }
+
+            Metadata = new ReadOnlyDictionary<string, object?>(metadata);
         }
 
         /// <summary>
