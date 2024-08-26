@@ -277,7 +277,6 @@ namespace AnyPackage.Provider
             try
             {
                 metadata = (IDictionary<string, object?>)psObject.Properties[nameof(Metadata)].Value;
-                
             }
             catch (NullReferenceException)
             {
