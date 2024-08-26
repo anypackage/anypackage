@@ -184,7 +184,7 @@ namespace AnyPackage.Provider
             }
             catch (NullReferenceException)
             {
-
+                // Trusted property is optional.
             }
 
             IDictionary<string, object?> metadata;

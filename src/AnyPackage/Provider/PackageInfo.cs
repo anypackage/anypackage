@@ -242,7 +242,7 @@ namespace AnyPackage.Provider
             }
             catch (NullReferenceException)
             {
-
+                // Version property is optional.
             }
 
             try
@@ -251,7 +251,7 @@ namespace AnyPackage.Provider
             }
             catch (NullReferenceException)
             {
-
+                // Description property is optional.
             }
 
             try
@@ -260,7 +260,7 @@ namespace AnyPackage.Provider
             }
             catch (NullReferenceException)
             {
-
+                // Source property is optional.
             }
 
             try
@@ -270,7 +270,7 @@ namespace AnyPackage.Provider
             }
             catch (NullReferenceException)
             {
-
+                // Dependencies property is optional.
             }
 
             IDictionary<string, object?> metadata;
