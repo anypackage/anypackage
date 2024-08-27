@@ -1,6 +1,9 @@
 name: Lint Markdown
 
 on:
+  pull_request:
+    paths: "**/*.md"
+
   push:
     paths: "**/*.md"
 
