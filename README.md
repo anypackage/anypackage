@@ -33,7 +33,7 @@ For more information on what `AnyPackage` is and how to use it refer to
 
 ## Features
 
-* PowerShell 5.1+
+- PowerShell 5.1+
 - Cross-platform Windows, MacOS, Linux
 - Simple PowerShell cmdlets
 - Manage package lifecycle
@@ -75,7 +75,9 @@ To view the available package providers go to the [Provider Catalog][catalog].
 ### Creating a Provider
 
 To learn how to create a package provider refer to
-[about_Creating_Package_Providers](https://anypackage.dev/docs/reference/about_Creating_Package_Providers).
+[about_Creating_Package_Providers].
+
+[about_Creating_Package_Providers]: https://anypackage.dev/docs/reference/about_Creating_Package_Providers
 
 ## Documentation
 
