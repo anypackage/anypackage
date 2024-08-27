@@ -3,55 +3,53 @@
 // terms of the MIT license.
 
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Language;
+
 using AnyPackage.Provider;
 
-namespace AnyPackage.Commands
+namespace AnyPackage.Commands;
+
+/// <summary>
+/// The Source parameter argument completer.
+/// </summary>
+public sealed class SourceArgumentCompleter : IArgumentCompleter
 {
-    /// <summary>
-    /// The Source parameter argument completer.
-    /// </summary>
-    public sealed class SourceArgumentCompleter : IArgumentCompleter
+    private const string _provider = "Provider";
+
+    /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.iargumentcompleter.completeargument</see>
+    public IEnumerable<CompletionResult> CompleteArgument(string commandName,
+                                                          string parameterName,
+                                                          string wordToComplete,
+                                                          CommandAst commandAst,
+                                                          IDictionary fakeBoundParameters)
     {
-        private const string _provider = "Provider";
+        var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace)
+                                   .AddCommand("Get-PackageSource");
 
-        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.iargumentcompleter.completeargument</see>
-        public IEnumerable<CompletionResult> CompleteArgument(string commandName,
-                                                              string parameterName,
-                                                              string wordToComplete,
-                                                              CommandAst commandAst,
-                                                              IDictionary fakeBoundParameters)
+        if (fakeBoundParameters.Contains(_provider))
         {
-            var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace)
-                                       .AddCommand("Get-PackageSource");
+            powershell.AddParameter(_provider, fakeBoundParameters[_provider]);
+        }
 
-            if (fakeBoundParameters.Contains(_provider))
+        var names = powershell.Invoke<PackageSourceInfo>().Select(x => x.Name).Distinct();
+        var wildcard = new WildcardPattern(wordToComplete + "*", WildcardOptions.IgnoreCase);
+
+        foreach (var name in names)
+        {
+            if (wildcard.IsMatch(name))
             {
-                powershell.AddParameter(_provider, fakeBoundParameters[_provider]);
-            }
+                string completionText = name;
 
-            var names = powershell.Invoke<PackageSourceInfo>().Select(x => x.Name).Distinct();
-            var wildcard = new WildcardPattern(wordToComplete + "*", WildcardOptions.IgnoreCase);
-
-            foreach (var name in names)
-            {
-                if (wildcard.IsMatch(name))
+                if (name.Contains(" "))
                 {
-                    string completionText = name;
-
-                    if (name.Contains(" "))
-                    {
-                        completionText = string.Format("'{0}'", CodeGeneration.EscapeSingleQuotedStringContent(name));
-                    }
-
-                    yield return new CompletionResult(completionText,
-                                                      name,
-                                                      CompletionResultType.ParameterValue,
-                                                      name);
+                    completionText = string.Format("'{0}'", CodeGeneration.EscapeSingleQuotedStringContent(name));
                 }
+
+                yield return new CompletionResult(completionText,
+                                                  name,
+                                                  CompletionResultType.ParameterValue,
+                                                  name);
             }
         }
     }

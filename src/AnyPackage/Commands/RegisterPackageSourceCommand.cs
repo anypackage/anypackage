@@ -2,133 +2,131 @@
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
-using System;
-using System.Linq;
 using System.Management.Automation;
+
 using AnyPackage.Commands.Internal;
 using AnyPackage.Provider;
 using AnyPackage.Resources;
 
-namespace AnyPackage.Commands
+namespace AnyPackage.Commands;
+
+/// <summary>
+/// The Register-Package command.
+/// </summary>
+[Cmdlet(VerbsLifecycle.Register, "PackageSource",
+        SupportsShouldProcess = true,
+        ConfirmImpact = ConfirmImpact.Low,
+        DefaultParameterSetName = Constants.NameParameterSet,
+        HelpUri = "https://go.anypackage.dev/Register-PackageSource")]
+[OutputType(typeof(PackageSourceInfo))]
+public sealed class RegisterPackageSourceCommand : SourceCommandBase
 {
+    private const PackageProviderOperations SetSource = PackageProviderOperations.SetSource;
+
     /// <summary>
-    /// The Register-Package command.
+    /// Gets or sets the source name.
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Register, "PackageSource",
-            SupportsShouldProcess = true,
-            ConfirmImpact = ConfirmImpact.Low,
-            DefaultParameterSetName = Constants.NameParameterSet,
-            HelpUri = "https://go.anypackage.dev/Register-PackageSource")]
-    [OutputType(typeof(PackageSourceInfo))]
-    public sealed class RegisterPackageSourceCommand : SourceCommandBase
+    [Parameter(Mandatory = true,
+        Position = 0,
+        ParameterSetName = Constants.NameParameterSet,
+        ValueFromPipeline = true,
+        ValueFromPipelineByPropertyName = true)]
+    [ValidateNotNullOrEmpty]
+    [ValidateNoWildcards]
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the source location.
+    /// </summary>
+    [Parameter(Mandatory = true,
+        Position = 1,
+        ParameterSetName = Constants.NameParameterSet,
+        ValueFromPipelineByPropertyName = true)]
+    [ValidateNotNullOrEmpty]
+    public string Location { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the provider.
+    /// </summary>
+    [Parameter(Mandatory = true,
+        Position = 2)]
+    [ValidateNotNullOrEmpty]
+    [ValidateProvider(SetSource)]
+    [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
+    public override string Provider { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets if the source is trusted.
+    /// </summary>
+    [Parameter]
+    public SwitchParameter Trusted { get; set; }
+
+    /// <summary>
+    /// Gets or sets if the command should pass objects through.
+    /// </summary>
+    [Parameter]
+    public SwitchParameter PassThru { get; set; }
+
+    /// <summary>
+    /// Gets or sets if the source should be overwritten.
+    /// </summary>
+    [Parameter]
+    public SwitchParameter Force { get; set; }
+
+    /// <summary>
+    /// Instantiates the <c>RegisterPackageSourceCommand</c> class.
+    /// </summary>
+    public RegisterPackageSourceCommand()
     {
-        private const PackageProviderOperations SetSource = PackageProviderOperations.SetSource;
+        Operation = SetSource;
+    }
 
-        /// <summary>
-        /// Gets or sets the source name.
-        /// </summary>
-        [Parameter(Mandatory = true,
-            Position = 0,
-            ParameterSetName = Constants.NameParameterSet,
-            ValueFromPipeline = true,
-            ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        [ValidateNoWildcards]
-        public string Name { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the source location.
-        /// </summary>
-        [Parameter(Mandatory = true,
-            Position = 1,
-            ParameterSetName = Constants.NameParameterSet,
-            ValueFromPipelineByPropertyName = true)]
-        [ValidateNotNullOrEmpty]
-        public string Location { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the provider.
-        /// </summary>
-        [Parameter(Mandatory = true,
-            Position = 2)]
-        [ValidateNotNullOrEmpty]
-        [ValidateProvider(SetSource)]
-        [ArgumentCompleter(typeof(ProviderArgumentCompleter))]
-        public override string Provider { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets if the source is trusted.
-        /// </summary>
-        [Parameter]
-        public SwitchParameter Trusted { get; set; }
-
-        /// <summary>
-        /// Gets or sets if the command should pass objects through.
-        /// </summary>
-        [Parameter]
-        public SwitchParameter PassThru { get; set; }
-
-        /// <summary>
-        /// Gets or sets if the source should be overwritten.
-        /// </summary>
-        [Parameter]
-        public SwitchParameter Force { get; set; }
-
-        /// <summary>
-        /// Instantiates the <c>RegisterPackageSourceCommand</c> class.
-        /// </summary>
-        public RegisterPackageSourceCommand()
+    /// <summary>
+    /// Processes input.
+    /// </summary>
+    protected override void ProcessRecord()
+    {
+        if (!ShouldProcess(Name))
         {
-            Operation = SetSource;
+            return;
         }
 
-        /// <summary>
-        /// Processes input.
-        /// </summary>
-        protected override void ProcessRecord()
+        var instance = GetInstances(Provider).First();
+
+        WriteVerbose(string.Format(Strings.RegisteringSource, Name));
+        SetRequest(Name, Location, Trusted, Force);
+
+        WriteVerbose(string.Format(Strings.CallingProvider, instance.ProviderInfo.Name));
+        Request.ProviderInfo = instance.ProviderInfo;
+
+        try
         {
-            if (!ShouldProcess(Name))
-            {
-                return;
-            }
-
-            var instance = GetInstances(Provider).First();
-
-            WriteVerbose(string.Format(Strings.RegisteringSource, Name));
-            SetRequest(Name, Location, Trusted, Force);
-
-            WriteVerbose(string.Format(Strings.CallingProvider, instance.ProviderInfo.Name));
-            Request.ProviderInfo = instance.ProviderInfo;
-
-            try
-            {
-                instance.RegisterSource(Request);
-            }
-            catch (PipelineStoppedException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                var er = new ErrorRecord(e, "PackageProviderError", ErrorCategory.NotSpecified, Name);
-                WriteError(er);
-            }
-
-            if (!Request.HasWriteObject)
-            {
-                var ex = new PackageProviderException(Strings.PackageSourceNotRegistered);
-                var err = new ErrorRecord(ex, "PackageSourceNotRegistered", ErrorCategory.NotSpecified, Name);
-                WriteError(err);
-            }
+            instance.RegisterSource(Request);
+        }
+        catch (PipelineStoppedException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            var er = new ErrorRecord(e, "PackageProviderError", ErrorCategory.NotSpecified, Name);
+            WriteError(er);
         }
 
-        /// <summary>
-        /// Sets the request property.
-        /// </summary>
-        protected override void SetRequest()
+        if (!Request.HasWriteObject)
         {
-            base.SetRequest();
-            Request.PassThru = PassThru;
+            var ex = new PackageProviderException(Strings.PackageSourceNotRegistered);
+            var err = new ErrorRecord(ex, "PackageSourceNotRegistered", ErrorCategory.NotSpecified, Name);
+            WriteError(err);
         }
+    }
+
+    /// <summary>
+    /// Sets the request property.
+    /// </summary>
+    protected override void SetRequest()
+    {
+        base.SetRequest();
+        Request.PassThru = PassThru;
     }
 }

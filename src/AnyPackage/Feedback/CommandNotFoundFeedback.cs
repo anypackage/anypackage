@@ -4,6 +4,7 @@
 
 using System.Collections;
 using System.Collections.ObjectModel;
+
 using AnyPackage.Provider;
 
 namespace AnyPackage.Feedback;
@@ -60,10 +61,11 @@ public sealed class CommandNotFoundFeedback(string name, PackageProviderInfo pro
 
             foreach (DictionaryEntry entry in requiredParameters)
             {
-                if (entry.Value is null) {
+                if (entry.Value is null)
+                {
                     throw new ArgumentNullException(nameof(requiredParameters));
                 }
-                
+
                 var key = entry.Key.ToString();
                 var value = entry.Value.ToString();
 
