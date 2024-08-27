@@ -3,35 +3,34 @@
 // terms of the MIT license.
 
 using System.Collections;
-using System.Linq;
 using System.Management.Automation;
+
 using AnyPackage.Resources;
 
-namespace AnyPackage.Commands
+namespace AnyPackage.Commands;
+
+/// <summary>
+/// The no wildcards parameter validator.
+/// </summary>
+public sealed class ValidateNoWildcardsAttribute : ValidateArgumentsAttribute
 {
-    /// <summary>
-    /// The no wildcards parameter validator.
-    /// </summary>
-    public sealed class ValidateNoWildcardsAttribute : ValidateArgumentsAttribute
+    /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.validateargumentsattribute.validate</see>
+    protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
     {
-        /// <see href="link">https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.validateargumentsattribute.validate</see>
-        protected override void Validate(object arguments, EngineIntrinsics engineIntrinsics)
+        var collection = arguments as IEnumerable;
+
+        if (collection is not null)
         {
-            var collection = arguments as IEnumerable;
+            var values = collection
+                         .Cast<object>()
+                         .Select(x => x.ToString())
+                         .ToArray();
 
-            if (collection is not null)
+            foreach (var value in values)
             {
-                var values = collection
-                             .Cast<object>()
-                             .Select(x => x.ToString())
-                             .ToArray();
-
-                foreach (var value in values)
+                if (WildcardPattern.ContainsWildcardCharacters(value))
                 {
-                    if (WildcardPattern.ContainsWildcardCharacters(value))
-                    {
-                        throw new ValidationMetadataException(Strings.ParameterNoWildcards);
-                    }
+                    throw new ValidationMetadataException(Strings.ParameterNoWildcards);
                 }
             }
         }

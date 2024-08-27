@@ -1,12 +1,13 @@
-﻿// Copyright (c) Thomas Nieto - All Rights Reserved
+// Copyright (c) Thomas Nieto - All Rights Reserved
 // You may use, distribute and modify this code under the
 // terms of the MIT license.
 
 #if NET8_0_OR_GREATER
 using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using System.Management.Automation.Subsystem.Feedback;
 using System.Management.Automation.Subsystem.Prediction;
-using System.Management.Automation.Runspaces;
+
 using AnyPackage.Provider;
 using AnyPackage.Resources;
 
