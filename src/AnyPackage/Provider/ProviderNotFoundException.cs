@@ -68,9 +68,9 @@ public class PackageProviderNotFoundException : PackageProviderException
     /// </summary>
     /// <param name="info">Serialized info.</param>
     /// <param name="context">Streaming context.</param>
-    #if NET8_0_OR_GREATER
+#if NET8_0_OR_GREATER
     [Obsolete(DiagnosticId = "SYSLIB0051")]
-    #endif
+#endif
     protected PackageProviderNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
         ProviderName = info.GetString(nameof(ProviderName));
@@ -81,9 +81,9 @@ public class PackageProviderNotFoundException : PackageProviderException
     /// </summary>
     /// <param name="info">Serialized info.</param>
     /// <param name="context">Streaming context.</param>
-    #if NET8_0_OR_GREATER
+#if NET8_0_OR_GREATER
     [Obsolete(DiagnosticId = "SYSLIB0051")]
-    #endif
+#endif
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         base.GetObjectData(info, context);
