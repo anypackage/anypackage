@@ -1,15 +1,13 @@
-name: Lint Markdown
+name: Lint
 
 on:
   pull_request:
-    paths: "**/*.md"
 
   push:
-    paths: "**/*.md"
 
 jobs:
-  lint:
-    name: Lint
+  markdown:
+    name: Markdown
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout repository"
