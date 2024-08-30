@@ -28,7 +28,7 @@ public class Init : IModuleAssemblyInitializer, IModuleAssemblyCleanup
         }
         catch (InvalidOperationException)
         {
-
+            // Subsystems are already registered.
         }
     }
 
@@ -43,7 +43,7 @@ public class Init : IModuleAssemblyInitializer, IModuleAssemblyCleanup
         }
         catch (InvalidOperationException)
         {
-
+            // Subsystems are already registered.
         }
     }
 }
