@@ -77,7 +77,7 @@ public abstract class PackageCommandBase : CommandBase
         Request.Prerelease = package.Version?.IsPrerelease ?? false;
         Request.ProviderInfo = package.Provider;
         Request.TrustSource = trustSource;
-        Request.Version = PackageVersionRange.Parse($"[{package.Version}]");
+        Request.Version = package.Version is not null ? PackageVersionRange.Parse($"[{package.Version}]") : null;
     }
 
     /// <summary>
