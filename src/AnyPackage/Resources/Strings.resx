@@ -183,7 +183,7 @@
     <comment/>
   </data>
   <data name="NoPackageProviderSupportsSource" xml:space="preserve">
-    <value>No package providers support '{source}' source.</value>
+    <value>No package providers support '{0}' source.</value>
     <comment/>
   </data>
   <data name="PathNotFileSystemProvider" xml:space="preserve">
