@@ -139,11 +139,11 @@ public abstract class PackageCommandBase : CommandBase
             string message;
             if (MyInvocation.BoundParameters.ContainsKey(nameof(Provider)))
             {
-                message = string.Format(Strings.PackageProviderExtensionNotSupported, Provider);
+                message = string.Format(Strings.PackageProviderExtensionNotSupported, Provider, extension);
             }
             else
             {
-                message = Strings.NoPackageProviderSupportsExtension;
+                message = string.Format(Strings.NoPackageProviderSupportsExtension, extension);
             }
 
             var ex = new InvalidOperationException(message);
