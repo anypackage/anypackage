@@ -182,7 +182,7 @@ public sealed class UpdatePackageCommand : PackageCommandBase
     {
         PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
         string? source = MyInvocation.BoundParameters.ContainsKey(nameof(Source)) ? Source : null;
-        var instances = GetInstances(Provider);
+        var instances = GetNameInstances();
 
         if (source is not null)
         {
