@@ -13,7 +13,9 @@ namespace AnyPackage.Commands;
 /// <summary>
 /// The Find-Package command.
 /// </summary>
-[Cmdlet(VerbsCommon.Find, "Package", HelpUri = "https://go.anypackage.dev/Find-Package")]
+[Cmdlet(VerbsCommon.Find, "Package",
+    DefaultParameterSetName = Constants.NameParameterSet,
+    HelpUri = "https://go.anypackage.dev/Find-Package")]
 [OutputType(typeof(PackageInfo))]
 public sealed class FindPackageCommand : PackageCommandBase
 {
