@@ -14,6 +14,10 @@ indent_size = 4
 [*.{csproj,resx,ps1xml}]
 indent_size = 2
 
+# Data serialization
+[*.{json,jsonc,xml,yml,yaml}]
+indent_size = 2
+
 # C# files
 [*.cs]
 
