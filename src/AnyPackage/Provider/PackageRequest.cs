@@ -165,7 +165,7 @@ public sealed class PackageRequest : Request
 
         var trusted = Cmdlet.ShouldContinue(
             query: string.Format(Strings.InstallFromUntrustedSource, source),
-            caption: "Untrusted Source",
+            caption: Strings.UntrustedSource,
             hasSecurityImpact: true,
             yesToAll: ref _yesToAll,
             noToAll: ref _noToAll

@@ -302,6 +302,10 @@
     <value>Package provider attribute not found.</value>
     <comment/>
   </data>
+  <data name="UntrustedSource" xml:space="preserve">
+    <value>Untrusted Source</value>
+    <comment/>
+  </data>
   <data name="InstallFromUntrustedSource" xml:space="preserve">
     <value>You are installing packages from an untrusted source. If you trust this source, change its Trusted value by running the Set-PackageSource cmdlet. Are you sure you want to install the package from '{0}'?</value>
     <comment/>
