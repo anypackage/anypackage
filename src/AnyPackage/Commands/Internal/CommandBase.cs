@@ -96,8 +96,7 @@ public abstract class CommandBase : PSCmdlet, IDynamicParameters
         }
         else
         {
-            return Instances.Values.OrderBy(x => x.ProviderInfo.Priority)
-                                   .ThenBy(x => x.ProviderInfo.FullName);
+            return Instances.Values;
         }
     }
 }
