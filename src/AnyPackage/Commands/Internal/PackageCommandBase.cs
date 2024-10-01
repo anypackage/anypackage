@@ -347,7 +347,10 @@ public abstract class PackageCommandBase : CommandBase
 
         WriteVerbose(string.Format(Strings.OperationPackage, verb, package));
 
-        foreach (var instance in instances.Keys)
+        var orderedInstances = instances.Keys.OrderBy(x => x.ProviderInfo.Priority)
+                                             .ThenBy(x => x.ProviderInfo.FullName);
+
+        foreach (var instance in orderedInstances)
         {
             InvokePackage invoke = instances[instance];
             Invoke(package, instance, invoke);
