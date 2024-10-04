@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
 
+## [0.7.1] - 2024-08-25
+
+### Fixed
+
+- Fix piping null package version (#215)
+- Fix file extension error message (#216)
+- Fix source error message (#217)
+- Fix Find-Package parameter set (#222)
+- Fix Update-Package name providers (#223)
+- Fix untrusted source caption (#228)
+- Fix package provider priority (#232)
+
 ## [0.7.0] - 2024-08-25
 
 ### Added
@@ -157,7 +169,8 @@ and this project adheres to [Semantic Versioning][semver].
 
 - Initial release
 
-[Unreleased]: https://github.com/anypackage/anypackage/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/anypackage/anypackage/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/anypackage/anypackage/releases/tag/v0.7.1
 [0.7.0]: https://github.com/anypackage/anypackage/releases/tag/v0.7.0
 [0.6.1]: https://github.com/anypackage/anypackage/releases/tag/v0.6.1
 [0.6.0]: https://github.com/anypackage/anypackage/releases/tag/v0.6.0
