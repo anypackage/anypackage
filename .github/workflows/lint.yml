@@ -1,0 +1,17 @@
+name: Lint
+
+on:
+  pull_request:
+
+  push:
+
+jobs:
+  markdown:
+    name: Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v4"
+
+      - name: "Lint markdown"
+        uses: DavidAnson/markdownlint-cli2-action@v16

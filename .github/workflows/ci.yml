@@ -38,6 +38,7 @@ jobs:
       - name: Create module
         run: |
           New-Item ./out/AnyPackage -ItemType Directory
+          Expand-Archive ./out/AnyPackage*.nupkg ./out/AnyPackage
           $settings = Import-PowerShellDataFile ./BuildSettings.psd1
           Copy-Item @settings
 
@@ -102,8 +103,8 @@ jobs:
   Sign:
     needs: [Build, Test]
     env:
-      SIGNPATH_SIGNING_POLICY_SLUG: | 
-        ${{ (github.event_name == 'release' && github.event.action == 'published') 
+      SIGNPATH_SIGNING_POLICY_SLUG: |
+        ${{ (github.event_name == 'release' && github.event.action == 'published')
           && 'release-signing' || 'test-signing' }}
     runs-on: ubuntu-latest
     steps:

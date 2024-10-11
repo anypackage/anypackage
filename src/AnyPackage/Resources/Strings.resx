@@ -22,8 +22,10 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
 
@@ -59,46 +61,47 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -112,10 +115,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PackageProviderNotFound" xml:space="preserve">
     <value>Package provider not found.</value>
@@ -178,7 +183,7 @@
     <comment/>
   </data>
   <data name="NoPackageProviderSupportsSource" xml:space="preserve">
-    <value>No package providers support '{source}' source.</value>
+    <value>No package providers support '{0}' source.</value>
     <comment/>
   </data>
   <data name="PathNotFileSystemProvider" xml:space="preserve">
@@ -297,6 +302,10 @@
     <value>Package provider attribute not found.</value>
     <comment/>
   </data>
+  <data name="UntrustedSource" xml:space="preserve">
+    <value>Untrusted Source</value>
+    <comment/>
+  </data>
   <data name="InstallFromUntrustedSource" xml:space="preserve">
     <value>You are installing packages from an untrusted source. If you trust this source, change its Trusted value by running the Set-PackageSource cmdlet. Are you sure you want to install the package from '{0}'?</value>
     <comment/>
@@ -331,6 +340,38 @@
   </data>
   <data name="MinVersionHigherThanMaxVersion" xml:space="preserve">
     <value>Min version is higher than max version.</value>
+    <comment/>
+  </data>
+  <data name="OperationPackage" xml:space="preserve">
+    <value>{0} '{1}' package.</value>
+    <comment/>
+  </data>
+  <data name="AnyPackage" xml:space="preserve">
+    <value>AnyPackage</value>
+    <comment/>
+  </data>
+  <data name="FeedbackHeader" xml:space="preserve">
+    <value>The command can be found in the following packages:</value>
+    <comment/>
+  </data>
+  <data name="FeedbackWithProvider" xml:space="preserve">
+    <value>Install-Package {0} -Provider {1}</value>
+    <comment/>
+  </data>
+  <data name="FeedbackProviderDescription" xml:space="preserve">
+    <value>AnyPackage command not found feedback provider.</value>
+    <comment/>
+  </data>
+  <data name="FeedbackWithProviderAndParameters" xml:space="preserve">
+    <value>Install-Package {0} -Provider {1}{2}</value>
+    <comment/>
+  </data>
+  <data name="FeedbackTooltip" xml:space="preserve">
+    <value>This package contains '{0}' command.</value>
+    <comment/>
+  </data>
+  <data name="FeedbackFooter" xml:space="preserve">
+    <value>More suggestions could be returned by importing additional package providers.</value>
     <comment/>
   </data>
 </root>

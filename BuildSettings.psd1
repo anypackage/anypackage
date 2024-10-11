@@ -1,8 +1,9 @@
 @{
     Path = @(
-        './src/AnyPackage/bin/Release/netstandard2.0/*',
+        './out/package/lib',
         './src/AnyPackage.format.ps1xml',
-        './src/AnyPackage.psd1'
+        './src/AnyPackage.psd1',
+        './src/AnyPackage.psm1'
     )
     Destination = './out/AnyPackage'
     Exclude = 'AnyPackage.xml'

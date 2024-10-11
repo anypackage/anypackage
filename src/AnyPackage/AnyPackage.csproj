@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <Version>0.0.1</Version>
     <Authors>Thomas Nieto</Authors>
     <Copyright>© 2024 Thomas Nieto. All rights reserved.</Copyright>
@@ -12,20 +12,23 @@
     <RepositoryUrl>https://github.com/anypackage/anypackage.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" PrivateAssets='All' />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageReference Include="System.Management.Automation" Version="7.4" PrivateAssets='All' />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
