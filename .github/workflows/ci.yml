@@ -38,7 +38,7 @@ jobs:
       - name: Create module
         run: |
           New-Item ./out/AnyPackage -ItemType Directory
-          Expand-Archive ./out/AnyPackage*.nupkg ./out/AnyPackage
+          Expand-Archive ./out/AnyPackage*.nupkg ./out/package
           $settings = Import-PowerShellDataFile ./BuildSettings.psd1
           Copy-Item @settings
 
