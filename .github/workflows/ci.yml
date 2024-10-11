@@ -45,7 +45,7 @@ jobs:
       - name: Get product version
         id: product-version
         run: |
-          $productVersion = (Get-Item ./out/AnyPackage/AnyPackage.dll).VersionInfo.ProductVersion
+          $productVersion = (Get-Item ./out/AnyPackage/lib/netstandard2.0/AnyPackage.dll).VersionInfo.ProductVersion
           "product-version=$productVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Update module version
