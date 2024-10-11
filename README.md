@@ -93,4 +93,8 @@ AnyPackage does not gather any user data.
 
 ## Code Signing Policy
 
-Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+Free code signing provided by [SignPath.io], certificate by
+[SignPath Foundation].
+
+[SignPath.io]: https://signpath.io
+[SignPath Foundation]: https://signpath.org
