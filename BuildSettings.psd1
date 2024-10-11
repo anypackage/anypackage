@@ -6,6 +6,5 @@
         './src/AnyPackage.psm1'
     )
     Destination = './out/AnyPackage'
-    Exclude = 'AnyPackage.xml'
     Recurse = $true
 }
