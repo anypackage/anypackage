@@ -125,7 +125,8 @@ jobs:
       - name: Update module with signed artifact
         run: |
           Expand-Archive ./signed-artifact/AnyPackage*.nupkg
-          Copy-Item ./AnyPackage*/lib ./signed-artifact/AnyPackage -Force
+          Remove-Item ./signed-artifact/AnyPackage/lib -Recurse -Force
+          Move-Item ./AnyPackage*/lib ./signed-artifact/AnyPackage
 
       - name: Upload signed artifact
         uses: actions/upload-artifact@v4
