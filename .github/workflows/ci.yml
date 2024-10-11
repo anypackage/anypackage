@@ -41,6 +41,7 @@ jobs:
           Expand-Archive ./out/AnyPackage*.nupkg ./out/package
           $settings = Import-PowerShellDataFile ./BuildSettings.psd1
           Copy-Item @settings
+          Remove-Item ./out/package -Recurse
 
       - name: Get product version
         id: product-version
@@ -109,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sign
-        uses: signpath/github-action-submit-signing-request@v0.4
+        uses: signpath/github-action-submit-signing-request@v1
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
