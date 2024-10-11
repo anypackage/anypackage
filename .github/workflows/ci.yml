@@ -123,8 +123,8 @@ jobs:
 
       - name: Update module with signed artifact
         run: |
-          Expand-Archive .\signed-artifact\AnyPackage*.nupkg
-          Copy-Item ./AnyPackage*/lib/netstandard2.0/* ./signed-artifact/AnyPackage -Recurse
+          Expand-Archive ./signed-artifact/AnyPackage*.nupkg
+          Copy-Item ./AnyPackage*/lib ./signed-artifact/AnyPackage -Recurse
 
       - name: Upload signed artifact
         uses: actions/upload-artifact@v4
