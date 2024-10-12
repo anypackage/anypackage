@@ -148,7 +148,7 @@ jobs:
 
       - name: Move module
         run: |
-          Move-Item ./out/AnyPackage ~/.local/share/powershell/Modules
+          Move-Item ./signed-artifact/AnyPackage ~/.local/share/powershell/Modules
 
       - name: Publish NuGet package
         env:
