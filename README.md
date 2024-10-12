@@ -89,7 +89,8 @@ repository.
 
 ## Privacy Policy
 
-AnyPackage does not gather any user data.
+This program will not transfer any information to other networked systems unless
+specifically requested by the user or the person installing or operating it.
 
 ## Code Signing Policy
 
