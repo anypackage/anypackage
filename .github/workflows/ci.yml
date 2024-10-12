@@ -17,25 +17,53 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
+      version: ${{ steps.version.outputs.version }}
+      product-version: ${{ steps.product-version.outputs.product-version }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Determine version
+        id: version
+        run: |
+          $version = '${{ github.ref_type }}' -eq 'tag' -and '${{ github.ref_name }}' -like 'v*' ?
+            '${{ github.ref_name }}'.SubString(1) : '0.0.1'
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
       - name: .NET Build
-        run: dotnet pack --output out
+        run: dotnet pack --output out -p:Version=${{ steps.version.outputs.version }}
 
       - name: Create module
         run: |
-          New-Item module, ./out/package -ItemType Directory
+          New-Item ./out/AnyPackage -ItemType Directory
           Expand-Archive ./out/AnyPackage*.nupkg ./out/package
           $settings = Import-PowerShellDataFile ./BuildSettings.psd1
           Copy-Item @settings
+          Remove-Item ./out/package -Recurse -Force
 
-      - name: Upload module
+      - name: Get product version
+        id: product-version
+        run: |
+          $productVersion = (Get-Item ./out/AnyPackage/lib/netstandard2.0/AnyPackage.dll).VersionInfo.ProductVersion
+          "product-version=$productVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Update module version
+        run: |
+          $path = './out/AnyPackage/AnyPackage.psd1'
+          Get-Content $path |
+          Foreach-Object {
+            $_ -replace '0\.0\.1', '${{ steps.version.outputs.version }}'
+          } |
+          Set-Content $path
+
+      - name: Upload unsigned artifact
+        id: upload-unsigned-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: module
-          path: ./module/
+          name: unsigned-artifact
+          path: out
 
   Test:
     needs: Build
@@ -50,8 +78,8 @@ jobs:
       - name: Download module
         uses: actions/download-artifact@v4
         with:
-          name: module
-          path: AnyPackage
+          name: unsigned-artifact
+          path: unsigned-artifact
 
       - name: Move module
         run: |
@@ -65,7 +93,7 @@ jobs:
             New-Item $path -ItemType Directory
           }
 
-          Move-Item AnyPackage $path
+          Move-Item ./unsigned-artifact/AnyPackage $path
 
       - name: Test with Pester
         run: |
@@ -74,103 +102,58 @@ jobs:
           Invoke-Pester -Configuration $config
 
   Sign:
-    needs: Test
-    if: github.event_name == 'release' && github.event.action == 'published'
-    runs-on: windows-latest
+    needs: [Build, Test]
+    env:
+      SIGNPATH_SIGNING_POLICY_SLUG: |
+        ${{ (github.event_name == 'release' && github.event.action == 'published')
+          && 'release-signing' || 'test-signing' }}
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Download module
-        uses: actions/download-artifact@v4
+      - name: Sign
+        uses: signpath/github-action-submit-signing-request@v1
         with:
-          name: module
-          path: module
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: AnyPackage
+          signing-policy-slug: ${{ env.SIGNPATH_SIGNING_POLICY_SLUG }}
+          github-artifact-id: ${{ needs.Build.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-artifact
+          parameters: |
+            version: ${{ toJSON(needs.Build.outputs.product-version) }}
 
-      - name: Import certificate
-        env:
-          CERTIFICATE_BASE64: ${{ secrets.CERTIFICATE_BASE64 }}
-          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
-          CERTIFICATE_PASSWORD_KEY_BASE64: ${{ secrets.CERTIFICATE_PASSWORD_KEY_BASE64 }}
+      - name: Update module with signed artifact
         run: |
-          [convert]::FromBase64String($env:CERTIFICATE_BASE64) | Set-Content -Path cert.pfx -AsByteStream
-          $key = [convert]::FromBase64String($env:CERTIFICATE_PASSWORD_KEY_BASE64)
-          $password = ConvertTo-SecureString $env:CERTIFICATE_PASSWORD -Key $key
-          Import-PfxCertificate cert.pfx -Password $password -CertStoreLocation Cert:\CurrentUser\My
+          Expand-Archive ./signed-artifact/AnyPackage*.nupkg
+          Remove-Item ./signed-artifact/AnyPackage/lib -Recurse -Force
+          Move-Item ./AnyPackage*/lib ./signed-artifact/AnyPackage
 
-      - name: Sign files
-        run: |
-          $config = Import-PowerShellDataFile SignSettings.psd1
-          $config['Certificate'] = Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert
-          Set-Location .\module
-          Set-AuthenticodeSignature @config
-
-      - name: Create and sign catalog file
-        run: |
-          $config = Import-PowerShellDataFile SignSettings.psd1
-          $config['FilePath'] = 'AnyPackage.cat'
-          $config['Certificate'] = Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert
-          Set-Location .\module
-          New-FileCatalog $config['FilePath'] -CatalogVersion 2
-          Set-AuthenticodeSignature @config
-
-      - name: .NET Build
-        run: dotnet build --configuration Release
-
-      - name: Copy signed netstandard2.0 AnyPackage.dll to release directory
-        run: Copy-Item ./module/lib/netstandard2.0/AnyPackage.dll ./src/AnyPackage/bin/Release/netstandard2.0
-
-      - name: Copy signed net8.0 AnyPackage.dll to release directory
-        run: Copy-Item ./module/lib/net8.0/AnyPackage.dll ./src/AnyPackage/bin/Release/net8.0
-
-      - name: .NET pack
-        run: dotnet pack --configuration Release --no-build
-
-      - name: Upload NuGet package
+      - name: Upload signed artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nupkg
-          path: ./src/AnyPackage/bin/Release/*.nupkg
-
-      - name: Upload Symbol NuGet package
-        uses: actions/upload-artifact@v4
-        with:
-          name: snupkg
-          path: ./src/AnyPackage/bin/Release/*.snupkg
-
-      - name: Upload module
-        uses: actions/upload-artifact@v4
-        with:
-          name: module-signed
-          path: ./module/
+          name: signed-artifact
+          path: signed-artifact
+          if-no-files-found: error
 
   Publish:
     needs: Sign
     if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: ubuntu-latest
     steps:
-      - name: Download NuGet package
-        uses: actions/download-artifact@v4
-        with:
-          name: nupkg
-          path: nupkg
-
-      - name: Download NuGet package
-        uses: actions/download-artifact@v4
-        with:
-          name: snupkg
-          path: nupkg
-
       - name: Download module
         uses: actions/download-artifact@v4
         with:
-          name: module-signed
-          path: '~/.local/share/powershell/Modules/AnyPackage'
+          name: signed-artifact
+          path: signed-artifact
+
+      - name: Move module
+        run: |
+          Move-Item ./signed-artifact/AnyPackage ~/.local/share/powershell/Modules
 
       - name: Publish NuGet package
         env:
           NUGET_ORG_KEY: ${{ secrets.NUGET_ORG_KEY }}
-        run: dotnet nuget push ./nupkg/*.nupkg --api-key $env:NUGET_ORG_KEY --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./signed-artifact/*.nupkg --api-key $env:NUGET_ORG_KEY --source https://api.nuget.org/v3/index.json
 
       - name: Publish Module
         env:

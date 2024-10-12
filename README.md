@@ -86,3 +86,16 @@ repository.
 
 [website]: https://anypackage.dev
 [docs]: https://github.com/anypackage/docs
+
+## Privacy Policy
+
+This program will not transfer any information to other networked systems unless
+specifically requested by the user or the person installing or operating it.
+
+## Code Signing Policy
+
+Free code signing provided by [SignPath.io], certificate by
+[SignPath Foundation].
+
+[SignPath.io]: https://signpath.io
+[SignPath Foundation]: https://signpath.org

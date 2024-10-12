@@ -5,6 +5,6 @@
         './src/AnyPackage.psd1',
         './src/AnyPackage.psm1'
     )
-    Destination = './module'
+    Destination = './out/AnyPackage'
     Recurse = $true
 }
