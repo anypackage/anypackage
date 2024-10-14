@@ -516,7 +516,7 @@ public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, I
     {
         if (IsPrerelease && other.IsPrerelease)
         {
-            var count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
+            var count = _prerelease.Count > other._prerelease.Count ? _prerelease.Count : other._prerelease.Count;
 
             for (var i = 0; i < count; i++)
             {
