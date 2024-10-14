@@ -239,7 +239,7 @@ Describe PackageVersion {
             $v.Metadata | Should -Be $Metadata
         }
     }
-    
+
     Context 'ToVersion() method' {
         BeforeDiscovery {
             $messages = @{
@@ -299,6 +299,10 @@ Describe PackageVersion {
                 @{ Version = '1.0.0-alpha.1.1'; Other = '1.0.0-alpha.1'; Result = 1 }
                 @{ Version = '1.0.0-alpha.1'; Other = '1.0.0-alpha.1.1'; Result = -1 }
                 @{ Version = '1.0.0-alpha.1'; Other = '1.0.0-alpha.2'; Result = -1 }
+                @{ Version = '1.0.0-alpha.1'; Other = '1.0.0-alpha.10'; Result = -1 }
+                @{ Version = '1.0.0-alpha.10'; Other = '1.0.0-alpha.1'; Result = 1 }
+                @{ Version = '1.0.0-alpha.1'; Other = '1.0.0-alpha.1a'; Result = -1 }
+                @{ Version = '1.0.0-alpha.1a'; Other = '1.0.0-alpha.1'; Result = 1 }
                 @{ Version = '1.0a'; Other = '1.0a'; Result = 0 }
                 @{ Version = '1.0a'; Other = '1.0b'; Result = -1 }
                 @{ Version = '1.0b'; Other = '1.0a'; Result = 1 }
@@ -317,7 +321,7 @@ Describe PackageVersion {
         It "should return '<Result>' for '<Version>' compare to '<Other>'" -ForEach $versions {
             $a = [AnyPackage.Provider.PackageVersion]$Version
             $b = [AnyPackage.Provider.PackageVersion]$Other
-            
+
             $a.CompareTo($b) | Should -Be $Result
         }
     }
