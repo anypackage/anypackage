@@ -567,7 +567,7 @@ public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, I
         if (isThisNumeric && isOtherNumeric)
         {
             result = x.CompareTo(y);
-            return true;
+            return result != 0;
         }
         else if (isThisNumeric && !isOtherNumeric)
         {
