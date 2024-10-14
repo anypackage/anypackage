@@ -39,7 +39,7 @@ public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, I
     public ulong? Patch => _parts.Count > 2 ? _parts[2] : null;
 
     /// <summary>
-    /// Gets the dot separated fourth position. 
+    /// Gets the dot separated fourth position.
     /// </summary>
     public ulong? Revision => _parts.Count > 3 ? _parts[3] : null;
 
@@ -226,7 +226,7 @@ public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, I
     public static bool operator >(PackageVersion left, PackageVersion right) => left.CompareTo(right) > 0;
 
     /// <summary>
-    /// Implements the &lt;= (less-than or equal to) operator. 
+    /// Implements the &lt;= (less-than or equal to) operator.
     /// </summary>
     /// <param name="left">LHS package version.</param>
     /// <param name="right">RHS package version.</param>
@@ -517,16 +517,29 @@ public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, I
         if (IsPrerelease && other.IsPrerelease)
         {
             var count = _parts.Count > other._parts.Count ? _parts.Count : other._parts.Count;
-            string x, y;
 
             for (var i = 0; i < count; i++)
             {
-                x = i < _prerelease.Count ? _prerelease[i] : "";
-                y = i < other._prerelease.Count ? other._prerelease[i] : "";
-
-                if (x != y)
+                if (_prerelease.Count == i)
                 {
-                    result = x.CompareTo(y);
+                    result = -1;
+                    return true;
+                }
+
+                if (other._prerelease.Count == i)
+                {
+                    result = 1;
+                    return true;
+                }
+
+                if (CompareToPrereleaseNumeric(other, out var numericResult, i))
+                {
+                    result = numericResult;
+                    return true;
+                }
+                else if (CompareToPrereleaseString(other, out var stringResult, i))
+                {
+                    result = stringResult;
                     return true;
                 }
             }
@@ -544,6 +557,37 @@ public sealed class PackageVersion : IComparable, IComparable<PackageVersion>, I
 
         result = int.MinValue;
         return false;
+    }
+
+    private bool CompareToPrereleaseNumeric(PackageVersion other, out int result, int i)
+    {
+        var isThisNumeric = ulong.TryParse(_prerelease[i], out var x);
+        var isOtherNumeric = ulong.TryParse(other._prerelease[i], out var y);
+
+        if (isThisNumeric && isOtherNumeric)
+        {
+            result = x.CompareTo(y);
+            return true;
+        }
+        else if (isThisNumeric && !isOtherNumeric)
+        {
+            result = -1;
+            return true;
+        }
+        else if (!isThisNumeric && isOtherNumeric)
+        {
+            result = 1;
+            return true;
+        }
+
+        result = int.MinValue;
+        return false;
+    }
+
+    private bool CompareToPrereleaseString(PackageVersion other, out int result, int i)
+    {
+        result = _prerelease[i].CompareTo(other._prerelease[i]);
+        return result != 0;
     }
 
     private void SetParts(string input)
