@@ -10,7 +10,7 @@ internal static class Extensions
 {
     internal static Dictionary<string, object?> ToDictionary(this Hashtable hashtable)
     {
-        var dictionary = new Dictionary<string, object?>();
+        var dictionary = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
 
         foreach (DictionaryEntry entry in hashtable)
         {

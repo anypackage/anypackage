@@ -118,6 +118,7 @@ public sealed class PackageSourceInfo
             throw new ArgumentNullException(nameof(metadata));
         }
 
+        metadata = new Dictionary<string, object?>(metadata, StringComparer.OrdinalIgnoreCase);
         Metadata = new ReadOnlyDictionary<string, object?>(metadata);
     }
 
@@ -190,6 +191,7 @@ public sealed class PackageSourceInfo
         try
         {
             metadata = (IDictionary<string, object?>)psObject.Properties[nameof(Metadata)].Value;
+            metadata = new Dictionary<string, object?>(metadata, StringComparer.OrdinalIgnoreCase);
         }
         catch (NullReferenceException)
         {
