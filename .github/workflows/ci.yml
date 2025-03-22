@@ -102,7 +102,6 @@ jobs:
           Invoke-Pester -Configuration $config
 
   Sign:
-    needs: [Build, Test]
     if: vars.SIGNPATH_ORGANIZATION_ID != null
     env:
       SIGNPATH_SIGNING_POLICY_SLUG: |
@@ -137,7 +136,7 @@ jobs:
           if-no-files-found: error
 
   Publish:
-    needs: Sign
+    needs: [Test, Sign]
     if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: ubuntu-latest
     steps:
