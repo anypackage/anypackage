@@ -103,7 +103,7 @@ jobs:
 
   Sign:
     needs: [Build, Test]
-    if: github.repository == 'anypackage/anypackage'
+    if: vars.SIGNPATH_ORGANIZATION_ID != null
     env:
       SIGNPATH_SIGNING_POLICY_SLUG: |
         ${{ (github.event_name == 'release' && github.event.action == 'published')
