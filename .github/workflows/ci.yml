@@ -102,6 +102,7 @@ jobs:
           Invoke-Pester -Configuration $config
 
   Sign:
+    needs: Build
     if: vars.SIGNPATH_ORGANIZATION_ID != null
     env:
       SIGNPATH_SIGNING_POLICY_SLUG: |
