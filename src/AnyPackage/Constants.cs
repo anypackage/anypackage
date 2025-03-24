@@ -13,6 +13,7 @@ internal static class Constants
     internal const string SavePackage = "Save-Package";
     internal const string UninstallPackage = "Uninstall-Package";
     internal const string UpdatePackage = "Update-Package";
+    internal const string OptimizePackage = "Optimize-Package";
     internal const string GetPackageSource = "Get-PackageSource";
     internal const string RegisterPackageSource = "Register-PackageSource";
     internal const string SetPackageSource = "Set-PackageSource";

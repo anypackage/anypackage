@@ -110,6 +110,21 @@ public interface IUpdatePackage
 }
 
 /// <summary>
+/// Interface to support <c>Optimize-Package</c> command.
+/// </summary>
+public interface IOptimizePackage
+{
+    /// <summary>
+    /// Optimizes packages with the specified request.
+    /// </summary>
+    /// <remarks>
+    /// If the requested package is not found, no exception should be thrown.
+    /// </remarks>
+    /// <param name="request">Package request.</param>
+    void OptimizePackage(PackageRequest request);
+}
+
+/// <summary>
 /// Interface to support <c>Get-PackageSource</c> command.
 /// </summary>
 public interface IGetSource

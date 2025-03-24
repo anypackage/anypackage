@@ -73,7 +73,7 @@ public abstract class PackageProvider
     /// Gets if the source is supported by the provider.
     /// </summary>
     /// <remarks>
-    /// The default implementation returns <c>true</c>. 
+    /// The default implementation returns <c>true</c>.
     /// </remarks>
     /// <param name="source">The source parameter from cmdlets.</param>
     /// <returns>Returns <c>true</c> if source is supported.</returns>
@@ -160,6 +160,16 @@ public abstract class PackageProvider
         }
 
         updatePackage.UpdatePackage(request);
+    }
+
+    internal void OptimizePackage(PackageRequest request)
+    {
+        if (this is not IOptimizePackage optimizePackage)
+        {
+            throw new InvalidOperationException();
+        }
+
+        optimizePackage.OptimizePackage(request);
     }
 
     internal void GetSource(SourceRequest request)

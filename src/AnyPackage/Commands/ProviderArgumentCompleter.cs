@@ -64,6 +64,7 @@ public sealed class ProviderArgumentCompleter : IArgumentCompleter
             Constants.SavePackage => PackageProviderOperations.Save,
             Constants.UninstallPackage => PackageProviderOperations.Uninstall,
             Constants.UpdatePackage => PackageProviderOperations.Update,
+            Constants.OptimizePackage => PackageProviderOperations.Optimize,
             Constants.GetPackageSource => PackageProviderOperations.GetSource,
             Constants.RegisterPackageSource => PackageProviderOperations.SetSource,
             Constants.SetPackageSource => PackageProviderOperations.SetSource,
