@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
 
+## [0.9.0] - 2025-03-24
+
+### Added
+
+- Add Optimize-Package (#259)
+
 ## [0.8.0] - 2024-10-11
 
 ### Changed
@@ -175,7 +181,8 @@ and this project adheres to [Semantic Versioning][semver].
 
 - Initial release
 
-[Unreleased]: https://github.com/anypackage/anypackage/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/anypackage/anypackage/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/anypackage/anypackage/releases/tag/v0.9.0
 [0.8.0]: https://github.com/anypackage/anypackage/releases/tag/v0.8.0
 [0.7.1]: https://github.com/anypackage/anypackage/releases/tag/v0.7.1
 [0.7.0]: https://github.com/anypackage/anypackage/releases/tag/v0.7.0
