@@ -9,7 +9,7 @@ using namespace System.Threading
 class PowerShellProvider : PackageProvider,
     IFindPackage, IGetPackage,
     IInstallPackage, IPublishPackage,
-    ISavePackage, IUninstallPackage, IUpdatePackage,
+    ISavePackage, IUninstallPackage, IUpdatePackage, IOptimizePackage,
     IGetSource, ISetSource, ICommandNotFound {
     [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
         return [PowerShellProviderInfo]::new($providerInfo)
@@ -33,7 +33,7 @@ class PowerShellProvider : PackageProvider,
                 Get-Content -Path $_.FullName |
                 ConvertFrom-Json |
                 Where-Object { $_.bin -contains $context.Command } |
-                ForEach-Object { 
+                ForEach-Object {
                     if (!$dict.ContainsKey($_.name)) {
                         $feedback = [CommandNotFoundFeedback]::new($_.name, $this.ProviderInfo)
                         $dict.Add($_.name, $feedback)
@@ -54,7 +54,7 @@ class PowerShellProvider : PackageProvider,
             $this.FindPackageByUri($request)
             return
         }
-        
+
         if ($request.Source) {
             $sources = $this.ProviderInfo.Sources |
             Where-Object Name -eq $request.Source
@@ -89,6 +89,7 @@ class PowerShellProvider : PackageProvider,
 
     [void] GetPackage([PackageRequest] $request) {
         $this.ProviderInfo.Packages |
+        Where-Object { $_ } |
         Where-Object { $request.IsMatch($_.Name, $_.version) } |
         ForEach-Object {
             $_ | Write-Package -Request $request -Source $_.Source -Provider $this.ProviderInfo
@@ -104,7 +105,7 @@ class PowerShellProvider : PackageProvider,
             $this.InstallPackageByUri($request)
             return
         }
-        
+
         $params = @{
             Name = $request.Name
             Prerelease = $request.Prerelease
@@ -166,6 +167,21 @@ class PowerShellProvider : PackageProvider,
         Write-Package -Request $request -Source $source -Provider $this.ProviderInfo
     }
 
+    [void] OptimizePackage([PackageRequest] $request) {
+        $packages = Get-Package -Name $request.Name -Provider $this.ProviderInfo -ErrorAction SilentlyContinue |
+        Group-Object -Property Name
+
+        foreach ($package in $packages) {
+            if ($package.Count -gt 1) {
+                $package.Group |
+                Sort-Object -Property Version -Descending |
+                Select-Object -Skip 1 |
+                Uninstall-Package -PassThru |
+                ForEach-Object { $request.WritePackage($_) }
+            }
+        }
+    }
+
     [void] SavePackage([PackageRequest] $request) {
         $params = @{
             Name = $request.Name
@@ -194,6 +210,7 @@ class PowerShellProvider : PackageProvider,
 
     [void] UninstallPackage([PackageRequest] $request) {
         $this.ProviderInfo.Packages = $this.ProviderInfo.Packages |
+        Where-Object { $_ } |
         ForEach-Object {
             if ($request.IsMatch($_.Name, $_.Version)) {
                 $_ |
@@ -215,7 +232,7 @@ class PowerShellProvider : PackageProvider,
             $this.UpdatePackageByUri($request)
             return
         }
-        
+
         $getPackageParams = @{
             Name = $request.Name
             Provider = 'PowerShell'
