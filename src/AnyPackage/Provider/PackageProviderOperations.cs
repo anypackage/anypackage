@@ -64,6 +64,12 @@ public enum PackageProviderOperations
     /// The package provider supports the Register-PackageSource,
     /// Set-PackageSource, and Unregister-PackageSource command.
     /// </summary>
-    SetSource = 512
-    // potential additions new, build, restore (sync), optimize (remove outdated)
+    SetSource = 512,
+
+    /// <summary>
+    /// The package provider supports the Optimize-Package command.
+    /// </summary>
+    Optimize = 1024
+
+    // potential additions new, build, restore (sync)
 }
