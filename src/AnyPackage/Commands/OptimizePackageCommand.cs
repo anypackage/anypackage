@@ -32,16 +32,6 @@ public sealed class OptimizePackageCommand : PackageCommandBase
     public string[] Name { get; set; } = ["*"];
 
     /// <summary>
-    /// Gets or sets the version of the packages to retrieve.
-    /// </summary>
-    /// <remarks>
-    /// Accepts NuGet version range syntax.
-    /// </remarks>
-    [Parameter(Position = 1)]
-    [ValidateNotNullOrEmpty]
-    public PackageVersionRange Version { get; set; } = new PackageVersionRange();
-
-    /// <summary>
     /// Gets or sets the provider.
     /// </summary>
     [Parameter]
@@ -69,13 +59,12 @@ public sealed class OptimizePackageCommand : PackageCommandBase
     /// </summary>
     protected override void ProcessRecord()
     {
-        PackageVersionRange? version = MyInvocation.BoundParameters.ContainsKey(nameof(Version)) ? Version : null;
         var instances = GetInstances(Provider);
         var invoke = GetInvoke(instances);
 
         foreach (var name in Name)
         {
-            SetRequest(name, version);
+            SetRequest(name);
             Invoke(name, Strings.Optimizing, invoke, true);
         }
     }
