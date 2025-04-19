@@ -5,11 +5,13 @@
     "devcontainers",
     "Hashtable",
     "Intrinsics",
+    "netstandard",
     "Nieto",
     "Omni",
     "resx",
     "runspace",
     "runspaces",
+    "snupkg",
     "SYSLIB",
     "unregistering",
     "unregistration"
