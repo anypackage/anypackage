@@ -12,8 +12,8 @@
     AliasesToExport = @()
     CmdletsToExport = @('Find-Package', 'Get-Package', 'Get-PackageProvider', 'Get-PackageSource',
                         'Install-Package', 'Optimize-Package', 'Publish-Package',
-                        'Register-PackageSource', 'Save-Package', 'Set-PackageSource',
-                        'Uninstall-Package', 'Unregister-PackageSource', 'Update-Package')
+                        'Restore-Package', 'Register-PackageSource', 'Save-Package',
+                        'Set-PackageSource', 'Uninstall-Package', 'Unregister-PackageSource', 'Update-Package')
     PrivateData = @{
         PSData = @{
             Tags = @('Package', 'Manager', 'Windows', 'Linux', 'MacOS')

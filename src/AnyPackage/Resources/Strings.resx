@@ -373,4 +373,16 @@
     <value>Optimizing</value>
     <comment/>
   </data>
+  <data name="InstalledPackageNoVersion" xml:space="preserve">
+    <value>Installed package '{0}' does not have a version.</value>
+    <comment/>
+  </data>
+  <data name="AvailablePackageNoVersion" xml:space="preserve">
+    <value>Available package '{0}' does not have a version.</value>
+    <comment/>
+  </data>
+  <data name="ImportingModule" xml:space="preserve">
+    <value>Importing module '{0}' for provider '{1}'.</value>
+    <comment/>
+  </data>
 </root>
