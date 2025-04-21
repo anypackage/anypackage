@@ -6,6 +6,7 @@ using System.Collections;
 using System.Management.Automation;
 
 using AnyPackage.Provider;
+using AnyPackage.Resources;
 
 namespace AnyPackage.Commands;
 
@@ -32,17 +33,27 @@ public sealed class RestorePackageCommand : PSCmdlet
     {
         foreach (var context in ParseRequiredFile())
         {
+            if (!PackageProviderManager.GetProviders(context.Provider).Any())
+            {
+                ImportProvider(context.Provider);
+            }
+
             var installed = GetPackage(context);
 
             if (installed is not null && context.Latest && !IsLatest(context, installed))
             {
-                // TODO: Support updating using Install-Package
-                // when a provider doesn't support Update-Package
-                installed = UpdatePackage(context);
+                if (PackageProviderManager.GetProviders(context.Provider).First().HasOperation(PackageProviderOperations.Update))
+                {
+                    installed = InvokePackage(context, "Update");
+                }
+                else
+                {
+                    installed = InvokePackage(context, "Install");
+                }
             }
             else if (installed is null)
             {
-                installed = InstallPackage(context);
+                installed = InvokePackage(context, "Install");
             }
 
             if (installed is not null)
@@ -52,7 +63,19 @@ public sealed class RestorePackageCommand : PSCmdlet
         }
     }
 
-    private PackageInfo? GetPackage(RestoreContext context)
+    private void ImportProvider(string provider)
+    {
+        var split = provider.Split('\\');
+        var module = split[0];
+        var providerName = split[1];
+        WriteVerbose(string.Format(Strings.ImportingModule, module, providerName));
+
+        using var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace);
+        powershell.AddCommand("Import-Module").AddParameter("Name", module);
+        powershell.Invoke();
+    }
+
+    private PackageInfo? GetPackage(RestorePackageContext context)
     {
         using var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace);
         powershell.AddCommand("Get-Package")
@@ -69,10 +92,10 @@ public sealed class RestorePackageCommand : PSCmdlet
                          .FirstOrDefault();
     }
 
-    private PackageInfo InstallPackage(RestoreContext context)
+    private PackageInfo InvokePackage(RestorePackageContext context, string verb)
     {
         using var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace);
-        powershell.AddCommand("Install-Package")
+        powershell.AddCommand($"{verb}-Package")
                   .AddParameter("Name", context.Name)
                   .AddParameter("Provider", context.Provider)
                   .AddParameter("PassThru");
@@ -100,42 +123,11 @@ public sealed class RestorePackageCommand : PSCmdlet
         return powershell.Invoke<PackageInfo>().First();
     }
 
-    private PackageInfo UpdatePackage(RestoreContext context)
-    {
-        using var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace);
-        powershell.AddCommand("Update-Package")
-                  .AddParameter("Name", context.Name)
-                  .AddParameter("Provider", context.Provider)
-                  .AddParameter("PassThru");
-
-        if (context.Version is not null)
-        {
-            powershell.AddParameter("Version", context.Version);
-        }
-
-        if (context.Source is not null)
-        {
-            powershell.AddParameter("Source", context.Source);
-        }
-
-        if (context.Prerelease)
-        {
-            powershell.AddParameter("Prerelease");
-        }
-
-        powershell.AddCommand("Where-Object")
-                  .AddParameter("Property", "Name")
-                  .AddParameter("eq")
-                  .AddParameter("Value", context.Name);
-
-        return powershell.Invoke<PackageInfo>().First();
-    }
-
-    private bool IsLatest(RestoreContext context, PackageInfo installed)
+    private bool IsLatest(RestorePackageContext context, PackageInfo installed)
     {
         if (installed.Version is null)
         {
-            throw new InvalidOperationException($"Installed package '{context.Name}' does not have a version.");
+            throw new InvalidOperationException(string.Format(Strings.AvailablePackageNoVersion, context.Name));
         }
 
         using var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace);
@@ -164,13 +156,13 @@ public sealed class RestorePackageCommand : PSCmdlet
 
         if (latest.Version is null)
         {
-            throw new InvalidOperationException($"Available package '{context.Name}' does not have a version.");
+            throw new InvalidOperationException(string.Format(Strings.InstalledPackageNoVersion, context.Name));
         }
 
         return installed.Version >= latest.Version;
     }
 
-    private IEnumerable<RestoreContext> ParseRequiredFile()
+    private IEnumerable<RestorePackageContext> ParseRequiredFile()
     {
         using var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace);
         var hashtable = powershell.AddCommand("Import-PowerShellDataFile")
@@ -193,7 +185,7 @@ public sealed class RestorePackageCommand : PSCmdlet
             {
                 if (package is string name)
                 {
-                    yield return new RestoreContext()
+                    yield return new RestorePackageContext()
                     {
                         Name = name,
                         Provider = provider.ToString()
@@ -201,7 +193,7 @@ public sealed class RestorePackageCommand : PSCmdlet
                 }
                 else if (package is Hashtable ht)
                 {
-                    var request = new RestoreContext()
+                    var request = new RestorePackageContext()
                     {
                         Name = ht["Name"].ToString(),
                         Provider = provider.ToString()
@@ -231,16 +223,5 @@ public sealed class RestorePackageCommand : PSCmdlet
                 }
             }
         }
-    }
-
-    // TODO: Move to separate file
-    internal class RestoreContext
-    {
-        internal string Name { get; set; } = string.Empty;
-        internal PackageVersionRange? Version { get; set; }
-        internal string? Source { get; set; }
-        internal bool Latest { get; set; }
-        internal bool Prerelease { get; set; }
-        internal string Provider { get; set; } = string.Empty;
     }
 }
